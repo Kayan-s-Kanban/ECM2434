@@ -9,6 +9,7 @@ Instructions for running Django Server for first time on personal computer:
 8. Access server using 127.0.0.1:8000/Ecolution
 9. Exit server using exit
 10. Then exit venv using deactivate
+(Do not be surprised if your venv folder does not upload when committing, it is meant to be ignored and not be on the github, they are personal)
 
 Every other time use these steps:
 1. Open the project in VSCode
