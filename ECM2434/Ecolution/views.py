@@ -37,20 +37,15 @@ def login_view(request):
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
-
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
-            messages.success(request, "Login successful!")
-            return redirect("home")  # Change to your actual home page URL
+            return redirect("home")  # Redirects to home.html
         else:
-            messages.error(request, "Invalid username or password!")
-            return render(request, "login.html")
+            messages.error(request, "Invalid username or password")
 
     return render(request, "login.html")
 
-def logout_view(request):
-    logout(request)
-    messages.success(request, "Logged out successfully!")
-    return redirect("login")
+def home_view(request):
+    return render(request, "home.html")
