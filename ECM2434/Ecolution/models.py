@@ -2,8 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings  # Best practice for referencing AUTH_USER_MODEL
 
-class User(AbstractUser):  # ✅ Custom User model extending Django's built-in User
-    user_id = models.AutoField(primary_key=True)
+class CustomUser(AbstractUser):  # ✅ Custom User model extending Django's built-in User
     points = models.IntegerField(default=0)  # Keeps your custom points field
 
     def __str__(self):
