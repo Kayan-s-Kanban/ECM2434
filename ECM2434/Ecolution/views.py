@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 from django.http import HttpResponse
 
 # Create your views here.
 def index(request):
     return HttpResponse("Hello, world. You're at the Ecolution index")
+
+User = get_user_model()
 
 def signup_view(request):
     if request.method == "POST":
