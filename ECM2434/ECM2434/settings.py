@@ -70,6 +70,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ECM2434.wsgi.application'
 
+# Custom User Model
+AUTH_USER_MODEL = 'Ecolution.CustomUser'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
