@@ -21,5 +21,10 @@ Every other time use these steps:
 6. Exit server using exit
 7. Then exit venv using deactivate
 
+.\venv\Scripts\activate
+cd ECM2434
+python manage.py runserver
+
+127.0.0.1:8000/Ecolution/login
 
 Other instructions needed when migrating to pc without project.
