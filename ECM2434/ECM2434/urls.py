@@ -17,7 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from Ecolution import views
+from Ecolution.views import signup_view, login_view
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path("ecolution/", include("Ecolution.urls")),
+    path("", views.index, name="login"),
+    path('login/', login_view, name='login'),
+    path('signup/', signup_view, name='signup'),
+    path("home/", views.home_view, name="home"),
 ]
+

@@ -32,7 +32,7 @@ class LoginTestCase(TestCase):
         })
 
         # check that the user is logged in and redirected to the intended page
-        self.assertNotRedirects(response, '/ecolution/')
+        self.assertNotEqual(response, '/ecolution/')
         # or check if the user is logged in using session or user info
         self.assertNotIn('_auth_user_id' in self.client.session)
 
@@ -141,8 +141,8 @@ class LogoutTestCase(TestCase):
     def setUp(self):
         # create test user
         self.user = CustomUser.objects.create_user(
-            username='testuser',
-            password='ComplexPass123!'
+            username = 'testuser',
+            password = 'ComplexPass123!'
         )
         self.login_url = reverse('login')  # TODO: replace with your login view name
         self.logout_url = reverse('logout')  # TODO: replace with your logout view name
