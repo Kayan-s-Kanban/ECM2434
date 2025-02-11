@@ -3,223 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Home - Ecolution</title>
     <style>
         body {
-            background-color: #d9f99d; /* Green background */
+            background: url('/static/images/background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            height: 100vh;
-        }
-
-        header {
-            background-color: #86efac; /* Lighter green */
-            padding: 16px;
-            border-bottom-left-radius: 16px;
-            border-bottom-right-radius: 16px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        header h1 {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: white;
-        }
-
-        header a {
-            color: white;
-        }
-
-        main {
-            flex: 1;
-            overflow: hidden;
-        }
-
-        .background {
-            background-image: url('/static/images/forest-bg.png');
-            background-size: cover;
-            background-position: center;
-            height: 14rem;
-            position: relative;
-        }
-
-        .pet {
-            position: absolute;
-            width: 4rem;
-            height: 4rem;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: flex;
             align-items: center;
             justify-content: center;
+            height: 100vh;
+            margin: 0;
         }
 
-        .pet img {
-            width: 3rem;
-            height: 3rem;
+        .settings-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            cursor: pointer;
         }
 
-        section {
-            margin-top: 2rem;
-            padding: 0 16px;
+        .settings-menu {
+            display: none;
+            position: absolute;
+            top: 40px;
+            left: 10px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            padding: 10px;
         }
 
-        section h2 {
-            font-size: 1.25rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-
-        .task-cards {
-            display: flex;
-            gap: 1rem;
-            overflow-x: auto;
-        }
-
-        .task-card {
-            min-width: 11rem;
-            background-color: #bfdbfe; /* Light blue */
-            padding: 16px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .settings-menu a {
+            display: block;
+            padding: 8px 10px;
             text-decoration: none;
             color: black;
         }
 
-        .task-card p {
-            font-size: 0.875rem;
+        .settings-menu a:hover {
+            background: lightgray;
         }
 
-        .task-card h3 {
-            font-size: 1.125rem;
-            font-weight: bold;
-        }
-
-        .progress-bar-container {
-            margin-top: 8px;
-            height: 0.5rem;
-            background-color: #d1d5db; /* Gray */
-            border-radius: 0.25rem;
-        }
-
-        .progress-bar {
-            height: 100%;
-            border-radius: 0.25rem;
-            background-color: #2563eb; /* Blue */
-        }
-
-        .progress-text {
-            font-size: 0.75rem;
-            color: #6b7280; /* Gray text */
-            margin-top: 4px;
-        }
-
-        nav {
-            background-color: #86efac; /* Lighter green */
-            padding: 16px;
-            border-top-left-radius: 16px;
-            border-top-right-radius: 16px;
-            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-around;
-        }
-
-        nav a {
+        .pet-container {
+            text-align: center;
+            margin-top: 60px;
             color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
+            font-size: 20px;
         }
 
-        nav a span {
-            font-size: 0.75rem;
-            margin-top: 4px;
+        .pet-sprite {
+            width: 100px;
+            height: 100px;
+            background: url('/static/images/chick.png') no-repeat center center;
+            background-size: contain;
         }
+
+        .task-container {
+            width: 90%;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .task-container h2 {
+            text-align: center;
+        }
+
+        .task {
+            background: white;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task:hover {
+            background: lightgray;
+        }
+
+        .task .delete-icon {
+            color: red;
+            cursor: pointer;
+        }
+
+        .xp-bar-container {
+    width: 80%;
+    height: 10px;
+    background: #ddd;
+    border-radius: 5px;
+    margin: 10px auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.xp-bar {
+    height: 100%;
+    background: linear-gradient(to right, #4caf50, #8bc34a);
+    transition: width 0.5s ease-in-out;
+    border-radius: 5px;
+}
+
     </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <header>
-        <h1>Welcome User!</h1>
-        <!-- Gear Icon -->
-        <a href="settings.html">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 3a2.25 2.25 0 00-2.25 2.25v.519a6.746 6.746 0 00-1.955 1.128l-.43-.248a2.25 2.25 0 00-3.086 3.087l.248.429a6.746 6.746 0 00-1.128 1.955h-.518a2.25 2.25 0 00-2.25 2.25v3a2.25 2.25 0 002.25 2.25h.519c.19.715.484 1.384.866 1.977l-.429.248a2.25 2.25 0 003.087 3.086l.248-.429a6.746 6.746 0 001.955 1.128v.518a2.25 2.25 0 002.25 2.25h3a2.25 2.25 0 002.25-2.25v-.519a6.746 6.746 0 001.955-1.128l.429.248a2.25 2.25 0 003.086-3.087l-.248-.429a6.746 6.746 0 001.128-1.955h.518a2.25 2.25 0 002.25-2.25v-3a2.25 2.25 0 00-2.25-2.25h-.519a6.746 6.746 0 00-1.128-1.955l.248-.429a2.25 2.25 0 00-3.087-3.086l-.429.248a6.746 6.746 0 00-1.955-1.128v-.518A2.25 2.25 0 0012.75 3h-3z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8.25a3.75 3.75 0 100 7.5 3.75 3.75 0 000-7.5z" />
-            </svg>
-        </a>
-    </header>
-
-    <!-- Main Section -->
-    <main>
-        <div class="background">
-            <!-- Pet Sprite -->
-            <div class="pet">
-                <img src="/static/images/chicken-sprite.png" alt="Pet">
-            </div>
+    <div class="settings-container" onclick="toggleMenu()">
+        <img src="/static/images/icon_button.png" alt="Settings" width="30">
+        <div class="settings-menu" id="settingsMenu">
+            <a href="home.html">Home</a>
+            <a href="tasks.html">Tasks</a>
+            <a href="map.html">Map</a>
+            <a href="settings.html">Settings</a>
         </div>
+    </div>
 
-        <!-- Current Tasks -->
-        <section>
-            <h2>Current Tasks</h2>
-            <div class="task-cards">
-                <!-- Example Task Cards -->
-                <a href="task.html?task_id=1" class="task-card">
-                    <p>10 days</p>
-                    <h3>Example Task 1</h3>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" style="width: 80%;"></div>
-                    </div>
-                    <p class="progress-text">Progress: 80%</p>
-                </a>
-                <a href="task.html?task_id=2" class="task-card">
-                    <p>20 days</p>
-                    <h3>Example Task 2</h3>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" style="width: 30%;"></div>
-                    </div>
-                    <p class="progress-text">Progress: 30%</p>
-                </a>
-            </div>
-        </section>
-    </main>
+    <div class="pet-container">
+        <div class="pet-sprite"></div>
+        <p>Pet Name</p>
+    </div>
 
-    <!-- Bottom Navigation Bar -->
-    <nav>
-        <!-- Home Button -->
-        <a href="home.html">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7m-2 2v7a2 2 0 01-2 2h-3m-6 0a2 2 0 01-2-2v-7m4 4h4" />
-            </svg>
-            <span>Home</span>
-        </a>
+    <div class="xp-bar-container">
+        <div class="xp-bar" style="width: {{ experience }}%;"></div> <!--needs to have the db migrated idk how and i cba to do it tbh-->
+    </div>
+    <p>{{ experience }} XP</p>
 
-        <!-- Tasks Button -->
-        <a href="tasks.html">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-            <span>Tasks</span>
-        </a>
+    <div class="task-container">
+        <h2>Current Tasks</h2>
+        <div class="task" onclick="location.href='task1.html'">
+            Example Task 1 <span class="delete-icon">🗑️</span>
+        </div>
+        <div class="task" onclick="location.href='task2.html'">
+            Example Task 2 <span class="delete-icon">🗑️</span>
+        </div>
+        <div class="task" onclick="location.href='task3.html'">
+            Example Task 3 <span class="delete-icon">🗑️</span>
+        </div>
+    </div>
 
-        <!-- Profile Button -->
-        <a href="profile.html">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A4 4 0 0115 15a4 4 0 019 2.004M7 10a4 4 0 018-0m1 2a4 4 0 01-1 1 4 4 0 01-6 0" />
-            </svg>
-            <span>Profile</span>
-        </a>
-    </nav>
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById("settingsMenu");
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        }
+    </script>
 
 </body>
 </html>
