@@ -80,3 +80,6 @@ def add_task(request):
         return JsonResponse({"status": "success", "task_name": task.task_name, "description": task.description})
 
     return JsonResponse({"status": "error"}, status=400)
+
+def events_view(request):
+    return render(request, "events.html")
