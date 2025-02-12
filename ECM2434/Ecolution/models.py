@@ -22,7 +22,7 @@ class Task(models.Model):
     task_id = models.AutoField(primary_key=True)
     task_name = models.CharField(max_length=100)
     description = models.TextField()
-    points_given = models.IntegerField() 
+    points_given = models.IntegerField(default=500)
     predefined = models.BooleanField(default=False)
     def __str__(self):
         return self.task_name
@@ -46,7 +46,7 @@ class UserTask(models.Model):
     def __str__(self):
         return f'{self.user.username} - {self.task.task_name}'
 
-class EventTask(models.Model):
+class UserEvent(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ✅ Dynamic reference
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     completed = models.BooleanField(default=False)
