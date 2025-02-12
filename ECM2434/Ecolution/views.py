@@ -48,7 +48,12 @@ def login_view(request):
     return render(request, "login.html")
 
 def home_view(request):
-    return render(request, "home.html")
+    pet = Pet.objects.first()  # Fetch the first pet (adjust as needed)
+    experience = pet.experience if pet else 0  # Default to 0 XP if no pet exists
+    return render(request, "home.html", {"experience": experience})
 
-def events_view(request):
-    return render(request, "events.html")
+def settings_view(request):
+    return render(request, "settings.html")
+
+def profile_view(request):
+    return render(request, "profile.html")

@@ -21,11 +21,7 @@ from Ecolution import views
 from Ecolution.views import signup_view, login_view
 
 urlpatterns = [
-    path("", views.index, name="login"),
-    path('login/', login_view, name='login'),
-    path('signup/', signup_view, name='signup'),
-    path("home/", views.home_view, name="home"),
-    path("events/", views.events_view, name="events"),
+    path("", views.index, name="index"),
     path("ecolution/", include("Ecolution.urls")),
 ]
 
