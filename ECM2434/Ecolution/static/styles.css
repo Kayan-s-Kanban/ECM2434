@@ -1,0 +1,374 @@
+/* ----------------------
+    Site Wide Styling
+    --------------------- */
+/* Declaring global variables to enable quick changes */
+:root {
+    --font_family_stack: Poppins, Arial, -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, Cantarell, Ubuntu, roboto, noto, helvetica, arial, sans-serif;
+    --font_size_rem: 16px;
+    --color_dark: black;
+    --color_light: white;
+    --color_light_off: #ddd;
+    --color_primary: #3a8d84;
+    --color_secondary: #65dba9;
+    --color_background: var(--color_primary);
+    --box_shadow: rgba(0, 0, 0, 0.16) 0px 0px 5px -6px, rgba(0, 0, 0, 0.12) 0px 8px 10px -2px;
+    --text_light_shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+    --text_dark_shadow: 1px 1px 5px rgba(0, 0, 0, 0.12);
+}
+
+html {
+    font-family: var(--font_family_stack);
+    font-size: var(--font_size_rem);
+    letter-spacing: 0.3px;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5 {
+    margin-block: 0;
+}
+
+p {
+    margin-block: 0;
+}
+
+.text_light {
+    color: var(--color_light);
+    text-shadow: var(--text_light_shadow);
+}
+
+.text_dark {
+    color: var(--color_dark);
+    text-shadow: var(--text_dark_shadow);
+}
+
+
+/* ----------------------
+    Element Specific Styling
+    --------------------- */
+/* Element: Button */
+button.button {
+    background-color: var(--color_primary);
+    border: none;
+    border-radius: 2em;
+    height: fit-content;
+    padding: 0.5rem 1rem;
+    letter-spacing: 0.7px;
+}
+
+
+/* Element: Button With Image */
+button.button_img {
+    background-color: var(--color_primary);
+    border: none;
+    width: 3rem;
+    aspect-ratio: 1;
+    border-radius: 2em;
+}
+
+button.button_img img {
+    width: inherit;
+    height: inherit;
+}
+/* Element: Button With Image (Light) */
+button.button_img_light {
+    background-color: var(--color_light);
+    border: none;
+    width: 40px;
+    height: 40px;
+    aspect-ratio: 1;
+    border-radius: 1em;
+}
+
+button.button_img_light img {
+    width: inherit;
+    height: inherit;
+}
+
+img.img_leaf {
+    width: 40px;
+    height: 40px;
+    image-rendering: pixelated;
+}
+
+
+/* ----------------------
+    Helper Classes
+    --------------------- */
+.margin_sml {
+    margin: 0.6rem;
+}
+
+.margin_std {
+    margin: 1.2rem;
+}
+
+.margin_lg {
+    margin: 1.5rem;
+}
+
+.flex_h {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
+.flex_v {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+
+.flex_center {
+    justify-content: center;
+    align-items: center;
+}
+
+.flex_start {
+    align-items: start;
+}
+
+.flex_end {
+    justify-content: end;
+}
+
+.flex_gap_std {
+    gap: 0.5rem;
+}
+
+/* Fills a vertical flex container */
+.flex_v_fill {
+    width: 100%;
+}
+
+/* Fills a horizontal flex container */
+.flex_h_fill {
+    height: 100%;
+}
+
+.background {
+    image-rendering: pixelated;
+    background: url('/static/images/background.png') no-repeat center center;
+    background-size: 100vh;
+    background-position: 58% 100%;
+}
+
+.card {
+    background-color: var(--color_background);
+    border-radius: 1em;
+    margin-block: 1em;
+    /* This padding is here to prevent margin collapse */
+    padding-top: 0.05px;
+    padding-bottom: 0.05px;
+}
+
+.box_shadow {
+    box-shadow: var(--box_shadow);
+}
+
+
+/* ----------------------
+    Section Specific Styling
+    --------------------- */
+/* Section: Spacer */
+.spacer {
+    height: 1rem;
+}
+
+.spacer_big {
+    height: 5rem;
+}
+
+/* Section: Pet */
+.pet>.container img {
+    width: 160px;
+    height: 160px;
+    image-rendering: pixelated;
+}
+
+.pet>.container h3 {
+    font-weight: normal;
+}
+
+/* Section: Status Bar */
+.status_bar .xp_bar {
+    background-color: var(--color_light);
+    border: 3px solid var(--color_light);
+    /* height: 2px; */
+    border-radius: 1rem;
+}
+
+.status_bar .xp_bar_progress {
+    /* height: 0px; */
+    width: 50px;
+    border: 3px solid var(--color_primary);
+    border-radius: 1rem;
+}
+
+.status_bar .xp_bar_label {
+    font-size: small;
+    margin-top: 5px;
+    letter-spacing: 0.7px;
+}
+
+.status_bar .pet_status {
+    font-weight: 300;
+}
+
+/* Section: Currency Indicator */
+.currency_indicator {
+    background-color: var(--color_secondary);
+    border-radius: 2em;
+}
+
+.currency_indicator>div {
+    margin-left: 20px;
+    margin-right: 15px;
+}
+
+/* Section: Task Icon */
+.task_icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 16px;
+    background-color: var(--color_light_off);
+    font-size: 30px;
+    line-height: 1.2em;
+    text-align: center;
+}
+
+.task_icon p {
+    font-size: 30px;
+}
+
+/* Section: Current Tasks */
+.current_tasks>.heading p {
+    font-size: small;
+}
+
+.current_tasks>.heading button {
+    align-self: end;
+    margin-bottom: 2px;
+}
+
+.current_tasks .task_description {
+    font-size: small;
+}
+
+
+/* ----------------------
+    Page Specific Styling
+    --------------------- */
+/* Page: Home */
+main:last-child {
+    justify-self: end;
+}
+
+
+
+
+
+
+
+/* body {
+    background: url('/static/images/background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+} */
+
+/* .settings-container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    cursor: pointer;
+} */
+
+/* .settings-menu {
+    display: none;
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+} */
+
+/* .settings-menu a {
+    display: block;
+    padding: 8px 10px;
+    text-decoration: none;
+    color: black;
+} */
+
+/* .settings-menu a:hover {
+    background: lightgray;
+} */
+
+/* .pet>.container {
+    text-align: center;
+    margin-top: 60px;
+    color: white;
+    font-size: 20px;
+} */
+
+/* 
+.task-container {
+    width: 90%;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.task-container h2 {
+    text-align: center;
+}
+
+.task {
+    background: white;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task:hover {
+    background: lightgray;
+}
+
+.task .delete-icon {
+    color: red;
+    cursor: pointer;
+}
+
+.xp-bar-container {
+    width: 80%;
+    height: 10px;
+    background: #ddd;
+    border-radius: 5px;
+    margin: 10px auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.xp-bar {
+    height: 100%;
+    background: linear-gradient(to right, #4caf50, #8bc34a);
+    transition: width 0.5s ease-in-out;
+    border-radius: 5px;
+} */
