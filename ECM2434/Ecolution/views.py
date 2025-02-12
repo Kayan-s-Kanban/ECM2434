@@ -61,7 +61,7 @@ def tasks_view(request):
 
 @login_required
 def add_task(request):
-    """Handles adding a predefined or custom task via AJAX."""
+    """Handles adding a predefined or custom task"""
     if request.method == "POST":
         task_id = request.POST.get("task_id")
         task_name = request.POST.get("task_name")
@@ -78,6 +78,28 @@ def add_task(request):
         UserTask.objects.create(user=request.user, task=task)
 
         return JsonResponse({"status": "success", "task_name": task.task_name, "description": task.description})
+
+    return JsonResponse({"status": "error"}, status=400)
+
+@login_required
+def delete_task(request, task_id):
+    """Deletes a UserTask for the logged-in user."""
+    if request.method == "POST":
+        user_task = get_object_or_404(UserTask, task__task_id=task_id, user=request.user)
+        user_task.delete()
+        return JsonResponse({"status": "success"})
+
+    return JsonResponse({"status": "error"}, status=400)
+
+
+@login_required
+def complete_task(request, task_id):
+    """Marks a UserTask as completed."""
+    if request.method == "POST":
+        user_task = get_object_or_404(UserTask, task__task_id=task_id, user=request.user)
+        user_task.completed = True
+        user_task.save()
+        return JsonResponse({"status": "success"})
 
     return JsonResponse({"status": "error"}, status=400)
 

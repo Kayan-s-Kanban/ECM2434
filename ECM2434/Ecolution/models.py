@@ -22,7 +22,6 @@ class Task(models.Model):
     task_id = models.AutoField(primary_key=True)
     task_name = models.CharField(max_length=100)
     description = models.TextField()
-    completed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.task_name
@@ -30,6 +29,7 @@ class Task(models.Model):
 class UserTask(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ✅ Dynamic reference
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    completed = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('user', 'task')
