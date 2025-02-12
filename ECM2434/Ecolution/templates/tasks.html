@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks - Ecolution</title>
+    <style>
+        body {
+            background: url("/static/images/background.jpg") no-repeat center center fixed;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .top-bar {
+            position: absolute;
+            top: 10px;
+            width: 90%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .home-button img {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+
+        .add-task-button {
+            font-size: 24px;
+            cursor: pointer;
+            background: green;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .task-container {
+            width: 80%;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 10px;
+            border-bottom: 2px solid green;
+        }
+
+        .tab {
+            cursor: pointer;
+            padding: 10px;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom: 2px solid green;
+            font-weight: bold;
+        }
+
+        .task {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-header {
+            font-weight: bold;
+        }
+
+        .task-description {
+            font-size: 14px;
+            color: gray;
+        }
+
+        .task-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .delete-icon, .complete-icon {
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .popup-bg {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .popup button {
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .popup input, .popup textarea {
+            width: 90%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="home-button">
+            <a href="/home/"><img src="/static/images/home_icon.jpg" alt="Home"></a>
+        </div>
+        <div class="add-task-button" onclick="openPopup()">+</div>
+    </div>
+
+    <div class="task-container">
+        <div class="tabs">
+            <div class="tab active" onclick="showTasks('current')">Current Tasks</div>
+            <div class="tab" onclick="showTasks('completed')">Completed Tasks</div>
+        </div>
+
+        <div id="task-list">
+            {% for user_task in user_tasks %}
+                {% if not user_task.task.completed %}
+                <div class="task">
+                    <div>
+                        <span class="task-header">{{ user_task.task.task_name }}</span>
+                        <p class="task-description">{{ user_task.task.description }}</p>
+                    </div>
+                    <div class="task-actions">
+                        <span class="complete-icon" onclick="completeTask(this, {{ user_task.task.task_id }})">✔️</span>
+                        <span class="delete-icon" onclick="deleteTask(this, {{ user_task.task.task_id }})">🗑️</span>
+                    </div>
+                </div>
+                {% endif %}
+            {% empty %}
+                <p>No current tasks available.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Task Popup -->
+    <div class="popup-bg" id="popupBg"></div>
+    <div class="popup" id="popup">
+        <h3>Add Task</h3>
+
+        <h4>Select a Task</h4>
+        <ul id="predefined-tasks">
+            {% for task in predefined_tasks %}
+                <li>
+                    <button onclick="addTask({{ task.task_id }}, '{{ task.task_name }}', '{{ task.description }}')">
+                        {{ task.task_name }} - {{ task.description }}
+                    </button>
+                </li>
+            {% empty %}
+                <p>No predefined tasks available.</p>
+            {% endfor %}
+        </ul>
+
+        <button onclick="showCustomTaskForm()">Create Custom Task</button>
+
+        <div id="custom-task-form" style="display: none;">
+            <input type="text" id="custom-task-name" placeholder="Task Title">
+            <textarea id="custom-task-desc" placeholder="Task Description"></textarea>
+            <button onclick="submitCustomTask()">Add Custom Task</button>
+        </div>
+
+        <button onclick="closePopup()">Cancel</button>
+    </div>
+
+    <script>
+        function openPopup() {
+            document.getElementById("popup").style.display = "block";
+            document.getElementById("popupBg").style.display = "block";
+        }
+
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+            document.getElementById("popupBg").style.display = "none";
+        }
+
+        function showCustomTaskForm() {
+            document.getElementById("custom-task-form").style.display = "block";
+        }
+
+        function getCSRFToken() {
+            return document.cookie.match(/csrftoken=([^;]+)/)[1];
+        }
+
+        function addTask(taskId, taskName, taskDesc) {
+            fetch("/ecolution/tasks/add/", {
+                method: "POST",
+                headers: { "X-CSRFToken": getCSRFToken() },
+                body: new URLSearchParams({ task_id: taskId })
+            }).then(response => response.json())
+              .then(data => location.reload());
+        }
+
+        function submitCustomTask() {
+            let taskName = document.getElementById("custom-task-name").value;
+            let taskDesc = document.getElementById("custom-task-desc").value;
+
+            fetch("/ecolution/tasks/add/", {
+                method: "POST",
+                headers: { "X-CSRFToken": getCSRFToken() },
+                body: new URLSearchParams({ task_name: taskName, description: taskDesc })
+            }).then(response => response.json())
+              .then(data => location.reload());
+        }
+
+    </script>
+
+</body>
+</html>
