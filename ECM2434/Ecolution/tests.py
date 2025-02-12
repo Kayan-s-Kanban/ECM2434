@@ -1,7 +1,8 @@
 from django.test import TestCase
 from django.urls import reverse
 from .models import CustomUser
-
+from .models import UserTask
+from .models import Task
 
 class LoginTestCase(TestCase):
     def setUp(self):
@@ -54,7 +55,6 @@ class LoginTestCase(TestCase):
 
         # or check if the user is logged in using session or user info
         self.assertNotIn('_auth_user_id', self.client.session)
-
 
 class SignupTestCase(TestCase):
     def setUp(self):
@@ -165,7 +165,6 @@ class SignupTestCase(TestCase):
         # or check if the user is logged in using session or user info
         self.assertNotIn('_auth_user_id', self.client.session)
 
-
 class LogoutTestCase(TestCase):
     def setUp(self):
         # create test user
@@ -194,14 +193,93 @@ class LogoutTestCase(TestCase):
         self.assertNotContains(response, 'testuser')  # username should no longer appear
         self.assertNotIn('_auth_user_id', self.client.session)  # Django's session key for logged-in users
 
-# class TasksTestCase(TestCase):
-    ## As a user, I can add tasks to my list
+class TasksTestCase(TestCase):
+    def setUp(self):
+        # create a test user
+        self.user1 = CustomUser.objects.create_user(username='testuser', password='password')
+        self.client.login(username='testuser', password='password')
+
+        # create a test task
+        self.task = Task.objects.create(task_name="Buy groceries", description="Go to the store and buy food")
+
+    ## As a user, I can add (pre-defined) tasks to my list
+    def test_user_adds_tasks(self):
+        # add task to user list
+        user_tasks = UserTask.objects.create(user = self.user, task = self.task)
+
+        # check task is now in user's list
+        self.assertTrue(UserTask.objects.filter(user = self.user).exists())
+
     ## As a user, I can remove tasks from my list
+    def test_user_removes_tasks(self):
+        # add task to user list
+        user_tasks = UserTask.objects.create(user = self.user1, task = self.task)
+
+        # check task is now in user's list
+        self.assertTrue(UserTask.objects.filter(user = self.user1).exists())
+
+        # remove task from list
+        self.user1.CustomUser.task.user_task.delete() # TODO: fix syntax
+
+        # check task is no longer in user's list
+        self.assertFalse(UserTask.objects.filter(user = self.user1, task = self.task).exists())
+
     ## As a user, I can complete tasks
+    def test_user_completes_tasks(self):
+
+    ## As a user, I can create my own tasks
+    ## TODO: update based on user created task functionality/flow
+    def test_user_creates_tasks(self):
+        # login
+        self.client.login(username = 'testuser', password = 'password')
+
+        # new task data
+        task_data = {
+            'task_name': 'Go for a walk',
+            'description': 'Take a walk through campus today.'
+        }
+
+        # user request to create new task
+        response = self.client.post('/tasks/create/', task_data)  # TODO: ensure correct create task endpoint
+
+        # check task has been created
+        self.assertEqual(response.status_code, 201) # TODO: ensure correct status code
+
+        # check task exists in the DB
+        task = Task.objects.get(task_name = 'Go for a walk')
+
+        # check task exists in user's list
+        self.assertEqual(UserTask.user, self.user)
+        self.assertTrue(UserTask.objects.filter(user = self.user, task = task).exists())
+
     ## As a user, I can edit tasks (?)
+
     ## As a user, I can earn points from completing tasks
+
     ## As a user, I can view task details
+
     ## As a user, I can search for tasks
+
+    ## As a user, I cannot view other users' created tasks
+    def test_created_tasks_visibility(self):
+        # create a second user
+        self.user2 = CustomUser.objects.create_user(username='another_user', password='password')
+
+        # create tasks for both users
+        task1 = Task.objects.create(user=self.user1, task_name="Buy groceries", description="Go to the store and buy food")
+        task2 = Task.objects.create(user=self.user2, task_name="Complete homework", description="Finish math problems")
+
+        # first user can only view their own task (task1)
+        user1_tasks = Task.objects.filter(user = self.user1)
+        self.assertIn(task1, user1_tasks)
+        self.assertNotIn(task2, user1_tasks)
+        self.client.logout()
+
+        # second user can only view their own task (task2)
+        self.client.login(username='another_user', password='password')
+        user2_tasks = Task.objects.filter(user = self.user2)
+        self.assertIn(task2, user2_tasks)
+        self.assertNotIn(task1, user2_tasks)
 
 # class SettingsTestCase(TestCase):
     ## As a user, I can reset my password
@@ -220,7 +298,9 @@ class LogoutTestCase(TestCase):
     ## As a user, I can see my points increase after completing a task
     ## As a user, I can see my points decrease after removing a completed task
 
-# class AdminTestCase(TestCase):
+class AdminTestCase(TestCase):
+    def setUp(self):
+    ## As an admin, I can log into admin page
     ## As an admin, I can add content
     ## As an admin, I can remove content
     ## As an admin, I can edit content
