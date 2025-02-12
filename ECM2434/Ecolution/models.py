@@ -22,7 +22,15 @@ class Task(models.Model):
     task_id = models.AutoField(primary_key=True)
     task_name = models.CharField(max_length=100)
     description = models.TextField()
+    points_given = models.IntegerField() 
+    predefined = models.BooleanField(default=False)
+    def __str__(self):
+        return self.task_name
 
+class Event(models.Model):
+    event_id = models.AutoField(primary_key=True)
+    event_name = models.CharField(max_length=100)
+    description = models.TextField()
     def __str__(self):
         return self.task_name
 
@@ -30,9 +38,22 @@ class UserTask(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ✅ Dynamic reference
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     completed = models.BooleanField(default=False)
+    date_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('user', 'task')
+        unique_together = ('user', 'task', 'date_time')
 
     def __str__(self):
         return f'{self.user.username} - {self.task.task_name}'
+
+class EventTask(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ✅ Dynamic reference
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    completed = models.BooleanField(default=False)
+    date_time = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'event', 'date_time')
+
+    def __str__(self):
+        return f'{self.user.username} - {self.event.event_name}'
