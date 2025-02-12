@@ -49,3 +49,6 @@ def login_view(request):
 
 def home_view(request):
     return render(request, "home.html")
+
+def events_view(request):
+    return render(request, "events.html")
