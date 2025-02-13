@@ -16,9 +16,12 @@
     --color_primary: #3a8d84;
     --color_secondary: #65dba9;
     --color_background: var(--color_primary);
+    --color_page_background: #8abd8f;
     --box_shadow: rgba(0, 0, 0, 0.16) 0px 0px 5px -6px, rgba(0, 0, 0, 0.12) 0px 8px 10px -2px;
     --text_light_shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
     --text_dark_shadow: 1px 1px 5px rgba(0, 0, 0, 0.12);
+    --letter_spacing: 0.3px;
+    --letter_spacing_lg: 0.7px
 }
 
 
@@ -26,7 +29,8 @@
 html {
     font-family: var(--font_family_stack);
     font-size: var(--font_size_rem);
-    letter-spacing: 0.3px;
+    background-color: var(--color_page_background);
+    letter-spacing: var(--letter_spacing);
 }
 
 body {
@@ -57,10 +61,6 @@ p {
 
 /* Media query in case of desktop view */
 @media only screen and (min-width: 1000px) {
-    html {
-        background-color: #8abd8f;
-    }
-
     body {
         max-width: 450px;
         margin-left: auto;
@@ -77,7 +77,7 @@ button.button {
     border-radius: 2em;
     height: fit-content;
     padding: 0.5rem 1rem;
-    letter-spacing: 0.7px;
+    letter-spacing: var(--letter_spacing_lg);
 }
 
 /* Element: Button With Image */
@@ -229,7 +229,7 @@ section.status_bar .xp_bar_progress {
 section.status_bar .xp_bar_label {
     font-size: small;
     margin-top: 5px;
-    letter-spacing: 0.7px;
+    letter-spacing: var(--letter_spacing_lg);
 }
 
 section.status_bar .pet_status {
