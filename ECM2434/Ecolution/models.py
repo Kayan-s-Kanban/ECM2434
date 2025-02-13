@@ -12,9 +12,23 @@ class CustomUser(AbstractUser):  # ✅ Custom User model extending Django's buil
 class Pet(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ✅ Dynamic reference
     pet_name = models.CharField(max_length=50)
+    pet_level = models.IntegerField(default=1)
+    pet_exp = models.IntegerField(default=0)
 
     class Meta:
         unique_together = ('user', 'pet_name')
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(pet_level__gte=1) & models.Q(pet_level__lte=10),
+                name='pet_level_range'
+            )
+        ]
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(pet_exp__gte=0) & models.Q(pet_exp__lte=10),
+                name='pet_exp_range'
+            )
+        ]
 
     def __str__(self):
         return f'{self.pet_name} - {self.user.username}'
@@ -24,6 +38,7 @@ class Task(models.Model):
     task_name = models.CharField(max_length=100)
     description = models.TextField()
     points_given = models.IntegerField(default=500)
+    xp_given = models.IntegerField(default=100)
     predefined = models.BooleanField(default=False)
     def __str__(self):
         return self.task_name
@@ -39,11 +54,10 @@ class UserTask(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ✅ Dynamic reference
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     completed = models.BooleanField(default=False)
-    date_time = models.DateTimeField(default=timezone.now)
-    due_date = models.DateField(default=timezone.now)
+    date = models.DateField(default=timezone.now)
 
     class Meta:
-        unique_together = ('user', 'task', 'due_date')
+        unique_together = ('user', 'task', 'date')
 
     def __str__(self):
         return f'{self.user.username} - {self.task.task_name}'
