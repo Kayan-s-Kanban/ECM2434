@@ -70,7 +70,8 @@ class SignupTestCase(TestCase):
         user = CustomUser.objects.get(username='newuser')
         self.assertIsNotNone(user)  # TODO:(?) check that the user exists in the database
 
-    ## As a user, I cannot sign up for an account with an invalid email and valid password
+    ## As a user, I cannot sign up for an account with an invalid email and valid password 
+    ## inputs arent right
     def test_signup_invalid_email(self):
         # TODO: test with invalid email/user data
         response = self.client.post(self.signup_url, {
