@@ -1,20 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
+{% extends "base.html" %}
+{% load static %}
 
+{% block title %}
+    <title>Settings - Ecolution</title>
+{% endblock %}
+
+<!-- Style Content Here (Should be integrated into styles.css eventually) -->
+{% block style %}
+    <style>
         .settings-container {
-            max-width: 400px;
-            margin: 0 auto;
             background: white;
             border-radius: 10px;
             overflow: hidden;
@@ -88,11 +82,10 @@
             font-weight: bold;
         }
     </style>
-</head>
+{% endblock %}
 
-<body class="background">
-    <main>
 
+{% block main %}
     <div class="settings-container">
         <div class="header">
             <h2>Settings</h2>
@@ -117,6 +110,5 @@
             <li class="logout" onclick="location.href='home.html'">Logout</li>
         </ul>
     </div>
-    </main>
-</body>
-</html>
+{% endblock %}
+

@@ -1,9 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delete Account</title>
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    <title>Delete Account - Ecolution</title>
+{% endblock %}
+
+<!-- Style Content Here (Should be integrated into styles.css eventually) -->
+{% block style %}
     <style>
         body { font-family: Arial, sans-serif; background: #f4f4f4; text-align: center; }
         .container { max-width: 400px; margin: 50px auto; background: white; padding: 20px; border-radius: 10px; }
@@ -12,8 +15,9 @@
         .delete { background: red; color: white; }
         .cancel { background: gray; color: white; }
     </style>
-</head>
-<body>
+{% endblock %}
+
+{% block main %}
     <div class="container">
         <h2 class="warning">⚠️ Warning: This action is irreversible!</h2>
         <p>Are you sure you want to delete your account? All your data will be lost.</p>
@@ -23,5 +27,5 @@
             <a href="{% url 'settings' %}" class="cancel">Cancel</a>
         </form>
     </div>
-</body>
-</html>
+{% endblock %}
+

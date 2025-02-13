@@ -72,7 +72,7 @@ p {
 
 /* [[[ 2.A) Buttons ]]] */
 /* Element: Button */
-button.button {
+.button {
     background-color: var(--color_primary);
     border: none;
     border-radius: 2em;
@@ -82,7 +82,7 @@ button.button {
 }
 
 /* Element: Button With Image */
-button.button_img {
+.button_img {
     background-color: var(--color_primary);
     border: none;
     width: 3rem;
@@ -90,13 +90,13 @@ button.button_img {
     border-radius: 2em;
 }
 
-button.button_img img {
+.button_img img {
     width: inherit;
     height: inherit;
 }
 
 /* Element: Button With Image (Light) */
-button.button_img_light {
+.button_img_light {
     background-color: var(--color_light);
     border: none;
     width: 40px;
@@ -105,12 +105,12 @@ button.button_img_light {
     border-radius: 1em;
 }
 
-button.button_img_light img {
+.button_img_light img {
     width: inherit;
     height: inherit;
 }
 
-button.button[type="submit"] {
+.button[type="submit"] {
     padding: 10px;
     color: white;
     border-radius: 5px;
