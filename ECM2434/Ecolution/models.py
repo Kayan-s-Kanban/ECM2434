@@ -38,7 +38,7 @@ class Task(models.Model):
     task_name = models.CharField(max_length=100)
     description = models.TextField()
     points_given = models.IntegerField(default=500)
-    xp_given = models.IntegerField(default=100)
+    #xp_given = models.IntegerField(default=100)
     predefined = models.BooleanField(default=False)
     def __str__(self):
         return self.task_name
