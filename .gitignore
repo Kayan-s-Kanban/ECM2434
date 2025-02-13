@@ -2,4 +2,4 @@ venv
 __pycache__/
 *.pyc
 .vscode
-.sqlite3
+db.sqlite3
