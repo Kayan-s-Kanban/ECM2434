@@ -12,6 +12,11 @@ class CustomUserAdmin(UserAdmin):
     model = CustomUser
     list_display = ('email', 'username', 'points',)
 
+    fieldsets = UserAdmin.fieldsets + (
+        ('Custom Fields', {'fields': ('points',)}),
+    )
+
+
 # Register your models here.
 admin.site.register(Pet)
 admin.site.register(Task)
