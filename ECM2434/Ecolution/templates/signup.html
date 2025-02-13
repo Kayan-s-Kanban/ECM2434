@@ -66,6 +66,13 @@
         </form>
         <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
     </div>
+    {% if messages %}
+    <ul class="error-messages">
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 
 </body>
 </html>
