@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
 from django.db import IntegrityError
-from .models import Task, UserTask
+from .models import Task, UserTask, CustomUser  
 
 # Create your views here.
 def index(request):
@@ -50,8 +50,11 @@ def login_view(request):
 
     return render(request, "login.html")
 
+@login_required
 def home_view(request):
-    return render(request, "home.html")
+    user_points = request.user.points  # Fetch points from CustomUser model
+    return render(request, "home.html", {"points": user_points})
+
 
 @login_required
 def tasks_view(request):
@@ -110,3 +113,6 @@ def complete_task(request, task_id):
 
 def events_view(request):
     return render(request, "events.html")
+
+def settings_view(request):
+    return render(request, "settings.html")

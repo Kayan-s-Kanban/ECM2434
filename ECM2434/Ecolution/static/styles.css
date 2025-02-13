@@ -1,6 +1,11 @@
-/* ----------------------
-    Site Wide Styling
-    --------------------- */
+/* CSS Directory:
+	1. Global Variables
+	2. Site-Wide Styling
+	3. Helper Classes
+    4. Section Styling
+*/
+
+/* [[[ 1. Global Variables ]]] */
 /* Declaring global variables to enable quick changes */
 :root {
     --font_family_stack: Poppins, Arial, -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, Cantarell, Ubuntu, roboto, noto, helvetica, arial, sans-serif;
@@ -11,20 +16,29 @@
     --color_primary: #3a8d84;
     --color_secondary: #65dba9;
     --color_background: var(--color_primary);
+    --color_page_background: #8abd8f;
     --box_shadow: rgba(0, 0, 0, 0.16) 0px 0px 5px -6px, rgba(0, 0, 0, 0.12) 0px 8px 10px -2px;
     --text_light_shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
     --text_dark_shadow: 1px 1px 5px rgba(0, 0, 0, 0.12);
+    --letter_spacing: 0.3px;
+    --letter_spacing_lg: 0.7px
 }
 
+
+/* [[[ 2. Site-Wide Styling ]]] */
 html {
     font-family: var(--font_family_stack);
     font-size: var(--font_size_rem);
-    letter-spacing: 0.3px;
+    background-color: var(--color_page_background);
+    letter-spacing: var(--letter_spacing);
 }
 
 body {
     margin: 0;
     min-height: 100vh;
+    max-width: 500px;
+    /* This padding is here to prevent margin collapse */
+    padding-top: 0.05px;
 }
 
 h1, h2, h3, h4, h5 {
@@ -45,10 +59,17 @@ p {
     text-shadow: var(--text_dark_shadow);
 }
 
+/* Media query in case of desktop view */
+@media only screen and (min-width: 1000px) {
+    body {
+        max-width: 450px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
 
-/* ----------------------
-    Element Specific Styling
-    --------------------- */
+
+/* [[[ 2.A) Buttons ]]] */
 /* Element: Button */
 button.button {
     background-color: var(--color_primary);
@@ -56,9 +77,8 @@ button.button {
     border-radius: 2em;
     height: fit-content;
     padding: 0.5rem 1rem;
-    letter-spacing: 0.7px;
+    letter-spacing: var(--letter_spacing_lg);
 }
-
 
 /* Element: Button With Image */
 button.button_img {
@@ -73,6 +93,7 @@ button.button_img img {
     width: inherit;
     height: inherit;
 }
+
 /* Element: Button With Image (Light) */
 button.button_img_light {
     background-color: var(--color_light);
@@ -95,9 +116,7 @@ img.img_leaf {
 }
 
 
-/* ----------------------
-    Helper Classes
-    --------------------- */
+/* [[[ 3. Helper Classes ]]] */
 .margin_sml {
     margin: 0.6rem;
 }
@@ -171,67 +190,65 @@ img.img_leaf {
 }
 
 
-/* ----------------------
-    Section Specific Styling
-    --------------------- */
+/* [[[ 1. Section Styling ]]] */
 /* Section: Spacer */
-.spacer {
+section.spacer {
     height: 1rem;
 }
 
-.spacer_big {
+section.spacer_big {
     height: 5rem;
 }
 
 /* Section: Pet */
-.pet>.container img {
+section.pet>.container img {
     width: 160px;
     height: 160px;
     image-rendering: pixelated;
 }
 
-.pet>.container h3 {
+section.pet>.container h3 {
     font-weight: normal;
 }
 
 /* Section: Status Bar */
-.status_bar .xp_bar {
+section.status_bar .xp_bar {
     background-color: var(--color_light);
     border: 3px solid var(--color_light);
     /* height: 2px; */
     border-radius: 1rem;
 }
 
-.status_bar .xp_bar_progress {
+section.status_bar .xp_bar_progress {
     /* height: 0px; */
     width: 50px;
     border: 3px solid var(--color_primary);
     border-radius: 1rem;
 }
 
-.status_bar .xp_bar_label {
+section.status_bar .xp_bar_label {
     font-size: small;
     margin-top: 5px;
-    letter-spacing: 0.7px;
+    letter-spacing: var(--letter_spacing_lg);
 }
 
-.status_bar .pet_status {
+section.status_bar .pet_status {
     font-weight: 300;
 }
 
 /* Section: Currency Indicator */
-.currency_indicator {
+section.currency_indicator {
     background-color: var(--color_secondary);
     border-radius: 2em;
 }
 
-.currency_indicator>div {
+section.currency_indicator>div {
     margin-left: 20px;
     margin-right: 15px;
 }
 
 /* Section: Task Icon */
-.task_icon {
+section.task_icon {
     width: 40px;
     height: 40px;
     border-radius: 16px;
@@ -241,16 +258,16 @@ img.img_leaf {
     text-align: center;
 }
 
-.task_icon p {
+section.task_icon p {
     font-size: 30px;
 }
 
 /* Section: Current Tasks */
-.current_tasks>.heading p {
+section.current_tasks>.heading p {
     font-size: small;
 }
 
-.current_tasks>.heading button {
+section.current_tasks>.heading button {
     align-self: end;
     margin-bottom: 2px;
 }
@@ -258,16 +275,6 @@ img.img_leaf {
 .current_tasks .task_description {
     font-size: small;
 }
-
-
-/* ----------------------
-    Page Specific Styling
-    --------------------- */
-/* Page: Home */
-main:last-child {
-    justify-self: end;
-}
-
 
 
 

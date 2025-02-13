@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .settings-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: #4a7c59;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+        .profile-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            margin-top: -40px;
+        }
+
+        .user-info {
+            text-align: center;
+            padding: 15px;
+        }
+
+        .user-info h2 {
+            margin: 10px 0 5px;
+        }
+
+        .user-info p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .details {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .settings-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .settings-list li {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+        .settings-list li:hover {
+            background: #e9f5e9;
+        }
+
+        .settings-list li img {
+            width: 20px;
+            margin-right: 10px;
+        }
+
+        .logout {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="settings-container">
+        <div class="header">
+            <h2>Settings</h2>
+        </div>
+
+        <div class="user-info">
+            <img src="static/images/profile.jpg" alt="Profile Picture" class="profile-pic">
+            <h2>User Name</h2>
+            <p>Joined on DD/MM/YYYY</p>
+        </div>
+
+        <div class="details">
+            <span>📍 Exeter, United Kingdom</span>
+            <span>✔ XX Tasks Completed</span>
+        </div>
+
+        <ul class="settings-list">
+            <li onclick="location.href='edit-profile.html'">Edit Profile</li>
+            <li onclick="location.href='completed-tasks.html'">Completed Tasks</li>
+            <li onclick="location.href='location.html'">Location</li>
+            <li onclick="location.href='delete-account.html'">Delete Account</li>
+            <li class="logout" onclick="location.href='home.html'">Logout</li>
+        </ul>
+    </div>
+
+</body>
+</html>
