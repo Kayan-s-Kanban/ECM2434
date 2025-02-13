@@ -4,75 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Ecolution</title>
-    <style>
-        body {
-            background: url('/static/images/background.jpg') no-repeat center center fixed;
-            background-size: cover;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .signup-container {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            width: 320px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .signup-container h2 {
-            margin-bottom: 20px;
-        }
-
-        .signup-container input {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .signup-container button {
-            width: 100%;
-            padding: 10px;
-            background: blue;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .signup-container button:hover {
-            background: darkblue;
-        }
-    </style>
+    {% load static %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
-<body>
-
-    <div class="signup-container">
-        <h2>Create an Account</h2>
-        <form method="POST">
-            {% csrf_token %}
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password1" placeholder="Password" required>
-            <input type="password" name="password2" placeholder="Confirm Password" required>
-            <button type="submit">Sign Up</button>
-        </form>
-        <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
-    </div>
-    {% if messages %}
-    <ul class="error-messages">
-        {% for message in messages %}
-            <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-
+<body class="background">
+    <main class="flex_v">
+        <section class="spacer_big"></section>
+        <section class="signup card flex_v flex_center box_shadow margin_std">
+            <h2 class="text_dark margin_std_bot">Create an Account</h2>
+            <form class="flex_v flex_v_fill" method="POST">
+                {% csrf_token %}
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password1" placeholder="Password" required>
+                <input type="password" name="password2" placeholder="Confirm Password" required>
+                <button class="button box_shadow" type="submit">Sign Up</button>
+            </form>
+            <p class="text_dark font_small margin_std_top">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+        </section>
+        {% if messages %}
+        <ul class="error-messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </main>
 </body>
 </html>

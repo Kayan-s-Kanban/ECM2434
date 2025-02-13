@@ -17,6 +17,7 @@
     --color_secondary: #65dba9;
     --color_background: var(--color_primary);
     --color_page_background: #8abd8f;
+    --color_form_background:  rgba(255, 255, 255, 0.95);
     --box_shadow: rgba(0, 0, 0, 0.16) 0px 0px 5px -6px, rgba(0, 0, 0, 0.12) 0px 8px 10px -2px;
     --text_light_shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
     --text_dark_shadow: 1px 1px 5px rgba(0, 0, 0, 0.12);
@@ -109,6 +110,26 @@ button.button_img_light img {
     height: inherit;
 }
 
+button.button[type="submit"] {
+    padding: 10px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* [[[ 2.B) Forms ]]] */
+form {
+    gap: 8px;
+}
+
+form input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+
+/* [[[ 2.C) Images ]]] */
 img.img_leaf {
     width: 40px;
     height: 40px;
@@ -117,6 +138,10 @@ img.img_leaf {
 
 
 /* [[[ 3. Helper Classes ]]] */
+.font_small {
+    font-size: small;
+}
+
 .margin_sml {
     margin: 0.6rem;
 }
@@ -127,6 +152,64 @@ img.img_leaf {
 
 .margin_lg {
     margin: 1.5rem;
+}
+
+.margin_sml_right {
+    margin-right: 0.6rem;
+}
+
+.margin_std_right {
+    margin-right: 1.2rem;
+}
+
+.margin_lg_right {
+    margin-right: 1.5rem;
+}
+
+.margin_sml_left {
+    margin-left: 0.6rem;
+}
+
+.margin_std_left {
+    margin-left: 1.2rem;
+}
+
+.margin_lg_left {
+    margin-left: 1.5rem;
+}
+
+.margin_sml_top {
+    margin-top: 0.6rem;
+}
+
+.margin_std_top {
+    margin-top: 1.2rem;
+}
+
+.margin_lg_top {
+    margin-top: 1.5rem;
+}
+
+.margin_sml_bot {
+    margin-bottom: 0.6rem;
+}
+
+.margin_std_bot {
+    margin-bottom: 1.2rem;
+}
+
+.margin_lg_bot {
+    margin-bottom: 1.5rem;
+}
+
+.margin_none_h {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.margin_none_v {
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .flex_h {
@@ -277,6 +360,24 @@ section.current_tasks>.heading button {
 }
 
 
+
+
+/* Section: Signup */
+section.signup {
+    background: var(--color_form_background);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+
+/* Section: Signup */
+section.signup {
+    background: var(--color_form_background);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
 
 
 
