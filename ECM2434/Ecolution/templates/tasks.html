@@ -174,7 +174,7 @@
                         <p class="task-description">{{ user_task.task.description }}</p>
                     </div>
                     <div class="task-info">
-                        <span class="task-date">Due: {{ user_task.date_time|date:"M d, Y" }}</span>
+                        <span class="task-date">Due: {{ user_task.date|date:"M d, Y" }}</span>
                         <span class="task-points">Points: {{ user_task.task.points_given }} ⚪</span>
                     </div>
                     <div class="task-actions">
@@ -199,7 +199,7 @@
                         <p class="task-description">{{ user_task.task.description }}</p>
                     </div>
                     <div class="task-info">
-                        <span class="task-date">Due: {{ user_task.date_time|date:"M d, Y" }}</span>
+                        <span class="task-date">Due: {{ user_task.date|date:"M d, Y" }}</span>
                         <span class="task-points-completed">Points: {{ user_task.task.points_given }} 🟢</span>
                     </div>
                     <div class="task-actions">
