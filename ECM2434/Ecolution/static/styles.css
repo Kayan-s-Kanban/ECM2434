@@ -255,7 +255,7 @@ img.img_leaf {
 .image_wrapper {
     width: 160px;
     height: 160px;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 .background {
@@ -368,8 +368,6 @@ section.current_tasks>.heading button {
 }
 
 
-
-
 /* Section: Signup */
 section.signup {
     background: var(--color_form_background);
@@ -378,113 +376,36 @@ section.signup {
     text-align: center;
 }
 
-
-/* Section: Signup */
-section.signup {
-    background: var(--color_form_background);
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
+/* Section: Settings Menu */
+/* Ensure the parent container has relative positioning so we can position elements inside it */
+.button_settings {
+    position: relative; /* This allows absolute positioning of the dropdown inside it */
 }
 
-
-
-
-/* body {
-    background: url('/static/images/background.jpg') no-repeat center center fixed;
-    background-size: cover;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-} */
-
-/* .settings-container {
+/* General Settings Button and Menu Styling */
+section.settings_menu {
+    display: none; /* Initially hidden */
     position: absolute;
-    top: 20px;
-    left: 20px;
-    cursor: pointer;
-} */
+    top: 55px;
+    left: 0;
+    background-color: var(--color_form_background);
+    border-radius: 0.8em;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    padding: 1rem;
+    width: 200px; /* Set a reasonable width for the dropdown */
+}
 
-/* .settings-menu {
-    display: none;
-    position: absolute;
-    top: 40px;
-    left: 10px;
-    background: white;
-    border-radius: 5px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    padding: 10px;
-} */
-
-/* .settings-menu a {
+section.settings_menu a {
     display: block;
-    padding: 8px 10px;
-    text-decoration: none;
-    color: black;
-} */
-
-/* .settings-menu a:hover {
-    background: lightgray;
-} */
-
-/* .pet>.container {
-    text-align: center;
-    margin-top: 60px;
-    color: white;
-    font-size: 20px;
-} */
-
-/* 
-.task-container {
-    width: 90%;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-}
-
-.task-container h2 {
-    text-align: center;
-}
-
-.task {
-    background: white;
     padding: 10px;
-    margin: 10px 0;
+    text-decoration: none;
+    color: var(--color_dark);
     border-radius: 5px;
-    cursor: pointer;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    margin: 5px 0;
 }
 
-.task:hover {
-    background: lightgray;
+section.settings_menu a:hover {
+    background-color: var(--color_primary);
+    color: var(--color_light);
 }
-
-.task .delete-icon {
-    color: red;
-    cursor: pointer;
-}
-
-.xp-bar-container {
-    width: 80%;
-    height: 10px;
-    background: #ddd;
-    border-radius: 5px;
-    margin: 10px auto;
-    position: relative;
-    overflow: hidden;
-}
-
-.xp-bar {
-    height: 100%;
-    background: linear-gradient(to right, #4caf50, #8bc34a);
-    transition: width 0.5s ease-in-out;
-    border-radius: 5px;
-} */
