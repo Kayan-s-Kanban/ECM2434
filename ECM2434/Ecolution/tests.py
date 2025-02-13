@@ -8,11 +8,10 @@ class LoginTestCase(TestCase):
     def setUp(self):
         # Create a test user
         self.user = CustomUser.objects.create_user(
-            username="Tester",
-            password="123456"
+            username = "Tester",
+            password = "123456"
         )
-        self.login_url = reverse('login')  # ensure you have the correct URL name for login
-        self.signup_url = reverse('signup')  # ensure have correct URL name for signup
+        self.login_url = reverse('login')  # Ensure you have the correct URL name for login
 
     ## As a user, I can log in with correct user and password
     def test_login_valid_creds(self):
@@ -23,17 +22,15 @@ class LoginTestCase(TestCase):
         })
 
         # check that the user is logged in and redirected to the intended page
-        self.assertRedirects(response, '/home/')
+        self.assertRedirects(response, '/ecolution/')
         # or check if the user is logged in using session or user info
-        self.assertTrue('_auth_user_id', self.client.session)
+        self.assertTrue('_auth_user_id' in self.client.session)
 
     ## As a user, I cannot log in with correct user but incorrect password
     def test_login_invalid_pwd(self):
-        response = self.client.post(self.signup_url, {
-            'username': 'newuser',
-            'email': 'user@example.com',
-            'password1': 'ivalidpassword',
-            'password2': 'validpassword123',
+        response = self.client.post(self.login_url, {
+            'username': 'Tester',
+            'password': '987654',
         })
 
         # check that the user is not logged in and redirected to the intended page
@@ -45,35 +42,27 @@ class LoginTestCase(TestCase):
     def test_login_invalid_email(self):
         response = self.client.post(self.signup_url, {
             'username': 'NotTester',
-            'email': 'userexample.com',
-            'password1': 'validpassword123',
-            'password2': 'validpassword123',
+            'password': '123456',
         })
 
         # check that the user is NOT logged in and redirected to the intended page
         self.assertNotEqual(response, '/ecolution/')
 
         # or check if the user is logged in using session or user info
-        self.assertNotIn('_auth_user_id', self.client.session)
+        self.assertNotIn('_auth_user_id' in self.client.session) 
 
 class SignupTestCase(TestCase):
     def setUp(self):
-        self.signup_url = reverse('signup')
-        self.login_url = reverse('login')  # ensure you have the correct URL name for login
-        self.user_data = {
-            'username': 'testuser',
-            'email': 'testuser@example.com',
-            'password1': 'password123',
-            'password2': 'password123',
-        }
+        self.signup_url = reverse('signup') # TODO: ensure have correct signup URL
+        self.login_url = reverse('login') # TODO: ensure have correct login URL
 
-    ## As a user, I can sign up for an account with a valid user and password
+    ## As a user, I can sign up for an account with a valid email and password
     def test_signup_valid_creds(self):
         # TODO: test with valid data
         response = self.client.post(self.signup_url, {
             'username': 'newuser',
-            'password1': 'validpassword123',
-            'password2': 'validpassword123',
+            'password1': 'validpassword123',  # password1 (it should match password2)
+            'password2': 'validpassword123',  # password2
         })
 
         # check if the user is redirected after successful signup
@@ -97,7 +86,7 @@ class SignupTestCase(TestCase):
         self.assertNotEqual(response, '/')  # TODO: adjust the redirect URL (e.g., home page or login page)
 
         # TODO: ensure the user is NOT created
-        user = CustomUser.objects.get(username='newuser')
+        user = CustomUser.objects.get(username = 'newuser')
         self.assertIsNone(user)  # TODO:(?) check that the user does not exist in the database
 
     ## As a user, I cannot sign up for an account with a valid email but invalid password
@@ -145,7 +134,7 @@ class SignupTestCase(TestCase):
             'password': 'validpassword123',
         }
         response = self.client.post(self.login_url, login_data)
-        self.assertEqual(response.status_code, 200)  # expect redirect after login
+        self.assertEqual(response.status_code, 302)  # expect redirect after login
 
         # check that user has been authenticated
         response = self.client.get(reverse('home'))  # TODO: replace 'home' with a logged-in page URL name
@@ -173,7 +162,7 @@ class LogoutTestCase(TestCase):
             password='ComplexPass123!'
         )
         self.login_url = reverse('login')  # TODO: replace with your login view name
-        # self.logout_url = reverse('logout')  # TODO: replace with your logout view name
+        self.logout_url = reverse('logout')  # TODO: replace with your logout view name
 
         # log in the test user
         self.client.login(username='testuser', password='validpassword123')
