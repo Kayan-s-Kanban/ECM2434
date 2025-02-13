@@ -252,6 +252,12 @@ img.img_leaf {
     height: 100%;
 }
 
+.image_wrapper {
+    width: 160px;
+    height: 160px;
+    overflow: hidden;
+}
+
 .background {
     image-rendering: pixelated;
     background: url('/static/images/background.png') no-repeat center center;
@@ -284,13 +290,16 @@ section.spacer_big {
 }
 
 /* Section: Pet */
-section.pet>.container img {
-    width: 160px;
-    height: 160px;
+section.pet img {
+    width: 400px;
+    height: 400px;
     image-rendering: pixelated;
+    /* TODO: Fix position */
+    margin-left: -100px;
+    margin-top: -100px;
 }
 
-section.pet>.container h3 {
+section.pet h3 {
     font-weight: normal;
 }
 
