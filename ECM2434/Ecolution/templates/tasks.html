@@ -93,6 +93,18 @@
             align-items: center;
         }
 
+        .task {
+            position: relative;
+        }
+
+        .task-date {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: gray;
+        }
+
         .delete-icon, .complete-icon {
             cursor: pointer;
             margin-left: 10px;
@@ -161,9 +173,15 @@
                         <span class="task-header">{{ user_task.task.task_name }}</span>
                         <p class="task-description">{{ user_task.task.description }}</p>
                     </div>
+                    <div class="task-info">
+                        <span class="task-date">Due: {{ user_task.date_time|date:"M d, Y" }}</span>
+                        <span class="task-points">Points: {{ user_task.task.points_given }} ⚪</span>
+                    </div>
                     <div class="task-actions">
-                        <span class="complete-icon" onclick="completeTask(this, {{ user_task.task.task_id }})">✔️</span>
-                        <span class="delete-icon" onclick="deleteTask(this, {{ user_task.task.task_id }})">🗑️</span>
+                        {% if not user_task.completed %}
+                            <span class="complete-icon" onclick="completeTask(this, {{ user_task.task.task_id }})">✔️</span>
+                        {% endif %}
+                        <span class="delete-icon" onclick="deleteTask(this, {{ user_task.id }})">🗑️</span>
                     </div>
                 </div>
                 {% endif %}
@@ -180,8 +198,11 @@
                         <span class="task-header">{{ user_task.task.task_name }}</span>
                         <p class="task-description">{{ user_task.task.description }}</p>
                     </div>
+                    <div class="task-info">
+                        <span class="task-date">Due: {{ user_task.date_time|date:"M d, Y" }}</span>
+                        <span class="task-points-completed">Points: {{ user_task.task.points_given }} 🟢</span>
+                    </div>
                     <div class="task-actions">
-                        <!-- Optionally add actions for completed tasks if needed -->
                         <span class="delete-icon" onclick="deleteTask(this, {{ user_task.task.task_id }})">🗑️</span>
                     </div>
                 </div>
@@ -247,8 +268,21 @@
                 method: "POST",
                 headers: { "X-CSRFToken": getCSRFToken() },
                 body: new URLSearchParams({ task_id: taskId })
-            }).then(response => response.json())
-              .then(data => location.reload());
+            })
+            // this checks if there was an error
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw err; });
+                }
+                return response.json();
+            })
+            .then(data => {
+                location.reload();
+            })
+            // if there was an error, then it will be because of the integrity constraints in the DB
+            .catch(error => {
+                alert(error.message || "You are already completing this task.");
+            });
         }
 
         function submitCustomTask() {
@@ -288,17 +322,18 @@
         }
 
 
-        function deleteTask(element, taskId) {
-            fetch(`/ecolution/tasks/delete/${taskId}/`, {
+        function deleteTask(element, userTaskId) {
+            fetch(`/ecolution/tasks/delete/${userTaskId}/`, {
                 method: 'POST',
                 headers: { 'X-CSRFToken': getCSRFToken() }
             }).then(response => response.json())
             .then(data => {
                 if (data.status === "success") {
-                    element.closest(".task").remove(); // Removes the task from the UI
+                    element.closest(".task").remove();
                 }
             });
         }
+
 
         function showTasks(tab) {
             const currentTasks = document.getElementById("current-tasks");

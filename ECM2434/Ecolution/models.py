@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings  # Best practice for referencing AUTH_USER_MODEL
+from django.utils import timezone
 
 class CustomUser(AbstractUser):  # ✅ Custom User model extending Django's built-in User
     points = models.IntegerField(default=0)  # Keeps your custom points field
@@ -38,10 +39,11 @@ class UserTask(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ✅ Dynamic reference
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     completed = models.BooleanField(default=False)
-    date_time = models.DateTimeField(auto_now_add=True)
+    date_time = models.DateTimeField(default=timezone.now)
+    due_date = models.DateField(default=timezone.now)
 
     class Meta:
-        unique_together = ('user', 'task', 'date_time')
+        unique_together = ('user', 'task', 'due_date')
 
     def __str__(self):
         return f'{self.user.username} - {self.task.task_name}'
