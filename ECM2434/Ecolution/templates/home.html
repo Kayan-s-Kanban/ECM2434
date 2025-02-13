@@ -15,14 +15,17 @@
 <body class="background">
     <header class="flex_h margin_std">
         <section class="button_settings">
+            <!-- Settings Button -->
             <button class="button_img flex_v flex_center box_shadow" type="button" onclick="toggleMenu()">
-                <img src="/static/images/icon_button.png" alt="Settings">
+              <img src="/static/images/icon_button.png" alt="Settings">
             </button>
-            <!--<div class="settings_menu" id="settingsMenu">
-                <a href="{% url 'home' %}">Home</a> 
-                <a href="{% url 'tasks' %}">Tasks</a>
+
+            <!-- Settings Menu -->
+            <div class="settings_menu" id="settingsMenu">
+               <a href="{% url 'home' %}">Home</a>
+               <a href="{% url 'tasks' %}">Tasks</a>
                 <a href="{% url 'settings' %}">Settings</a>
-            </div>-->
+            </div>
         </section>
         <section class="currency_indicator">
             <div class="flex_h flex_h_fill flex_center">
