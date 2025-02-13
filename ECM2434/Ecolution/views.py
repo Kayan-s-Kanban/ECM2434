@@ -100,7 +100,7 @@ def delete_task(request, user_task_id):
     return JsonResponse({"status": "error"}, status=400)
 
 
-@login_required
+@login_required(redirect_field_name='login')
 def complete_task(request, task_id):
     """Marks a UserTask as completed."""
     if request.method == "POST":

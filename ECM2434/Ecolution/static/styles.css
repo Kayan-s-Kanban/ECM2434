@@ -215,13 +215,10 @@ section.pet>.container h3 {
 section.status_bar .xp_bar {
     background-color: var(--color_light);
     border: 3px solid var(--color_light);
-    /* height: 2px; */
     border-radius: 1rem;
 }
 
 section.status_bar .xp_bar_progress {
-    /* height: 0px; */
-    width: 50px;
     border: 3px solid var(--color_primary);
     border-radius: 1rem;
 }
@@ -276,7 +273,52 @@ section.current_tasks>.heading button {
     font-size: small;
 }
 
+/* Ensure the parent container has relative positioning so we can position elements inside it */
+.button_settings {
+    position: relative; /* This allows absolute positioning of the dropdown inside it */
+}
 
+/* General Settings Button and Menu Styling */
+.settings_menu {
+    display: none; /* Initially hidden */
+    position: absolute;
+    top: 55px; /* Align it to the bottom of the button */
+    left: 0; /* Align it to the right of the button */
+    background-color: var(--color_light);
+    border-radius: 0.8em;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    padding: 1rem;
+    width: 200px; /* Set a reasonable width for the dropdown */
+    box-sizing: border-box;
+}
+
+.settings_menu a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: var(--color_dark);
+    font-size: 1rem;
+    border-radius: 0.5em;
+    margin: 5px 0;
+    transition: background-color 0.2s ease;
+}
+
+.settings_menu a:hover {
+    background-color: var(--color_secondary);
+    color: var(--color_light);
+}
+
+/* Button Styling */
+button.button_img {
+    background-color: var(--color_primary);
+    border: none;
+    width: 3rem;
+    aspect-ratio: 1;
+    border-radius: 2em;
+    position: relative; /* Ensures dropdown positions relative to this button */
+    z-index: 1000;
+}
 
 
 
