@@ -287,6 +287,7 @@ class TasksTestCase(TestCase):
     ## As a user, I can delete my account
     ## As a user, I can change my name
     ## As a user, I can change my pet's name
+    ## As a user, I can reset my points (?)
 
 # class HomepageTestCase(TestCase):
     ## As a user, I can view my pet
@@ -298,8 +299,7 @@ class TasksTestCase(TestCase):
     ## As a user, I can see my points increase after completing a task
     ## As a user, I can see my points decrease after removing a completed task
 
-class AdminTestCase(TestCase):
-    def setUp(self):
+# class AdminTestCase(TestCase):
     ## As an admin, I can log into admin page
     ## As an admin, I can add content
     ## As an admin, I can remove content
@@ -310,3 +310,11 @@ class AdminTestCase(TestCase):
 # class MapTestCase(TestCase):
     ## As a user, I can view the map
     ## As a user, I can interact with the map
+
+# class EventsTestCase(TestCase):
+    ## As a user, I can search for events
+    ## As a user, I can view event details
+    ## As a user, I can add events to my list
+    ## As a user, I can view events on the map
+    ## As a user, I can complete events
+    ## As a user, I can remove events from my list
