@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
 from django.db import IntegrityError
-from .models import Task, UserTask, CustomUser  
+from .models import Task, UserTask, CustomUser, Pet, UserEvent  
 
 # Create your views here.
 def index(request):
@@ -52,9 +52,25 @@ def login_view(request):
 
 @login_required
 def home_view(request):
-    user_points = request.user.points  # Fetch points from CustomUser model
-    return render(request, "home.html", {"points": user_points})
+    user = request.user  # Get the logged-in user
 
+    # Fetch the user's pet (assuming one pet per user)
+    pet = Pet.objects.filter(user=user).first()  
+
+    # Fetch the user's points
+    points = user.points
+
+    # Get pet details (default values if no pet exists)
+    pet_exp = pet.pet_exp if pet else 0
+    pet_name = pet.pet_name if pet else "No Pet"
+
+    context = {
+        "points": points,
+        "pet_exp": pet_exp,
+        "pet_name": pet_name
+    }
+
+    return render(request, "home.html", context)
 
 @login_required
 def tasks_view(request):
@@ -116,3 +132,27 @@ def events_view(request):
 
 def settings_view(request):
     return render(request, "settings.html")
+
+@login_required
+def delete_account(request):
+    user = request.user  # Get the logged-in user
+
+    if request.method == "POST":
+        # Delete all related data
+        UserTask.objects.filter(user=user).delete()
+        UserEvent.objects.filter(user=user).delete()
+        Pet.objects.filter(user=user).delete()
+
+        # Delete user account
+        user.delete()
+
+        # Log the user out
+        logout(request)
+
+        # Show a success message
+        messages.success(request, "Your account has been deleted successfully.")
+        
+        # Redirect to the homepage or login page
+        return redirect("home")  # Change "home" to your homepage URL name
+
+    return render(request, "delete_account.html")

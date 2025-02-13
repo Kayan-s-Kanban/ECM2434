@@ -15,7 +15,7 @@
 <body class="background">
     <header class="flex_h margin_std">
         <section class="button_settings">
-            <button class="button_img flex_v flex_center box_shadow" type="button" onclick="toggleMenu()">
+            <button class="button_img flex_v flex_center box_shadow" type="button" onclick="toggleUseMenu()">
                 <img src="/static/images/icon_button.png" alt="Settings">
             </button>
             <section class="settings_menu" id="settingsMenu">
@@ -37,24 +37,19 @@
                 <div class="image_wrapper">
                     <img src="{% static 'images/pets/mushroom/mushroom_large.gif' %}" alt="Pet Image">
                 </div>
-                <!-- <h3 class="text_light">Pet Name</h3> -->
+                <h3 class="text_light">{{ pet_name }}</h3>
             </div>
         </section>
 
-        <!-- <div class="xp-bar-container"> -->
-            <!-- <div class="xp-bar" style="width: {{ experience }}%;"></div> -->
-            <!--needs to have the db migrated idk how and i cba to do it tbh-->
-        <!-- </div> -->
-        <!-- <p>{{ experience }} XP</p> -->
         <section class="spacer_big"></section>
         <section class="status_bar flex_h flex_center text_light">
             <div class="pet_status flex_v margin_sml flex_v_fill">
                 <p>Pet Name: Acorn</p>
                 <div class="xp_bar box_shadow">
-                    <div class="xp_bar_progress" style="width: 50%"></div>
+                    <div class="xp_bar_progress" style="width: {{ pet_exp }}%;"></div>
                 </div>
                 <div class="flex_h">
-                    <p class="xp_bar_label" id="xp_bar_xp_current">20XP</p>
+                    <p class="xp_bar_label" id="xp_bar_xp_current">{{ pet_exp }}XP</p>
                     <p class="xp_bar_label" id="xp_bar_xp_to_next_level">100XP</p>
                 </div>
             </div>
@@ -104,24 +99,10 @@
                 </div>
             </section>
         </section>
-
-
-        <!-- <div class="task-container">
-            <h2>Current Tasks</h2>
-            <div class="task" onclick="location.href='task1.html'">
-                Example Task 1 <span class="delete-icon">🗑️</span>
-            </div>
-            <div class="task" onclick="location.href='task2.html'">
-                Example Task 2 <span class="delete-icon">🗑️</span>
-            </div>
-            <div class="task" onclick="location.href='task3.html'">
-                Example Task 3 <span class="delete-icon">🗑️</span>
-            </div>
-        </div> -->
     </main>
 
     <script>
-        function toggleMenu() {
+        function toggleUseMenu() {
             var menu = document.getElementById("settingsMenu");
             menu.style.display = menu.style.display === "block" ? "none" : "block";
         }
