@@ -144,7 +144,7 @@
                         <p class="task-description">{{ user_task.task.description }}</p>
                     </div>
                     <div class="task-info">
-                        <span class="task-date">Due: {{ user_task.date|date:"M d, Y" }}</span>
+                        <span class="task-date">{{ user_task.date|date:"M d, Y" }}</span>
                         <span class="task-points">Points: {{ user_task.task.points_given }} ⚪</span>
                     </div>
                     <div class="task-actions">
@@ -169,11 +169,11 @@
                         <p class="task-description">{{ user_task.task.description }}</p>
                     </div>
                     <div class="task-info">
-                        <span class="task-date">Due: {{ user_task.date|date:"M d, Y" }}</span>
+                        <span class="task-date">{{ user_task.date|date:"M d, Y" }}</span>
                         <span class="task-points-completed">Points: {{ user_task.task.points_given }} 🟢</span>
                     </div>
                     <div class="task-actions">
-                        <span class="delete-icon" onclick="deleteTask(this, {{ user_task.task.task_id }})">🗑️</span>
+                        <span class="delete-icon" onclick="deleteTask(this, {{ user_task.id }})">🗑️</span
                     </div>
                 </div>
                 {% endif %}
@@ -273,19 +273,23 @@
             fetch(`/ecolution/tasks/complete/${taskId}/`, {
                 method: 'POST',
                 headers: { 'X-CSRFToken': getCSRFToken() }
-            }).then(response => response.json())
+            })
+            .then(response => response.json())
             .then(data => {
                 if (data.status === "success") {
-                    // Get the task element
                     const taskElement = element.closest(".task");
 
-                    // Remove the complete icon
                     const completeIcon = taskElement.querySelector(".complete-icon");
                     if (completeIcon) {
                         completeIcon.remove();
                     }
 
-                    // Append the task element to the "completed-tasks"
+                    let pointsSpan = taskElement.querySelector(".task-points");
+                    if (pointsSpan) {
+                        pointsSpan.className = "task-points-completed";
+                        pointsSpan.innerHTML = pointsSpan.innerHTML.replace("⚪", "🟢");
+                    }
+
                     const completedTasksContainer = document.getElementById("completed-tasks");
                     completedTasksContainer.appendChild(taskElement);
                 }
