@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    <title>Delete Account - Ecolution</title>
+{% endblock %}
+
+<!-- Style Content Here (Should be integrated into styles.css eventually) -->
+{% block style %}
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; text-align: center; }
+        .container { max-width: 400px; margin: 50px auto; background: white; padding: 20px; border-radius: 10px; }
+        .warning { color: red; font-weight: bold; }
+        button { padding: 10px; margin: 10px; border: none; cursor: pointer; }
+        .delete { background: red; color: white; }
+        .cancel { background: gray; color: white; }
+    </style>
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+        <h2 class="warning">⚠️ Warning: This action is irreversible!</h2>
+        <p>Are you sure you want to delete your account? All your data will be lost.</p>
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="delete">Yes, Delete My Account</button>
+            <a href="{% url 'settings' %}" class="cancel">Cancel</a>
+        </form>
+    </div>
+{% endblock %}
+

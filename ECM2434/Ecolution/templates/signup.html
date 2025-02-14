@@ -1,71 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
     <title>Sign Up - Ecolution</title>
-    <style>
-        body {
-            background: url('/static/images/background.jpg') no-repeat center center fixed;
-            background-size: cover;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+{% endblock %}
 
-        .signup-container {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            width: 320px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
+<!-- Overrides header block so there isn't a navbar on this page -->
+{% block header %}
+{% endblock %}
 
-        .signup-container h2 {
-            margin-bottom: 20px;
-        }
-
-        .signup-container input {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .signup-container button {
-            width: 100%;
-            padding: 10px;
-            background: blue;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .signup-container button:hover {
-            background: darkblue;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="signup-container">
-        <h2>Create an Account</h2>
-        <form method="POST">
+{% block main %}
+    <section class="spacer_big"></section>
+    <section class="signup card flex_v flex_center box_shadow ">
+        <h2 class="text_dark margin_std_bot">Create an Account</h2>
+        <form class="flex_v flex_v_fill" method="POST">
             {% csrf_token %}
             <input type="email" name="email" placeholder="Email" required>
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password1" placeholder="Password" required>
             <input type="password" name="password2" placeholder="Confirm Password" required>
-            <button type="submit">Sign Up</button>
+            <button class="button box_shadow" type="submit">Sign Up</button>
         </form>
-        <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
-    </div>
+        <p class="text_dark font_small margin_std_top">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+    </section>
     {% if messages %}
     <ul class="error-messages">
         {% for message in messages %}
@@ -73,6 +30,4 @@
         {% endfor %}
     </ul>
     {% endif %}
-
-</body>
-</html>
+{% endblock %}
