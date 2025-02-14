@@ -3,8 +3,89 @@
 
 {% block title %}
     <title>Events - Ecolution</title>
+    <style>
+
+        .event_details {
+            display: none;
+            position: fixed;
+            background-color: pink;
+        }
+
+        .event_details .show{
+            display: block;
+        }
+
+        .event {
+            background-color: white;
+            margin: 5px;
+        }
+
+        .exit_button {
+            background-color: white;
+            text-align: right;
+            width: auto;
+        }
+
+    </style>
 {% endblock %}
 
 {% block main %}
     <!-- Main Content -->
+
+    <body>
+        <h1>My Events</h1>
+        <div>
+            {% if user_events %}
+                {% for user_event in user_events%}
+                    <div class="event" onclick="openEvent()">
+                        <h2>{{user_event.event.event_name}}</h2>
+                        <p>{{user_event.event.description}}</p>
+                    </div>
+
+                    <div class="event_details" id="event_details">
+                        <p class="exit_button"; onclick="closeEvent()">x</p>
+                        <h1>{{user_event.event.event_name}}</h1>
+                        <p>{{user_event.event.description}}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>There are no current events ongoing</p>
+            {% endif %}
+        </div>
+
+        <h1>Join Events</h1>
+        <div>
+            {% if events %}
+                {% for event in events%}
+                    <div class="event" onclick="openEvent()">
+                        <h2>{{event.event_name}}</h2>
+                        <p>{{event.description}}</p>
+                    </div>
+
+                    <div class="event_details" id="event_details">
+                        <p class="exit_button"; onclick="closeEvent()">x</p>
+                        <h1>{{event.event_name}}</h1>
+                        <p>{{event.description}}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>You have already joined all ongoing events</p>
+            {% endif %}
+        </div>
+    
+    </body>
+    
+    
+    <script>
+    
+        function openEvent() {
+            document.getElementById("event_details").style.display = "block";
+        }
+
+        function closeEvent() {
+            document.getElementById("event_details").style.display = "none";
+        }
+    
+    </script>
 {% endblock %}
+
