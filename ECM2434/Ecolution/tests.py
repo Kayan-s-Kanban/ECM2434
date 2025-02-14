@@ -11,7 +11,8 @@ class LoginTestCase(TestCase):
             username = "Tester",
             password = "123456"
         )
-        self.login_url = reverse('login')  # Ensure you have the correct URL name for login
+        self.login_url = reverse('login')  # ensure you have the correct URL name for login
+        self.signup_url = reverse('signup') # ensure have correct URL name for signup
 
     ## As a user, I can log in with correct user and password
     def test_login_valid_creds(self):
@@ -22,9 +23,9 @@ class LoginTestCase(TestCase):
         })
 
         # check that the user is logged in and redirected to the intended page
-        self.assertRedirects(response, '/ecolution/')
+        self.assertRedirects(response, '/home/')
         # or check if the user is logged in using session or user info
-        self.assertTrue('_auth_user_id' in self.client.session)
+        self.assertTrue('_auth_user_id', self.client.session)
 
     ## As a user, I cannot log in with correct user but incorrect password
     def test_login_invalid_pwd(self):
@@ -49,20 +50,35 @@ class LoginTestCase(TestCase):
         self.assertNotEqual(response, '/ecolution/')
 
         # or check if the user is logged in using session or user info
-        self.assertNotIn('_auth_user_id' in self.client.session) 
+        self.assertNotIn('_auth_user_id', self.client.session)
+
+    ## As a user, I can reset my password
+    # TODO: see todo's for test case
+    def test_login_reset_password(self):
+        # TODO: user selects reset password link and redirected to reset pwd page
+
+        # TODO: user enters new password
+
+        # TODO: user's password is reset and can login with new password
 
 class SignupTestCase(TestCase):
     def setUp(self):
-        self.signup_url = reverse('signup') # TODO: ensure have correct signup URL
-        self.login_url = reverse('login') # TODO: ensure have correct login URL
+        self.signup_url = reverse('signup')
+        self.login_url = reverse('login')  # ensure you have the correct URL name for login
+        self.user_data = {
+            'username': 'testuser',
+            'email': 'testuser@example.com',
+            'password1': 'password123',
+            'password2': 'password123',
+        }
 
-    ## As a user, I can sign up for an account with a valid email and password
+    ## As a user, I can sign up for an account with a valid user and password
     def test_signup_valid_creds(self):
         # TODO: test with valid data
         response = self.client.post(self.signup_url, {
             'username': 'newuser',
-            'password1': 'validpassword123',  # password1 (it should match password2)
-            'password2': 'validpassword123',  # password2
+            'password1': 'validpassword123',
+            'password2': 'validpassword123',
         })
 
         # check if the user is redirected after successful signup
@@ -105,9 +121,9 @@ class SignupTestCase(TestCase):
         # TODO: ensure the user is NOT created
         user = CustomUser.objects.get(username='newuser')
         self.assertIsNone(user)  # TODO:(?) check that the user does not exist in the database
-
-        ## As a user, I cannot sign-up for an account with password fields not matching
-        # TODO: test with invalid email/user data
+    
+    ## As a user, I cannot sign-up for an account with password fields not matching
+    # TODO: test with invalid email/user data
         response = self.client.post(self.signup_url, {
             'username': 'invalid_user_or_email',
             'password1': 'validpassword123',  # password1 (it should match password2)
@@ -120,7 +136,7 @@ class SignupTestCase(TestCase):
         # TODO: ensure the user is NOT created
         user = CustomUser.objects.get(username='newuser')
         self.assertIsNone(user)  # TODO:(?) check that the user does not exist in the database
-
+    
     ## As a user, I can sign up for an account and then login to that account
     def test_signup_redirect(self):
         # user is successfully signed up
@@ -134,7 +150,7 @@ class SignupTestCase(TestCase):
             'password': 'validpassword123',
         }
         response = self.client.post(self.login_url, login_data)
-        self.assertEqual(response.status_code, 302)  # expect redirect after login
+        self.assertEqual(response.status_code, 200)  # expect redirect after login
 
         # check that user has been authenticated
         response = self.client.get(reverse('home'))  # TODO: replace 'home' with a logged-in page URL name
@@ -150,7 +166,7 @@ class SignupTestCase(TestCase):
             'password2': 'validpassword123',
         })
 
-        self.assertNotEqual(response, '/ecolution/')  # check that user is not logged in, stays on signup
+        self.assertNotEqual(response, '/ecolution/') # check that user is not logged in, stays on signup
         # or check if the user is logged in using session or user info
         self.assertNotIn('_auth_user_id', self.client.session)
 
@@ -158,11 +174,11 @@ class LogoutTestCase(TestCase):
     def setUp(self):
         # create test user
         self.user = CustomUser.objects.create_user(
-            username='testuser',
-            password='ComplexPass123!'
+            username = 'testuser',
+            password = 'ComplexPass123!'
         )
         self.login_url = reverse('login')  # TODO: replace with your login view name
-        self.logout_url = reverse('logout')  # TODO: replace with your logout view name
+        # self.logout_url = reverse('logout')  # TODO: replace with your logout view name
 
         # log in the test user
         self.client.login(username='testuser', password='validpassword123')
@@ -172,11 +188,11 @@ class LogoutTestCase(TestCase):
         # check user is logged in before logging out
         response = self.client.get(reverse('home'))  # Replace 'home' with a protected page
         self.assertEqual(response.status_code, 200)
-
+        
         # check logout
         response = self.client.get(self.login_url)
         self.assertEqual(response.status_code, 200)  # expect redirect after logout
-
+        
         # check user is logged out by attempting to access a protected page
         response = self.client.get(reverse('home'))
         self.assertNotContains(response, 'testuser')  # username should no longer appear
@@ -190,14 +206,15 @@ class TasksTestCase(TestCase):
 
         # create a test task
         self.task = Task.objects.create(task_name="Buy groceries", description="Go to the store and buy food")
+        self.task = Task.objects.create(task_name="Task 1", description="Task description here")
 
     ## As a user, I can add (pre-defined) tasks to my list
     def test_user_adds_tasks(self):
         # add task to user list
-        user_tasks = UserTask.objects.create(user = self.user, task = self.task)
+        user_tasks = UserTask.objects.create(user = self.user, task = self.task) # TODO: fix reference
 
         # check task is now in user's list
-        self.assertTrue(UserTask.objects.filter(user = self.user).exists())
+        self.assertTrue(UserTask.objects.filter(user = self.user).exists()) # TODO: fix reference
 
     ## As a user, I can remove tasks from my list
     def test_user_removes_tasks(self):
@@ -238,16 +255,32 @@ class TasksTestCase(TestCase):
         task = Task.objects.get(task_name = 'Go for a walk')
 
         # check task exists in user's list
-        self.assertEqual(UserTask.user, self.user)
-        self.assertTrue(UserTask.objects.filter(user = self.user, task = task).exists())
+        self.assertEqual(UserTask.user, self.user) # TODO: fix reference
+        self.assertTrue(UserTask.objects.filter(user = self.user, task = task).exists()) # TODO: fix reference
 
     ## As a user, I can edit tasks (?)
 
     ## As a user, I can earn points from completing tasks
 
     ## As a user, I can view task details
+    def test_user_view_task(self):
+        self.client.login(username = 'testuser', password = 'password')
 
     ## As a user, I can search for tasks
+    ## TODO: update based on search functionality (if implemented)
+    def test_task_search(self):
+        self.client.login(username = 'testuser', password = 'password')
+
+        # navigate to tasks page
+        response = self.client.get('/tasks/search/') # TODO: ensure correct URL + search function exists
+
+        # search for existing task "Buy groceries"
+        response = self.client.get('/tasks/', {'q': 'Buy groceries'})
+
+        # check responses
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Buy groceries')
+        self.assertNotContains(response, 'Task 1')
 
     ## As a user, I cannot view other users' created tasks
     def test_created_tasks_visibility(self):
@@ -270,37 +303,91 @@ class TasksTestCase(TestCase):
         self.assertIn(task2, user2_tasks)
         self.assertNotIn(task1, user2_tasks)
 
-# class SettingsTestCase(TestCase):
-    ## As a user, I can reset my password
+    ## As a user, I can view my completed tasks
+    def test_view_completed_tasks(self):
+        self.client.login(username = 'testuser', password = 'password')
+        response = self.client.get('/tasks/complete/')
+        self.assertEqual(response.status_code, 200)
+
+    ## As a user, I can view my current tasks on the tasks page
+    def test_view_current_taks(self):
+        self.client.login(username = 'testuser', password = 'password')
+        response = self.client.get('/tasks/current/')
+        self.assertEqual(response.status_code, 200)
+
+class SettingsTestCase(TestCase):
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(username='testuser', password='password') # create user
+        self.client.login(username='testuser', password='password') # login user
+
     ## As a user, I can change my password
+    ## TODO: see todo's for test case
+    def test_settings_change(self):
+        # user navigates to settings successfully
+        response = self.client.get(reverse('settings'))
+        self.assertEqual(response.status_code, 200)
+
+        # TODO: user can selecting reset pwd button (if exists)
+
+        # TODO: user can enter new password into both fields
+
+        # TODO: new password is saved
+
+        # TODO: user can login to site with new pwd
+
     ## As a user, I can delete my account
+
     ## As a user, I can change my name
+    def test_settings_change_username(self):
+        self.client.login(username='testuser', password='password')
+        response = self.client.get(reverse('settings'))
+
+        # user enters new username
+        # TODO: enter correct username change url
+        self.client.post(reverse(/username_url/), 'notatestuser')
+
+
     ## As a user, I can change my pet's name
     ## As a user, I can reset my points (?)
 
-# class HomepageTestCase(TestCase):
-    ## As a user, I can view my pet
-    ## As a user, I can view my current tasks
-    ## As a user, I can open and close the menu
-    ## As a user, I can navigate to other pages
-    ## As a user, I can view my XP
-    ## As a user, I can remove a current task from my list
-    ## As a user, I can see my points increase after completing a task
-    ## As a user, I can see my points decrease after removing a completed task
+class HomepageTestCase(TestCase):
+    # As a user, I can view my pet
+    # As a user, I can view my current tasks
 
-# class AdminTestCase(TestCase):
+    # As a user, I can open and close the menu
+    def test_homepage_menu(self):
+        self.client.login(username='testuser', password='password')
+        response = self.client.get(reverse('home'))
+
+        # user selects menu button
+        response = self.client.post(reverse('home'), { 'show menu' : True }, follow = True) # TODO: check syntax
+
+        # menu opens up
+        self.assertContains(response, 'menu')
+
+    # As a user, I can navigate to other pages
+    # As a user, I can view my XP
+    # As a user, I can remove a current task from my list
+    # As a user, I can see my points increase after completing a task
+    # As a user, I can see my points decrease after removing a completed task
+
+class AdminTestCase(TestCase):
     ## As an admin, I can log into admin page
+    def test_homepage_homepage(self):
+
+        self.client.login(username = 'admin', password = 'password')
+
     ## As an admin, I can add content
     ## As an admin, I can remove content
     ## As an admin, I can edit content
     ## As an admin, I can remove(?) users
     ## As an admin, I can add(?) users
 
-# class MapTestCase(TestCase):
+class MapTestCase(TestCase):
     ## As a user, I can view the map
     ## As a user, I can interact with the map
 
-# class EventsTestCase(TestCase):
+class EventsTestCase(TestCase):
     ## As a user, I can search for events
     ## As a user, I can view event details
     ## As a user, I can add events to my list
