@@ -94,3 +94,4 @@ class TaskIntegrationTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
     ## As a user, I can earn points from completing tasks
+    def test_task_earn_points(self):

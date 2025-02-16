@@ -9,7 +9,7 @@ class SettingsTestCase(TestCase):
 
     ## As a user, I can change my password
     ## TODO: see todo's for test case
-    def test_settings_change(self):
+    def test_settings_change_pwd(self):
         # user navigates to settings successfully
         response = self.client.get(reverse('settings'))
         self.assertEqual(response.status_code, 200)
