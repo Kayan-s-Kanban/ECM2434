@@ -9,16 +9,22 @@
     <section class="pet">
         <div class="flex_v flex_center">
             <div class="image_wrapper">
-                <img src="{% static 'images/pets/mushroom/mushroom_large.gif' %}" alt="Pet Image">
+                {% if pet %}
+                    <img src="{% static 'images/pets/' %}{{ pet.pet_type|lower }}/{{ pet.size }}.gif" 
+                         alt="{{ pet.pet_name }}">
+                {% else %}
+                    <img src="{% static 'images/pets/mushroom/mushroom_large.gif' %}" alt="Default Pet">
+                {% endif %}
             </div>
-            <h3 class="text_light">{{ pet_name }}</h3>
+            <h3 class="text_light">{{ pet.pet_name|default:"No Pet" }}</h3>
+            <p>Level: {{ pet.level }}</p>
         </div>
     </section>
 
     <section class="spacer_big"></section>
     <section class="status_bar flex_h flex_center text_light">
         <div class="pet_status flex_v margin_sml flex_v_fill">
-            <p>Pet Name: Acorn</p>
+            <p>Pet Name: {{ pet_name }}</p>
             <div class="xp_bar box_shadow">
                 <div class="xp_bar_progress" style="width: {{ pet_exp }}%;"></div>
             </div>
