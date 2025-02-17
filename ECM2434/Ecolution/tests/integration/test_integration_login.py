@@ -51,7 +51,7 @@ class LoginIntegrationTests(TestCase):
 
     ## As a user, I can reset my password
     # TODO: see todo's for test case
-    # def test_login_reset_password(self):
+    # def test_login_reset_pwd(self):
     # TODO: user selects reset password link and redirected to reset pwd page
 
     # TODO: user enters new password

@@ -19,6 +19,6 @@ class EventsTestCase(TestCase):
     ## As a user, I can search for events
     ## As a user, I can view event details
     ## As a user, I can add events to my list
+    ## As a user, I can remove events from my list
     ## As a user, I can view events on the map
     ## As a user, I can complete events
-    ## As a user, I can remove events from my list

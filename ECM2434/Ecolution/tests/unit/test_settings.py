@@ -7,7 +7,7 @@ from Ecolution.models import Task
 class SettingsTestCase(TestCase):
     def setUp(self):
         self.user = CustomUser.objects.create_user(username = 'testuser', password = 'password') # create user
-        self.client.login(username = 'testuser', password='password') # login user
+        self.client.login(username = 'testuser', password = 'password') # login user
 
     ## As a user, I can change my username
     def test_settings_change_username(self):
@@ -27,3 +27,8 @@ class SettingsTestCase(TestCase):
 
 
     ## As a user, I can reset my points (?)
+    def test_settings_reset_points(self):
+        self.client.login(username = 'testuser', password = 'password')
+        response = self.client.get(reverse('settings'))
+
+        # TODO: user selects "reset points" button (?)

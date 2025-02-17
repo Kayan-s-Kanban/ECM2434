@@ -6,12 +6,12 @@ from Ecolution.models import Task
 class TasksUnitTests(TestCase):
     def setUp(self):
         # create a test user
-        self.user1 = CustomUser.objects.create_user(username='testuser', password='password')
-        self.client.login(username='testuser', password='password')
-
+        self.user1 = CustomUser.objects.create_user(username = 'testuser', password = 'password')
+        self.client.login(username = 'testuser', password = 'password')
+a
         # create a test task
-        self.task1 = Task.objects.create(task_name="Buy groceries", description="Go to the store and buy food")
-        self.task2 = Task.objects.create(task_name="Task 2", description="Task description here")
+        self.task1 = Task.objects.create(task_name = "Buy groceries", description = "Go to the store and buy food")
+        self.task2 = Task.objects.create(task_name = "Task 2", description = "Task description here")
 
     ## As a user, I can add (pre-defined) tasks to my list
     def test_user_adds_tasks(self):

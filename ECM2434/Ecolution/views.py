@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
 from django.db import IntegrityError
-from .models import Task, UserTask, CustomUser, Pet, UserEvent  
+from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent  
 
 # Create your views here.
 def index(request):
@@ -128,7 +128,10 @@ def complete_task(request, task_id):
     return JsonResponse({"status": "error"}, status=400)
 
 def events_view(request):
-    return render(request, "events.html")
+    user_events = UserEvent.objects.filter(user=request.user)
+    all_events = Event.objects.exclude(event_id__in=user_events)
+    context = {"user_events": user_events, "events": all_events}
+    return render(request, "events.html", context)
 
 def settings_view(request):
     return render(request, "settings.html")
