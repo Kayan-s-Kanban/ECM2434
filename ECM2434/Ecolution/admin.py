@@ -16,10 +16,21 @@ class CustomUserAdmin(UserAdmin):
         ('Custom Fields', {'fields': ('points',)}),
     )
 
+@admin.register(Task)
+class TaskAdmin(admin.ModelAdmin):
+    # Show these fields in the list view (optional)
+    list_display = ('task_name', 'creator', 'points_given', 'xp_given')
+    
+    # Show these fields in the edit form (and in this order)
+    fields = ('task_name', 'creator', 'points_given', 'xp_given')
+    
+    # If you want a search box or filtering:
+    search_fields = ('task_name',)
+    list_filter = ('creator',)
+
 
 # Register your models here.
 admin.site.register(Pet)
-admin.site.register(Task)
 admin.site.register(UserTask)
 admin.site.register(Event)
 admin.site.register(UserEvent)
