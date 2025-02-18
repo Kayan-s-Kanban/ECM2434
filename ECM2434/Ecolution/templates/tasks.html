@@ -55,27 +55,36 @@
         }
 
         .task-header {
+            margin-bottom: 8px;
+        }
+
+        .task-title {
+            display: block;
             font-weight: bold;
+            font-size: 16px;
+        }
+
+        .task-points-small {
+            display: block;
+            font-size: 12px;
+            color: #555;
+            margin-top: 2px;
         }
 
         .task-description {
+            margin-bottom: 8px;
             font-size: 14px;
-            color: gray;
         }
 
         .task-actions {
             display: flex;
             align-items: center;
-        }
-
-        .task {
-            position: relative;
+            justify-content: space-between;
+            margin-top: 5px;
         }
 
         .task-date {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
+            margin-right: 10px;
             font-size: 12px;
             color: gray;
         }
@@ -139,21 +148,19 @@
             {% for user_task in user_tasks %}
                 {% if not user_task.completed %}
                 <div class="task">
-                    <div>
-                        <span class="task-header">{{ user_task.task.task_name }}</span>
-                        <p class="task-description">{{ user_task.task.description }}</p>
-                    </div>
-                    <div class="task-info">
-                        <span class="task-date">{{ user_task.date|date:"M d, Y" }}</span>
-                        <span class="task-points">Points: {{ user_task.task.points_given }} ⚪</span>
+                    <div class="task-header">
+                        <span class="task-title">{{ user_task.task.task_name }}</span>
+                        <span class="task-points-small">Points: {{ user_task.task.points_given }} ⚪</span>
                     </div>
                     <div class="task-actions">
+                        <span class="task-date">{{ user_task.date|date:"M d, Y" }}</span>
                         {% if not user_task.completed %}
                             <span class="complete-icon" onclick="completeTask(this, {{ user_task.task.task_id }})">✔️</span>
                         {% endif %}
                         <span class="delete-icon" onclick="deleteTask(this, {{ user_task.id }})">🗑️</span>
                     </div>
                 </div>
+                
                 {% endif %}
             {% empty %}
                 <p>No current tasks available.</p>
@@ -164,16 +171,13 @@
             {% for user_task in user_tasks %}
                 {% if user_task.completed %}
                 <div class="task">
-                    <div>
-                        <span class="task-header">{{ user_task.task.task_name }}</span>
-                        <p class="task-description">{{ user_task.task.description }}</p>
-                    </div>
-                    <div class="task-info">
-                        <span class="task-date">{{ user_task.date|date:"M d, Y" }}</span>
-                        <span class="task-points-completed">Points: {{ user_task.task.points_given }} 🟢</span>
+                    <div class="task-header">
+                        <span class="task-title">{{ user_task.task.task_name }}</span>
+                        <span class="task-points-small">Points: {{ user_task.task.points_given }} 🟢</span>
                     </div>
                     <div class="task-actions">
-                        <span class="delete-icon" onclick="deleteTask(this, {{ user_task.id }})">🗑️</span
+                        <span class="task-date">{{ user_task.date|date:"M d, Y" }}</span>
+                        <span class="delete-icon" onclick="deleteTask(this, {{ user_task.id }})">🗑️</span>
                     </div>
                 </div>
                 {% endif %}
@@ -291,24 +295,21 @@
             .then(data => {
                 if (data.status === "success") {
                     const taskElement = element.closest(".task");
-
                     const completeIcon = taskElement.querySelector(".complete-icon");
                     if (completeIcon) {
                         completeIcon.remove();
                     }
-
-                    let pointsSpan = taskElement.querySelector(".task-points");
+                    let pointsSpan = taskElement.querySelector(".task-points-small");
                     if (pointsSpan) {
-                        pointsSpan.className = "task-points-completed";
                         pointsSpan.innerHTML = pointsSpan.innerHTML.replace("⚪", "🟢");
                     }
-
                     const completedTasksContainer = document.getElementById("completed-tasks");
                     completedTasksContainer.appendChild(taskElement);
                 }
             })
             .catch(error => console.error('Error completing task:', error));
         }
+
 
 
         function deleteTask(element, userTaskId) {

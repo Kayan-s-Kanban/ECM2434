@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from django.db import IntegrityError
 from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent  
 
@@ -74,6 +74,9 @@ def home_view(request):
 
 @login_required
 def tasks_view(request):
+    """
+    Gets all of the tasks for a specific user and renders the task page
+    """
     user_tasks = UserTask.objects.filter(user=request.user)
     # Predefined tasks are those created by a superuser (or another designated admin)
     predefined_tasks = Task.objects.filter(creator__is_superuser=True)
@@ -87,22 +90,25 @@ def tasks_view(request):
 
 @login_required
 def add_task(request):
-    """Handles adding a predefined or custom task"""
+    """
+    Handles adding tasks to the users active task list and creating custom tasks.
+    """
     if request.method == "POST":
         task_id = request.POST.get("task_id")
         task_name = request.POST.get("task_name")
         description = request.POST.get("description")
 
         if task_id:
-            # User selected a predefined task. We ensure that it's one created by an admin.
-            task = get_object_or_404(Task, task_id=task_id, creator__is_superuser=True)
+            # User selected an existing task. Either predefined or custom
+            task = get_user_or_superuser_task(task_id, request.user)
         else:
-            # User is creating a custom task.
+            # User is creating a brand-new custom task.
             if Task.objects.filter(creator=request.user, task_name=task_name).exists():
                 return JsonResponse({
                     "status": "error",
-                    "message": "You have already created a custom task with that title."
+                    "message": "You already created a custom task with that title."
                 }, status=400)
+            # Creates a new task object
             task = Task.objects.create(
                 task_name=task_name,
                 description=description,
@@ -110,11 +116,13 @@ def add_task(request):
             )
 
         try:
+            # Try to create a UserTask object
             UserTask.objects.create(user=request.user, task=task)
+        # This will throw an exception if the user task already exists with the same date
         except IntegrityError:
             return JsonResponse({
                 "status": "error",
-                "message": "You are already completing this task!"
+                "message": "This task already exists!"
             }, status=400)
 
         return JsonResponse({
@@ -125,8 +133,28 @@ def add_task(request):
 
     return JsonResponse({"status": "error"}, status=400)
 
+
+def get_user_or_superuser_task(task_id, user):
+    """
+    Takes a task_id and returns a Task object that is either owned bt the user
+    or by a superuser.
+    """
+    # Try to get a user-created task
+    try:
+        return Task.objects.get(task_id=task_id, creator=user)
+    except Task.DoesNotExist:
+        pass
+
+    # If that fails, try to get a superuser-created task
+    try:
+        return Task.objects.get(task_id=task_id, creator__is_superuser=True)
+    except Task.DoesNotExist:
+        raise Http404("Task not found or not accessible.")
+
+
 @login_required
 def delete_task(request, user_task_id):
+    """Deletes a UserTask"""
     if request.method == "POST":
         user_task = get_object_or_404(UserTask, pk=user_task_id, user=request.user)
         user_task.delete()
