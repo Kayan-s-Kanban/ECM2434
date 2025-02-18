@@ -184,12 +184,12 @@
 
     </div>
 
-    <!-- Task Popup to add predefined tasks -->
+    <!-- Task Popup to add tasks -->
     <div class="popup-bg" id="popupBg"></div>
     <div class="popup" id="popup">
         <h3>Add Task</h3>
 
-        <h4>Select a Task</h4>
+        <h4>Predefined Tasks</h4>
         <ul id="predefined-tasks">
             {% for task in predefined_tasks %}
                 <li>
@@ -201,7 +201,19 @@
                 <p>No predefined tasks available.</p>
             {% endfor %}
         </ul>
-        
+
+        <h4>Your Custom Tasks</h4>
+        <ul id="custom-tasks">
+            {% for task in custom_tasks %}
+                <li>
+                    <button onclick="addTask({{ task.task_id }}, '{{ task.task_name }}', '{{ task.description }}')">
+                        {{ task.task_name }}
+                    </button>
+                </li>
+            {% empty %}
+                <p>You haven't created any custom tasks yet.</p>
+            {% endfor %}
+        </ul>
 
         <button onclick="showCustomTaskForm()">Create Custom Task</button>
 
@@ -213,6 +225,7 @@
 
         <button onclick="closePopup()">Cancel</button>
     </div>
+
 {% endblock %}
 
 {% block additional %}

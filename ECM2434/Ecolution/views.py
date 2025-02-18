@@ -75,9 +75,15 @@ def home_view(request):
 @login_required
 def tasks_view(request):
     user_tasks = UserTask.objects.filter(user=request.user)
-    predefined_tasks = Task.objects.all()
-
-    return render(request, "tasks.html", {"user_tasks": user_tasks, "predefined_tasks": predefined_tasks})
+    # Predefined tasks are those created by a superuser (or another designated admin)
+    predefined_tasks = Task.objects.filter(creator__is_superuser=True)
+    # Custom tasks are those created by the current user
+    custom_tasks = Task.objects.filter(creator=request.user)
+    return render(request, "tasks.html", {
+        "user_tasks": user_tasks,
+        "predefined_tasks": predefined_tasks,
+        "custom_tasks": custom_tasks
+    })
 
 @login_required
 def add_task(request):
@@ -88,31 +94,43 @@ def add_task(request):
         description = request.POST.get("description")
 
         if task_id:
-            # User selected a predefined task
-            task = get_object_or_404(Task, task_id=task_id)
+            # User selected a predefined task. We ensure that it's one created by an admin.
+            task = get_object_or_404(Task, task_id=task_id, creator__is_superuser=True)
         else:
-            # User is creating a custom task
-            task = Task.objects.create(task_name=task_name, description=description)
+            # User is creating a custom task.
+            if Task.objects.filter(creator=request.user, task_name=task_name).exists():
+                return JsonResponse({
+                    "status": "error",
+                    "message": "You have already created a custom task with that title."
+                }, status=400)
+            task = Task.objects.create(
+                task_name=task_name,
+                description=description,
+                creator=request.user
+            )
 
-        # This will try to create a User Task
         try:
             UserTask.objects.create(user=request.user, task=task)
         except IntegrityError:
-            # This is raised when the unique constraint (user, task, due_date) is violated
-            return JsonResponse({"status": "error", "message": "You are already completing this task!"}, status=400)
+            return JsonResponse({
+                "status": "error",
+                "message": "You are already completing this task!"
+            }, status=400)
 
-        return JsonResponse({"status": "success", "task_name": task.task_name, "description": task.description})
+        return JsonResponse({
+            "status": "success",
+            "task_name": task.task_name,
+            "description": task.description
+        })
 
     return JsonResponse({"status": "error"}, status=400)
 
 @login_required
 def delete_task(request, user_task_id):
-    """Deletes a UserTask for the logged-in user."""
     if request.method == "POST":
         user_task = get_object_or_404(UserTask, pk=user_task_id, user=request.user)
         user_task.delete()
         return JsonResponse({'status': 'success'})
-
     return JsonResponse({"status": "error"}, status=400)
 
 
