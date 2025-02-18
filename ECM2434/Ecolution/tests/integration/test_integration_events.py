@@ -1,4 +1,6 @@
 from django.test import TestCase
+from django.urls import reverse
+
 from Ecolution.models import CustomUser
 
 class EventsTestCase(TestCase):
@@ -6,6 +8,10 @@ class EventsTestCase(TestCase):
         # create a test user
         self.user1 = CustomUser.objects.create_user(username = 'testuser', password = 'password')
         self.client.login(username = 'testuser', password = 'password')
+
+        # log user in
+        self.client.login(username='testuser', password='password')
+        response = self.client.get(reverse('home'))
 
     ## As a user, I can view the Events page
     def test_view_events(self):
@@ -22,3 +28,11 @@ class EventsTestCase(TestCase):
     ## As a user, I can remove events from my list
     ## As a user, I can view events on the map
     ## As a user, I can complete events
+
+    ## As a user, I can open and close the menu
+    def test_events_menu(self):
+        # user selects menu button
+        response = self.client.post(reverse('events'), {'show menu': True}, follow=True)  # TODO: check syntax
+
+        # menu opens up
+        self.assertContains(response, 'menu')

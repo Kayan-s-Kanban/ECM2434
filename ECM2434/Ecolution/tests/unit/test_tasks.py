@@ -8,7 +8,7 @@ class TasksUnitTests(TestCase):
         # create a test user
         self.user1 = CustomUser.objects.create_user(username = 'testuser', password = 'password')
         self.client.login(username = 'testuser', password = 'password')
-a
+
         # create a test task
         self.task1 = Task.objects.create(task_name = "Buy groceries", description = "Go to the store and buy food")
         self.task2 = Task.objects.create(task_name = "Task 2", description = "Task description here")
