@@ -17,6 +17,7 @@
     --color_secondary: #65dba9;
     --color_background: var(--color_primary);
     --color_page_background: #8abd8f;
+    --color_page_background_sea: #82b3d8;
     --color_form_background:  rgba(255, 255, 255, 0.95);
     --box_shadow: rgba(0, 0, 0, 0.16) 0px 0px 5px -6px, rgba(0, 0, 0, 0.12) 0px 8px 10px -2px;
     --text_light_shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
@@ -30,7 +31,8 @@
 html {
     font-family: var(--font_family_stack);
     font-size: var(--font_size_rem);
-    background-color: var(--color_page_background);
+    /* background-color: var(--color_page_background); */
+    background-color: var(--color_page_background_sea);
     letter-spacing: var(--letter_spacing);
 }
 
