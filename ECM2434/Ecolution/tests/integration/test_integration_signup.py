@@ -91,5 +91,4 @@ class SignupIntegrationTests(TestCase):
         self.assertNotEqual(response, '/')  # TODO: adjust the redirect URL (e.g., home page or login page)
 
         # ensure the user is NOT created
-        user = CustomUser.objects.get(username = 'newuser')
-        self.assertIsNone(user)  # check that the user does not exist in the database
+        self.assertIsNone(CustomUser.objects.get(username = 'newuser'))  # check that the user does not exist in the database
