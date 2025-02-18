@@ -36,10 +36,18 @@ html {
 
 body {
     margin: 0;
+}
+
+
+section.content_wrapper {
+    margin: 0;
     min-height: 100vh;
-    max-width: 500px;
+    max-width: 512px;
     /* This padding is here to prevent margin collapse */
     padding-top: 0.05px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow-x: clip;
 }
 
 h1, h2, h3, h4, h5 {
@@ -60,14 +68,6 @@ p {
     text-shadow: var(--text_dark_shadow);
 }
 
-/* Media query in case of desktop view */
-@media only screen and (min-width: 600px) {
-    body {
-        max-width: 450px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-}
 
 
 /* [[[ 2.A) Buttons ]]] */
@@ -260,9 +260,8 @@ img.img_leaf {
 
 .background {
     image-rendering: pixelated;
-    background: url('/static/images/background.png') no-repeat center center;
-    background-size: 100vh;
-    background-position: 58% 100%;
+    background: url('/static/images/bg_x6.png');
+    background-position: 50% 2%;
 }
 
 .card {
@@ -291,11 +290,10 @@ section.spacer_big {
 
 /* Section: Pet */
 section.pet img {
-    width: 400px;
-    height: 400px;
+    width: 384px;
     image-rendering: pixelated;
-    margin-left: calc(-100px - 1.2rem);
-    margin-top: -100px;
+    margin-left: calc(-92px - 1.2rem);
+    margin-top: -99px;
 }
 
 section.pet h3 {
