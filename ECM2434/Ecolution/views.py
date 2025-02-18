@@ -51,26 +51,21 @@ def login_view(request):
     return render(request, "login.html")
 
 @login_required
+@login_required
 def home_view(request):
     user = request.user  # Get the logged-in user
-
-    # Fetch the user's pet (assuming one pet per user)
     pet = Pet.objects.filter(user=user).first()  
 
-    # Fetch the user's points
-    points = user.points
-
-    # Get pet details (default values if no pet exists)
-    pet_exp = pet.pet_exp if pet else 0
-    pet_name = pet.pet_name if pet else "No Pet"
-
     context = {
-        "points": points,
-        "pet_exp": pet_exp,
-        "pet_name": pet_name
+        "points": user.points,
+        "pet_exp": pet.pet_exp if pet else 0,
+        "pet_name": pet.pet_name if pet else "No Pet",
+        "pet_type": pet.pet_type.lower() if pet else "default",
+        "pet_size": pet.get_size() if pet else "small",  # Determine size
     }
 
-    return render(request, "home.html", context)
+    return render(request, 'home.html', context)
+
 
 @login_required
 def tasks_view(request):

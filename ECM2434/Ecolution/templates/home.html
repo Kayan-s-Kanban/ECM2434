@@ -10,8 +10,7 @@
         <div class="flex_v flex_center">
             <div class="image_wrapper">
                 {% if pet %}
-                    <img src="{% static 'images/pets/' %}{{ pet.pet_type|lower }}/{{ pet.size }}.gif" 
-                         alt="{{ pet.pet_name }}">
+                <img src="{% static 'images/pets/' %}{{ pet.pet_type|lower }}/{{ pet.pet_type|lower }}_{{ pet.size|lower }}.gif" alt="{{ pet.pet_type }} pet">
                 {% else %}
                     <img src="{% static 'images/pets/mushroom/mushroom_large.gif' %}" alt="Default Pet">
                 {% endif %}
