@@ -5,13 +5,12 @@
     <title>Sign Up - Ecolution</title>
 {% endblock %}
 
-<!-- Overrides header block so there isn't a navbar on this page -->
 {% block header %}
 {% endblock %}
 
 {% block main %}
     <section class="spacer_big"></section>
-    <section class="signup card flex_v flex_center box_shadow ">
+    <section class="signup card flex_v flex_center box_shadow">
         <h2 class="text_dark margin_std_bot">Create an Account</h2>
         <form class="flex_v flex_v_fill" method="POST">
             {% csrf_token %}
@@ -19,10 +18,31 @@
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password1" placeholder="Password" required>
             <input type="password" name="password2" placeholder="Confirm Password" required>
+
+            <!-- Pet Selection -->
+            <div class="pet-selection flex_h flex_center">
+                <label class="pet-option">
+                    <input type="radio" name="pet_type" value="mushroom" required>
+                    <img src="{% static 'images/pets/mushroom/mushroom_small.gif' %}" alt="Mushroom Pet">
+                </label>
+                <label class="pet-option">
+                    <input type="radio" name="pet_type" value="plant" required>
+                    <img src="{% static 'images/pets/plant/plant_small.gif' %}" alt="Plant Pet">
+                </label>
+                <label class="pet-option">
+                    <input type="radio" name="pet_type" value="acorn" required>
+                    <img src="{% static 'images/pets/acorn/acorn_small.gif' %}" alt="Acorn Pet">
+                </label>
+            </div>
+
+            <!-- Plant Name Input (Hidden by Default) -->
+            <input type="text" name="pet_name" id="pet-name-input" placeholder="Pet Name" style="display: none;">
+
             <button class="button box_shadow" type="submit">Sign Up</button>
         </form>
         <p class="text_dark font_small margin_std_top">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
     </section>
+
     {% if messages %}
     <ul class="error-messages">
         {% for message in messages %}
@@ -30,4 +50,69 @@
         {% endfor %}
     </ul>
     {% endif %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let petOptions = document.querySelectorAll("input[name='pet_type']");
+            let petNameInput = document.getElementById("pet-name-input");
+    
+            function togglePetNameInput() {
+                let selectedPet = document.querySelector("input[name='pet_type']:checked");
+                if (selectedPet) {
+                    petNameInput.style.display = "block";
+                    petNameInput.required = true;
+                } else {
+                    petNameInput.style.display = "none";
+                    petNameInput.required = false;
+                }
+            }
+    
+            // Run function when selection changes
+            petOptions.forEach(option => {
+                option.addEventListener("change", togglePetNameInput);
+            });
+    
+            // Run function on page load to check pre-selected option
+            togglePetNameInput();
+        });
+    </script>
+    
+    
+    
+
 {% endblock %}
+
+
+
+<style>
+    .pet-selection {
+        gap: 20px;
+        margin: 20px 0;
+    }
+
+    .pet-option {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+        padding: 10px;
+        border: 2px solid transparent;
+        border-radius: 10px;
+        transition: border 0.3s;
+    }
+
+    .pet-option input {
+        display: none;
+    }
+
+    .pet-option img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        border-radius: 10px;
+    }
+
+    .pet-option input:checked + img {
+        border: 3px solid #4CAF50;
+    }
+</style>

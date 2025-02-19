@@ -18,6 +18,8 @@ def signup_view(request):
         username = request.POST["username"]
         password1 = request.POST["password1"]
         password2 = request.POST["password2"]
+        pet_type = request.POST.get("pet_type", "mushroom")  # Default to mushroom
+        plant_name = request.POST.get("plant_name", "") if pet_type == "plant" else None
 
         if password1 != password2:
             messages.error(request, "Passwords do not match!")
@@ -30,6 +32,10 @@ def signup_view(request):
         # Create and save the new user
         user = User.objects.create_user(username=username, email=email, password=password1)
         user.save()
+
+        # Assign a pet to the new user
+        pet = Pet.objects.create(user=user, pet_name=plant_name if plant_name else pet_type, pet_type=pet_type)
+        pet.save()
 
         messages.success(request, "Account created! You can now log in.")
         return redirect("login")
