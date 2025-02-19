@@ -26,8 +26,8 @@ class EventsTestCase(TestCase):
     ## As a user, I can view event details
     ## As a user, I can add events to my list
     ## As a user, I can remove events from my list
-    ## As a user, I can view events on the map
-    ## As a user, I can complete events
+    ## As a user, I can view event location
+    ## As a user, I can complete events by completing all sub-tasks
 
     ## As a user, I can open and close the menu
     def test_events_menu(self):

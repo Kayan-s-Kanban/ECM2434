@@ -1,5 +1,8 @@
+# NOT IMPLEMENTED IN SPRINT 1 #
 from django.test import TestCase
 from django.urls import reverse
+
+from Ecolution.models import CustomUser
 
 
 class MapTestCase(TestCase):
