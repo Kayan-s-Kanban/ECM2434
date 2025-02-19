@@ -51,7 +51,6 @@ def login_view(request):
     return render(request, "login.html")
 
 @login_required
-@login_required
 def home_view(request):
     user = request.user  # Get the logged-in user
     pet = Pet.objects.filter(user=user).first()  
@@ -61,7 +60,9 @@ def home_view(request):
         "pet_exp": pet.pet_exp if pet else 0,
         "pet_name": pet.pet_name if pet else "No Pet",
         "pet_type": pet.pet_type.lower() if pet else "default",
-        "pet_size": pet.get_size() if pet else "small",  # Determine size
+        "pet_size": pet.determine_size() if pet else "small",  # Determine size
+        "level": pet.pet_level if pet else 0,
+        "pet": pet,
     }
 
     return render(request, 'home.html', context)
