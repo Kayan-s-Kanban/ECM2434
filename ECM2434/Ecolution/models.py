@@ -73,6 +73,9 @@ class Event(models.Model):
     event_id = models.AutoField(primary_key=True)
     event_name = models.CharField(max_length=100)
     description = models.TextField()
+    location = models.CharField(max_length=100, blank=True)
+    date = models.DateField(default=timezone.now)
+    time = models.TimeField(default=timezone.now)
 
     @property
     def total_points(self):
