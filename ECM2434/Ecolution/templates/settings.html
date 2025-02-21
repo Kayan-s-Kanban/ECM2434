@@ -5,7 +5,6 @@
     <title>Settings - Ecolution</title>
 {% endblock %}
 
-<!-- Style Content Here (Should be integrated into styles.css eventually) -->
 {% block style %}
     <style>
         .settings-container {
@@ -81,9 +80,13 @@
             color: red;
             font-weight: bold;
         }
+
+        #password-form {
+            display: none;
+            padding: 15px;
+        }
     </style>
 {% endblock %}
-
 
 {% block main %}
     <div class="settings-container">
@@ -92,7 +95,7 @@
         </div>
 
         <div class="user-info">
-            <img src="static/images/profile.jpg" alt="Profile Picture" class="profile-pic">
+            <img src="{% static 'images/profile.jpg' %}" alt="Profile Picture" class="profile-pic">
             <h2>User Name</h2>
             <p>Joined on DD/MM/YYYY</p>
         </div>
@@ -103,12 +106,40 @@
         </div>
 
         <ul class="settings-list">
-            <li onclick="location.href='edit-profile.html'">Edit Profile</li>
-            <li onclick="location.href='completed-tasks.html'">Completed Tasks</li>
-            <li onclick="location.href='location.html'">Location</li>
+            <li id="change-password-btn">Change Password</li>
             <li onclick="location.href='{% url 'delete_account' %}'">Delete Account</li>
-            <li class="logout" onclick="location.href='home.html'">Logout</li>
+            <li class="logout" onclick="location.href='{% url 'login' %}'">Logout</li>
         </ul>
+
+        <div id="password-form">
+            <form id="change-password-form" method="POST" action="{% url 'change_password' %}">
+                {% csrf_token %}
+                <label for="current_password">Current Password:</label>
+                <input type="password" id="current_password" name="current_password" required><br>
+
+                <label for="new_password1">New Password:</label>
+                <input type="password" id="new_password1" name="new_password1" required><br>
+
+                <label for="new_password2">Confirm New Password:</label>
+                <input type="password" id="new_password2" name="new_password2" required><br>
+
+                <button type="submit">Update Password</button>
+            </form>
+        </div>
     </div>
 {% endblock %}
 
+{% block script %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const passwordForm = document.getElementById("password-form");
+        const changePasswordBtn = document.getElementById("change-password-btn");
+        
+        if (changePasswordBtn) {
+            changePasswordBtn.addEventListener("click", function () {
+                passwordForm.style.display = passwordForm.style.display === "block" ? "none" : "block";
+            });
+        }
+    });
+</script>
+{% endblock %}
