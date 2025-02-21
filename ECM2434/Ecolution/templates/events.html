@@ -10,10 +10,11 @@
             display: none;
             position: fixed;
             background-color: white;
-            width: 380px;
+            width: 320px;
             height: 600px;
             border-radius: 15px 15px;
             padding: 5px 20px;
+            
         }
 
         .event_details .show{
@@ -28,14 +29,17 @@
 
         .exit_button {
             margin-top: 10px;
-            color: white;
             display: inline-block;
-            font-weight: bold;
         }
 
         .exit_button_container {
             display: flex;
             justify-content: end;
+        }
+
+        .join_button{
+            font-size: 16px;
+            align-self: center;
         }
 
         h1 {
@@ -50,17 +54,18 @@
 
     <body>
         <h1 class="text_light">Events</h1>
+
         <h2 class="text_light">My Events</h2>
         <div>
             {% if user_events %}
                 {% for user_event in user_events%}
-                    <div class="card box_shadow text_light event" onclick="openUserEvent('{{ user_event.event.event_name }}', '{{ user_event.event.description }}')">
+                    <div class="card box_shadow text_light event" onclick="openUserEvent('{{ user_event.event.event_id }}', '{{ user_event.event.event_name }}', '{{ user_event.event.description }}')">
                         <h3>{{user_event.event.event_name}}</h3>
                         <p>{{user_event.event.description}}</p>
                     </div>
                 {% endfor %}
             {% else %}
-                <p>There are no current events ongoing</p>
+                <p class="text_light">There are no current events ongoing</p>
             {% endif %}
         </div>
 
@@ -68,31 +73,36 @@
         <div>
             {% if events %}
                 {% for event in events%}
-                    <div class="card box_shadow text_light event" onclick="openEvent('{{ event.event_name }}', '{{ event.description }}')">
+                    <div class="card box_shadow text_light event" onclick="openOtherEvent('{{ event.event_id }}', '{{ event.event_name }}', '{{ event.description }}')">
                         <h3>{{event.event_name}}</h3>
                         <p>{{event.description}}</p>
                     </div>
                 {% endfor %}
             {% else %}
-                <p>You have already joined all ongoing events</p>
+                <p class="text_light">You have already joined all ongoing events</p>
             {% endif %}
         </div>
 
-        <div class="event_details margin_std" id="user_event_details">
-            <div class="button exit_button_container">
-                <button class="button exit_button" onclick="closeUserEvent()">x</button>
+        <div class="event_details margin_std box_shadow" id="user_event_details">
+            <div class="exit_button_container">
+                <button class="button exit_button text_light" onclick="closeUserEvent()">x</button>
             </div>
             <h1 class="text_dark"></h1>
-            <p></p>
+            <p ></p>
+            <div class="flex_center">
+                <button class="button text_light join_button" onClick="leaveEvent()" id="leave_button">Leave Event</button>
+            </div>
         </div>
 
-        <div class="event_details margin_std" id="other_event_details">
-            <div class="button exit_button_container">
-                <button class="button exit_button" onclick="closeEvent()">x</button>
+        <div class="event_details margin_std box_shadow" id="other_event_details">
+            <div class="exit_button_container">
+                <button class="button exit_button text_light" onclick="closeOtherEvent()">x</button>
             </div>
             <h1 class="text_dark"></h1>
             <p></p>
-            <button class="button text_light">Join Event</button>
+            <div class="flex_center">
+                <button class="button text_light join_button" onClick="joinEvent()" id="join_button">Join Event</button>
+            </div>
         </div>
     
     </body>
@@ -100,14 +110,12 @@
     
     <script>
     
-        function openUserEvent(name, description) {
+        function openUserEvent(id, name, description) {
             let eventDetails = document.getElementById("user_event_details");
 
-            eventDetails.innerHTML = `
-                <p class="button exit_button" onclick="closeUserEvent()">x</p>
-                <h1 class="text_dark">${name}</h1>
-                <p>${description}</p>
-            `;
+            eventDetails.querySelector("h1").textContent = name;
+            eventDetails.querySelector("p").textContent = description;
+            eventDetails.querySelector("#leave_button").setAttribute("user-event-id", id);
 
             eventDetails.style.display = "block";
         }
@@ -116,23 +124,54 @@
             document.getElementById("user_event_details").style.display = "none";
         }
 
-        function openEvent(name, description) {
+        function openOtherEvent(event_id, name, description) {
             let eventDetails = document.getElementById("other_event_details");
 
-            eventDetails.innerHTML = `
-                <p class="button exit_button" onclick="closeEvent()">x</p>
-                <h1 class="text_dark">${name}</h1>
-                <p>${description}</p>
-                <button class="button text_light">Join Event</button>
-            `;
+            eventDetails.querySelector("h1").textContent = name;
+            eventDetails.querySelector("p").textContent = description;
+            eventDetails.querySelector("#join_button").setAttribute("event-id", event_id);
 
             eventDetails.style.display = "block";
         }
 
-        function closeEvent() {
+        function closeOtherEvent() {
             document.getElementById("other_event_details").style.display = "none";
         }
-    
+
+        function joinEvent() {
+            let eventId = document.getElementById("join_button").getAttribute("event-id");
+
+            fetch("{% url 'join_event' %}", {
+                method: "POST",
+                headers:{"X-CSRFToken": getCSRFToken() },
+                body: new URLSearchParams({ event_id: eventId })
+            }).then(response => response.json())  // Convert response to JSON
+            .then(data => console.log("Success:", data))  // Log response data
+            .then(data => {
+                location.reload();
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function leaveEvent() {
+            let eventId = document.getElementById("leave_button").getAttribute("user-event-id");
+
+            fetch("{% url 'leave_event' %}", {
+                method: "POST",
+                headers:{"X-CSRFToken": getCSRFToken() },
+                body: new URLSearchParams({ event_id: eventId })
+            }).then(response => response.json())  // Convert response to JSON
+            .then(data => console.log("Success:", data))  // Log response data
+            .then(data => {
+                location.reload();
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function getCSRFToken() {
+            return document.cookie.match(/csrftoken=([^;]+)/)[1];
+        }
+      
     </script>
 {% endblock %}
 

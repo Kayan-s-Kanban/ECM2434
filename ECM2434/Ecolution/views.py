@@ -177,10 +177,33 @@ def complete_task(request, task_id):
 
 def events_view(request):
     user_events = UserEvent.objects.filter(user=request.user)
-    all_events = Event.objects.exclude(event_id__in=user_events)
+    all_events = Event.objects.exclude(event_id__in=user_events.values_list("event_id", flat=True))
     context = {"user_events": user_events, "events": all_events}
     return render(request, "events.html", context)
 
+def join_event(request):
+    if request.method == "POST":
+        try:
+            event_id = request.POST.get("event_id")
+            event = get_object_or_404(Event, event_id=event_id)
+            UserEvent.objects.create(user=request.user, event=event)
+
+            return JsonResponse({"success": True})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)})
+    return JsonResponse({"success": False, "message": "Invalid request"})
+
+def leave_event(request):
+    if request.method == "POST":
+        try:
+            event_id = request.POST.get("event_id")
+            event = get_object_or_404(Event, event_id=event_id)
+            UserEvent.objects.filter(user=request.user, event=event).delete()
+
+            return JsonResponse({"success": True})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)})
+    return JsonResponse({"success": False, "message": "Invalid request"})
 def settings_view(request):
     return render(request, "settings.html")
 
