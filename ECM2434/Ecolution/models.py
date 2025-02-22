@@ -80,7 +80,7 @@ class Event(models.Model):
     @property
     def total_points(self):
         # Assuming a reverse relation name of 'task_set' or something else if you specified `related_name`.
-        return self.task_set.aggregate(total=Sum('points'))['total'] or 0
+        return self.task_set.aggregate(total=Sum('points_given'))['total'] or 0
 
     def __str__(self):
         return self.event_name
