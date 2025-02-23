@@ -16,6 +16,16 @@
     {% block style %}
         <!-- Style Content Here (Should be integrated into styles.css eventually) -->
     {% endblock %}
+    {% if user.is_authenticated %}
+    <style>
+        :root {
+            --user-font-size: {{ user.preferred_font_size }}px;
+        }
+        body {
+            font-size: var(--user-font-size);
+        }
+    </style>
+{% endif %}
 </head>
 
 <body class="background">
@@ -64,16 +74,3 @@
 </body>
 
 </html>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        fetch("{% url 'get_fontsize' %}")
-            .then(response => response.json())
-            .then(data => {
-                if (data.preferred_fontsize) {
-                    document.documentElement.style.fontSize = `${data.preferred_fontsize * 2}px`;
-                }
-            })
-            .catch(error => console.error("Error fetching font size:", error));
-    });
-</script>

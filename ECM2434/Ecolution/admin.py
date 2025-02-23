@@ -10,10 +10,10 @@ User = get_user_model()
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserChangeForm
     model = CustomUser
-    list_display = ('email', 'username', 'points',)
+    list_display = ('email', 'username', 'points', 'preferred_font_size',)
 
     fieldsets = UserAdmin.fieldsets + (
-        ('Custom Fields', {'fields': ('points',)}),
+        ('Custom Fields', {'fields': ('points', 'preferred_font_size',)}),
     )
 
 @admin.register(Task)

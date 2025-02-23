@@ -10,4 +10,4 @@ from .models import CustomUser
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
-        fields = ('points',)
+        fields = ('points', 'preferred_font_size', )

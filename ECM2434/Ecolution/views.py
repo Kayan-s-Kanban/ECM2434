@@ -245,11 +245,11 @@ def update_fontsize(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            new_font_size = int(data.get("preferred_fontsize", 3))
-            request.user.preferred_fontsize = new_font_size
+            new_font_size = int(data.get("preferred_font_size", 3))
+            request.user.preferred_font_size = new_font_size
             request.user.save()
-            print(f"Updated font size to: {request.user.preferred_fontsize}")  # Debugging
-            return JsonResponse({"status": "success", "preferred_fontsize": request.user.preferred_fontsize})
+            print(f"Updated font size to: {request.user.preferred_font_size}")  # Debugging
+            return JsonResponse({"status": "success", "preferred_font_size": request.user.preferred_font_size})
         except Exception as e:
             print(f"Error updating font size: {e}")  # Debugging
             return JsonResponse({"status": "error", "message": str(e)})
@@ -257,4 +257,4 @@ def update_fontsize(request):
 
 @login_required
 def get_fontsize(request):
-    return JsonResponse({"preferred_fontsize": request.user.preferred_fontsize})    
+    return JsonResponse({"preferred_font_size": request.user.preferred_font_size})    

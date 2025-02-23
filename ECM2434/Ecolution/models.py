@@ -11,8 +11,8 @@ class CustomUser(AbstractUser):  # ✅ Custom User model extending Django's buil
     class Meta:
         constraints = [
             models.CheckConstraint(
-                check=models.Q(preferred_font_size__gte=1) & models.Q(preferred_font_size__lte=10),
-                name='pet_level_range'
+                check=models.Q(preferred_font_size__gte=1) & models.Q(preferred_font_size__lte=30),
+                name='preferred_font_size_range'
             )
         ]
 
@@ -57,9 +57,7 @@ class Pet(models.Model):
             models.CheckConstraint(
                 check=models.Q(pet_level__gte=1) & models.Q(pet_level__lte=10),
                 name='pet_level_range'
-            )
-        ]
-        constraints = [
+            ),
             models.CheckConstraint(
                 check=models.Q(pet_exp__gte=0) & models.Q(pet_exp__lte=100 + (F('pet_level') * 20)),
                 name='pet_exp_range'
@@ -122,10 +120,10 @@ class UserEvent(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ✅ Dynamic reference
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     completed = models.BooleanField(default=False)
-    date_time = models.DateTimeField(auto_now_add=True)
+    date = models.DateField(default=timezone.now)
 
     class Meta:
-        unique_together = ('user', 'event', 'date_time')
+        unique_together = ('user', 'event', 'date')
 
     def __str__(self):
         return f'{self.user.username} - {self.event.event_name}'
