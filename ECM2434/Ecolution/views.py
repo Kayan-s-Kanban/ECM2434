@@ -1,6 +1,8 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth import authenticate, login, logout, get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse, Http404
 from django.db import IntegrityError
@@ -235,3 +237,24 @@ def change_password(request):
         return redirect("settings")
 
     return redirect("settings")
+
+
+@csrf_exempt
+@login_required
+def update_fontsize(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            new_font_size = int(data.get("preferred_fontsize", 3))
+            request.user.preferred_fontsize = new_font_size
+            request.user.save()
+            print(f"Updated font size to: {request.user.preferred_fontsize}")  # Debugging
+            return JsonResponse({"status": "success", "preferred_fontsize": request.user.preferred_fontsize})
+        except Exception as e:
+            print(f"Error updating font size: {e}")  # Debugging
+            return JsonResponse({"status": "error", "message": str(e)})
+    return JsonResponse({"status": "error", "message": "Invalid request"})
+
+@login_required
+def get_fontsize(request):
+    return JsonResponse({"preferred_fontsize": request.user.preferred_fontsize})    

@@ -97,15 +97,16 @@
         <div class="user-info">
             <img src="{% static 'images/profile.jpg' %}" alt="Profile Picture" class="profile-pic">
             <h2>User Name</h2>
-            <p>Joined on DD/MM/YYYY</p>
-        </div>
-
-        <div class="details">
-            <span>📍 Exeter, United Kingdom</span>
-            <span>✔ XX Tasks Completed</span>
         </div>
 
         <ul class="settings-list">
+            <li>
+                <div class="slider-container">
+                    <label for="font-size-slider">Font Size:</label>
+                    <input type="range" id="font-size-slider" min="1" max="5" value="{{ user.preferred_fontsize }}" class="slider">
+                    <span id="font-size-value">{{ user.preferred_fontsize }}</span>
+                </div>
+            </li>
             <li id="change-password-btn">Change Password</li>
             <li onclick="location.href='{% url 'delete_account' %}'">Delete Account</li>
             <li class="logout" onclick="location.href='{% url 'login' %}'">Logout</li>
@@ -132,13 +133,55 @@
 {% block script %}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const passwordForm = document.getElementById("password-form");
-        const changePasswordBtn = document.getElementById("change-password-btn");
-        
-        if (changePasswordBtn) {
-            changePasswordBtn.addEventListener("click", function () {
-                passwordForm.style.display = passwordForm.style.display === "block" ? "none" : "block";
-            });
+        // Toggle password form
+        function togglePasswordForm() {
+            let formContainer = document.getElementById("password-form");
+            formContainer.style.display = (formContainer.style.display === "none" || formContainer.style.display === "") ? "block" : "none";
+        }
+
+        document.getElementById("change-password-btn").addEventListener("click", togglePasswordForm);
+
+        // Font size slider logic
+        const fontSizeSlider = document.getElementById("font-size-slider");
+        const fontSizeValue = document.getElementById("font-size-value");
+
+        fontSizeSlider.addEventListener("input", function () {
+            fontSizeValue.textContent = this.value;
+        });
+
+        fontSizeSlider.addEventListener("change", function () {
+            fetch("{% url 'update_fontsize' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken()
+                },
+                body: JSON.stringify({ preferred_fontsize: this.value })
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.status === "success") {
+                      console.log("Font size updated successfully");
+                      document.documentElement.style.fontSize = `${this.value * 2}px`; // Apply immediately
+                  } else {
+                      console.error("Failed to update font size");
+                  }
+              }).catch(error => console.error("Error:", error));
+        });
+
+        // Function to get CSRF token from cookies
+        function getCSRFToken() {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                let cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    let cookie = cookies[i].trim();
+                    if (cookie.startsWith("csrftoken=")) {
+                        cookieValue = cookie.substring("csrftoken=".length, cookie.length);
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
         }
     });
 </script>
