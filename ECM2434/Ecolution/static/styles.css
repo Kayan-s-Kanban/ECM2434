@@ -141,7 +141,7 @@ img.img_leaf {
 
 /* [[[ 3. Helper Classes ]]] */
 .font_small {
-    font-size: small;
+    font-size: 0.8rem;
 }
 
 .margin_sml {
@@ -318,7 +318,7 @@ section.status_bar .xp_bar_progress {
 }
 
 section.status_bar .xp_bar_label {
-    font-size: small;
+    font-size: 0.8rem;
     margin-top: 5px;
     letter-spacing: var(--letter_spacing_lg);
 }
@@ -355,7 +355,7 @@ section.task_icon p {
 
 /* Section: Current Tasks */
 section.current_tasks>.heading p {
-    font-size: small;
+    font-size: 0.8rem;
 }
 
 section.current_tasks>.heading button {
@@ -364,7 +364,7 @@ section.current_tasks>.heading button {
 }
 
 .current_tasks .task_description {
-    font-size: small;
+    font-size: 0.8rem;
 }
 
 
@@ -410,36 +410,35 @@ section.settings_menu a:hover {
     color: var(--color_light);
 }
 
+/* Login Page CSS */
+/* NOTE: To be standardised */
+.pet-selection {
+    gap: 0px;
+    margin: 20px 0;
+}
 
-<style>
-    .pet-selection {
-        gap: 0px;
-        margin: 20px 0;
-    }
+.pet-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    transition: border 0.3s;
+}
 
-    .pet-option {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        cursor: pointer;
-        padding: 10px;
-        border: 2px solid transparent;
-        border-radius: 10px;
-        transition: border 0.3s;
-    }
+.pet-option input {
+    display: none;
+}
 
-    .pet-option input {
-        display: none;
-    }
+.pet-option img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 10px;
+}
 
-    .pet-option img {
-        width: 80px;
-        height: 80px;
-        object-fit: contain;
-        border-radius: 10px;
-    }
-
-    .pet-option input:checked + img {
-        border: 3px solid #4CAF50;
-    }
-</style>
+.pet-option input:checked + img {
+    border: 3px solid #4CAF50;
+}
