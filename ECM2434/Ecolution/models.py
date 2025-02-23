@@ -5,16 +5,21 @@ from django.conf import settings  # Best practice for referencing AUTH_USER_MODE
 from django.utils import timezone
 
 class CustomUser(AbstractUser):  # ✅ Custom User model extending Django's built-in User
-    points = models.IntegerField(default=0)  # Keeps your custom points field
-    preferred_font_size = models.IntegerField(default=3)  # Example of a custom field
+    
+    FONT_SIZE_SMALL = 13
+    FONT_SIZE_MEDIUM = 16
+    FONT_SIZE_LARGE = 19
 
-    class Meta:
-        constraints = [
-            models.CheckConstraint(
-                check=models.Q(preferred_font_size__gte=1) & models.Q(preferred_font_size__lte=30),
-                name='preferred_font_size_range'
-            )
-        ]
+    FONT_SIZE_CHOICES = [
+        (FONT_SIZE_SMALL, 'Small'),
+        (FONT_SIZE_MEDIUM, 'Medium'),
+        (FONT_SIZE_LARGE, 'Large'),
+    ]
+    points = models.IntegerField(default=0)  # Keeps your custom points field
+    preferred_font_size = models.PositiveSmallIntegerField(
+        choices=FONT_SIZE_CHOICES,
+        default=FONT_SIZE_MEDIUM,
+    )
 
     def __str__(self):
         return self.username

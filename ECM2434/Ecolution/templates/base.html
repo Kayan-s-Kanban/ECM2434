@@ -19,13 +19,13 @@
     {% if user.is_authenticated %}
     <style>
         :root {
-            --user-font-size: {{ user.preferred_font_size }}px;
+            --font_size_rem: {{ user.preferred_font_size }}px;
         }
-        body {
-            font-size: var(--user-font-size);
+        html {
+            font-size: var(--font_size_rem);
         }
     </style>
-{% endif %}
+    {% endif %}
 </head>
 
 <body class="background">
