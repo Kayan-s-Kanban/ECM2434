@@ -67,7 +67,7 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        fetch("{% url 'get_fontsize' %}")
+        fetch("{% url 'settings' %}")  // Change 'get_fontsize' to 'settings'
             .then(response => response.json())
             .then(data => {
                 if (data.preferred_fontsize) {

@@ -95,8 +95,7 @@
         </div>
 
         <div class="user-info">
-            <img src="{% static 'images/profile.jpg' %}" alt="Profile Picture" class="profile-pic">
-            <h2>User Name</h2>
+            <h2>{{name}}</h2>
         </div>
 
         <ul class="settings-list">
@@ -113,19 +112,13 @@
         </ul>
 
         <div id="password-form">
-            <form id="change-password-form" method="POST" action="{% url 'change_password' %}">
+            <form method="POST" action="{% url 'settings' %}">
                 {% csrf_token %}
-                <label for="current_password">Current Password:</label>
-                <input type="password" id="current_password" name="current_password" required><br>
-
-                <label for="new_password1">New Password:</label>
-                <input type="password" id="new_password1" name="new_password1" required><br>
-
-                <label for="new_password2">Confirm New Password:</label>
-                <input type="password" id="new_password2" name="new_password2" required><br>
-
-                <button type="submit">Update Password</button>
-            </form>
+                <input type="password" name="current_password" placeholder="Current Password" required>
+                <input type="password" name="new_password1" placeholder="New Password" required>
+                <input type="password" name="new_password2" placeholder="Confirm New Password" required>
+                <button type="submit" name="change_password">Change Password</button>
+            </form>            
         </div>
     </div>
 {% endblock %}
@@ -133,56 +126,57 @@
 {% block script %}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Toggle password form
-        function togglePasswordForm() {
-            let formContainer = document.getElementById("password-form");
-            formContainer.style.display = (formContainer.style.display === "none" || formContainer.style.display === "") ? "block" : "none";
-        }
-
-        document.getElementById("change-password-btn").addEventListener("click", togglePasswordForm);
-
-        // Font size slider logic
-        const fontSizeSlider = document.getElementById("font-size-slider");
-        const fontSizeValue = document.getElementById("font-size-value");
-
+        let fontSizeSlider = document.getElementById("font-size-slider");
+        let fontSizeValue = document.getElementById("font-size-value");
+        let changePasswordBtn = document.getElementById("change-password-btn");
+        let passwordForm = document.getElementById("password-form");
+        
+        // Update Font Size
         fontSizeSlider.addEventListener("input", function () {
-            fontSizeValue.textContent = this.value;
-        });
+            let newFontSize = fontSizeSlider.value;
+            fontSizeValue.textContent = newFontSize;
+            document.body.style.fontSize = newFontSize + "rem";
 
-        fontSizeSlider.addEventListener("change", function () {
-            fetch("{% url 'update_fontsize' %}", {
+            fetch("{% url 'settings' %}", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": getCSRFToken()
-                },
-                body: JSON.stringify({ preferred_fontsize: this.value })
+                headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
+                body: JSON.stringify({ preferred_fontsize: newFontSize })
             }).then(response => response.json())
-              .then(data => {
-                  if (data.status === "success") {
-                      console.log("Font size updated successfully");
-                      document.documentElement.style.fontSize = `${this.value * 2}px`; // Apply immediately
-                  } else {
-                      console.error("Failed to update font size");
-                  }
-              }).catch(error => console.error("Error:", error));
+            .then(data => console.log("Font size updated:", data))
+            .catch(error => console.error("Error updating font size:", error));
         });
 
-        // Function to get CSRF token from cookies
-        function getCSRFToken() {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== "") {
-                let cookies = document.cookie.split(";");
-                for (let i = 0; i < cookies.length; i++) {
-                    let cookie = cookies[i].trim();
-                    if (cookie.startsWith("csrftoken=")) {
-                        cookieValue = cookie.substring("csrftoken=".length, cookie.length);
-                        break;
-                    }
+        // Toggle the password form visibility
+        changePasswordBtn.addEventListener("click", function () {
+            passwordForm.style.display = (passwordForm.style.display === "none" || passwordForm.style.display === "") ? "block" : "none";
+        });
+
+        // Handle Password Change
+        passwordForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            let currentPassword = document.getElementById("current_password").value;
+            let newPassword1 = document.getElementById("new_password1").value;
+            let newPassword2 = document.getElementById("new_password2").value;
+
+            fetch("{% url 'settings' %}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
+                body: JSON.stringify({
+                    current_password: currentPassword,
+                    new_password1: newPassword1,
+                    new_password2: newPassword2
+                })
+            }).then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    alert("Password changed successfully!");
+                    passwordForm.reset();
+                    passwordForm.style.display = "none"; // Hide the form after success
+                } else {
+                    alert(data.message);
                 }
-            }
-            return cookieValue;
-        }
+            }).catch(error => console.error("Error changing password:", error));
+        });
     });
-</script>
+</script>    
 {% endblock %}
