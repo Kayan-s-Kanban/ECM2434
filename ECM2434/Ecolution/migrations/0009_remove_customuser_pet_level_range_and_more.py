@@ -16,14 +16,14 @@ class Migration(migrations.Migration):
             model_name='customuser',
             name='pet_level_range',
         ),
-        migrations.AlterUniqueTogether(
-            name='userevent',
-            unique_together={('user', 'event', 'date')},
-        ),
         migrations.AddField(
             model_name='userevent',
             name='date',
             field=models.DateField(default=django.utils.timezone.now),
+        ),
+        migrations.AlterUniqueTogether(
+            name='userevent',
+            unique_together={('user', 'event', 'date')},
         ),
         migrations.AddConstraint(
             model_name='customuser',
