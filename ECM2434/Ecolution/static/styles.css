@@ -516,6 +516,43 @@ img.profile_pic {
     border: 5px solid var(--color_light);
 }
 
+/* Task Stuff */
+.task-title {
+    display: block;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.task-points-small {
+    display: block;
+    font-size: 12px;
+    color: white;
+    margin-top: 2px;
+}
+
+.task-description {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.task-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.task-date {
+    margin-right: 10px;
+    font-size: 12px;
+    color: white;
+}
+
+.delete-icon, .complete-icon {
+    cursor: pointer;
+    margin-left: 10px;
+}
+
 .form-group-horizontal {
     display: flex;
     align-items: center; /* vertically center input and label */
