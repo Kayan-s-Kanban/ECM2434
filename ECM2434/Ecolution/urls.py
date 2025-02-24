@@ -1,7 +1,7 @@
 from django.urls import path
 from django.contrib import admin
 from . import views
-from .views import login_view, signup_view, delete_account, change_password, update_fontsize, get_fontsize, terms_veiw
+from .views import login_view, signup_view, delete_account, change_password, update_fontsize, get_fontsize
 
 
 urlpatterns = [
@@ -20,6 +20,5 @@ urlpatterns = [
     path("change_password/", change_password, name="change_password"),
     path("update-fontsize/", update_fontsize, name="update_fontsize"),
     path("get-fontsize/", get_fontsize, name="get_fontsize"),
-
-    path("term-of-use/",views.terms_veiw, name="terms_of_use"),
+    path("term_of_use/",views.terms_view, name="term_of_use"),
 ]
