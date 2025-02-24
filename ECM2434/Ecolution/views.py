@@ -10,7 +10,7 @@ from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent
 
 # Create your views here.
 def index(request):
-    return HttpResponse("Hello, world. You're at the Ecolution index")
+    return redirect("home")
 
 User = get_user_model()
 
