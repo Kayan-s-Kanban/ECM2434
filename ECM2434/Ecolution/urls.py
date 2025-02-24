@@ -24,4 +24,5 @@ urlpatterns = [
     path("change_password/", change_password, name="change_password"),
     path("update-fontsize/", update_fontsize, name="update_fontsize"),
     path("get-fontsize/", get_fontsize, name="get_fontsize"),
+    path("term_of_use/",views.terms_view, name="term_of_use"),
 ]
