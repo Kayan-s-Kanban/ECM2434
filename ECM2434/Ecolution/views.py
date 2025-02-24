@@ -71,7 +71,7 @@ def home_view(request):
     user = request.user  # Get the logged-in user
     pet = Pet.objects.filter(user=user).first() 
     # This retrieves the 5 most recent tasks by date to display on home page 
-    user_tasks = UserTask.objects.filter(user=user).order_by('date')[:5]
+    user_tasks = UserTask.objects.filter(user=user, completed=False).order_by('date')[:5]
     
     context = {
         "points": user.points,
