@@ -1,6 +1,7 @@
 from django.urls import path
 from django.contrib import admin
 from . import views
+from django.contrib.auth.views import LogoutView
 from .views import login_view, signup_view, delete_account, change_password, update_fontsize, get_fontsize
 
 
@@ -25,4 +26,5 @@ urlpatterns = [
     path("update-fontsize/", update_fontsize, name="update_fontsize"),
     path("get-fontsize/", get_fontsize, name="get_fontsize"),
     path("term_of_use/",views.terms_view, name="term_of_use"),
+    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
 ]

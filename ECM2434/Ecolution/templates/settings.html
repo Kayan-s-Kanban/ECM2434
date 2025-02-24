@@ -87,7 +87,7 @@
         }
     </style>
 {% endblock %}
-
+<!-- comment -->
 {% block main %}
     <section class="spacer_big"></section>
     <section class="signup card flex_v flex_center box_shadow">
@@ -99,7 +99,7 @@
                 <img src="{% static 'images/person.svg' %}" alt="Profile Picture" class="profile_pic box_shadow">
                 <h3>{{name}}</h3>
             </div>
-            <section class="spacer"></section>
+            <section class="spacer"></section> <!-- section to change the font size of for the website -->
             <div class="menu_container flex_v flex_v_fill">
                 <div class="dropdown-container flex_h flex_start button button_menu box_shadow" style="justify-content: start; gap: 8px;">
                     <label for="font-size-select">Font Size:</label>
@@ -109,9 +109,9 @@
                         <option value=19 {% if user.preferred_font_size == 19 %}selected{% endif %}>Large</option>
                     </select>
                 </div>                
-                <button class="button button_menu box_shadow" type="button" id="change-password-btn">Change Password</button>      
+                <button class="button button_menu box_shadow" type="button" id="change-password-btn">Change Password</button>       <!-- code to change the password for your account -->
                 <div id="password-form">
-                    <form id="change-password-form" method="POST" action="{% url 'change_password' %}">
+                    <form id="change-password-form" method="POST" action="{% url 'change_password' %}"> <!-- form to change button is hidden until button press -->
                         {% csrf_token %}
                         <div class="form-group-horizontal">
                             <label for="current_password">Current Password:</label>
@@ -128,9 +128,9 @@
                         <button type="submit">Update Password</button>
                     </form>
                 </div>
-                <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'delete_account' %}'">Delete Account</button>
-                <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'login' %}'">Logout</button>
-                <button class="button button_menu box_shadow" type="button" onclick="window.open('{% url 'term_of_use' %}', '_blank')">Terms and Conditions</button>
+                <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'delete_account' %}'">Delete Account</button> <!-- links to the delete account page -->
+                <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'logout' %}'">Logout</button> <!-- links to the login page -->
+                <button class="button button_menu box_shadow" type="button" onclick="window.open('{% url 'term_of_use' %}', '_blank')">Terms and Conditions</button> <!-- opens a new tab with the terms and conditions page -->
 
             </div>
         </section>
