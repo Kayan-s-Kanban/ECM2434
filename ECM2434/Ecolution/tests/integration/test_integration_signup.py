@@ -36,9 +36,9 @@ class SignupIntegrationTests(TestCase):
         # check if the user is redirected after successful signup
         self.assertNotEqual(response, '/login/')  # TODO: adjust the redirect URL (e.g., home page or login page)
 
-        # ensure the user is NOT created
-        user = CustomUser.objects.get(username='newuser')
-        self.assertIsNone(user)  # check that the user does not exist in the database
+        # check that the user is not created
+        with self.assertRaises(CustomUser.DoesNotExist):
+            CustomUser.objects.get(username='newuser')
 
     ## As a user, I cannot sign up for an account with a valid email but invalid password
     def test_signup_invalid_pwd(self):
@@ -53,9 +53,9 @@ class SignupIntegrationTests(TestCase):
         # check if the user is redirected after successful signup
         self.assertNotEqual(response, '/')  # TODO: adjust the redirect URL (e.g., home page or login page)
 
-        # ensure the user is NOT created
-        user = CustomUser.objects.get(username = 'newuser')
-        self.assertIsNone(user)  # TODO:(?) check that the user does not exist in the database
+        # check that the user is not created
+        with self.assertRaises(CustomUser.DoesNotExist):
+            CustomUser.objects.get(username='newuser')
 
     ## As a user, I can sign up for an account and then login to that account
     def test_signup_redirect(self):
@@ -82,14 +82,15 @@ class SignupIntegrationTests(TestCase):
     ## As a user, I cannot sign up for an account with the password fields not matching
     def test_signup_different_passwords(self):
         response = self.client.post(self.signup_url, {
-            'email': self.user_data['email@valid'],
+            'email': self.user_data['email'],
             'username': self.user_data['username'],
             'password1': '',  # password1 (it should match password2)
             'password2': self.user_data['password2'],  # password2
         })
 
         # check if the user is redirected after successful signup
-        self.assertNotEqual(response, '/')  # TODO: adjust the redirect URL (e.g., home page or login page)
+        self.assertNotEqual(response, 'home')  # TODO: adjust the redirect URL (e.g., home page or login page)
 
-        # ensure the user is NOT created
-        self.assertIsNone(CustomUser.objects.get(username = 'newuser'))  # check that the user does not exist in the database
+        # check that the user is not created
+        with self.assertRaises(CustomUser.DoesNotExist):
+            CustomUser.objects.get(username = 'newuser')
