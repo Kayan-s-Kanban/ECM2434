@@ -258,7 +258,11 @@ def get_event_tasks(request, event_id):
 
 
 def settings_view(request):
-    return render(request, "settings.html")
+    user = request.user
+    context = {
+        "name" : user.username
+    }
+    return render(request, "settings.html", context)
 
 @login_required
 def delete_account(request):
@@ -312,23 +316,23 @@ def change_password(request):
 
     return redirect("settings")
 
-
-@csrf_exempt
 @login_required
 def update_fontsize(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            new_font_size = int(data.get("preferred_font_size", 3))
-            request.user.preferred_font_size = new_font_size
+            font_size = data.get("preferred_font_size")
+
+            if font_size not in ["SMALL", "MEDIUM", "LARGE"]:
+                return JsonResponse({"status": "error", "message": "Invalid font size"})
+
+            request.user.preferred_font_size = font_size
             request.user.save()
-            print(f"Updated font size to: {request.user.preferred_font_size}")  # Debugging
-            return JsonResponse({"status": "success", "preferred_font_size": request.user.preferred_font_size})
+            return JsonResponse({"status": "success"})
         except Exception as e:
-            print(f"Error updating font size: {e}")  # Debugging
             return JsonResponse({"status": "error", "message": str(e)})
     return JsonResponse({"status": "error", "message": "Invalid request"})
 
 @login_required
 def get_fontsize(request):
-    return JsonResponse({"preferred_font_size": request.user.preferred_font_size})    
+    return JsonResponse({"preferred_font_size": request.user.preferred_font_size})
