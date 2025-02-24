@@ -6,11 +6,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse, Http404
 from django.db import IntegrityError
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+from django.views.decorators.cache import never_cache
 from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent  
 
 # Create your views here.
 def index(request):
-    return HttpResponse("Hello, world. You're at the Ecolution index")
+    return redirect("home")
 
 User = get_user_model()
 
@@ -58,11 +61,18 @@ def login_view(request):
 
     return render(request, "login.html")
 
+@never_cache
+def logout_view(request):
+    logout(request)
+    return redirect("login")  # replace 'home' with your actual home page URL name
+
 @login_required
 def home_view(request):
     user = request.user  # Get the logged-in user
-    pet = Pet.objects.filter(user=user).first()  
-
+    pet = Pet.objects.filter(user=user).first() 
+    # This retrieves the 5 most recent tasks by date to display on home page 
+    user_tasks = UserTask.objects.filter(user=user).order_by('date')[:5]
+    
     context = {
         "points": user.points,
         "pet_exp": pet.pet_exp if pet else 0,
@@ -71,6 +81,7 @@ def home_view(request):
         "pet_size": pet.determine_size() if pet else "small",  # Determine size
         "level": pet.pet_level if pet else 0,
         "pet": pet,
+        "user_tasks":user_tasks
     }
 
     return render(request, 'home.html', context)
@@ -192,8 +203,11 @@ def complete_task(request, task_id):
 def events_view(request):
     all_user_events = UserEvent.objects.filter(user=request.user)
     incomplete_user_events = UserEvent.objects.filter(user=request.user, completed = False)
+
+    user_events = Event.objects.filter(event_id__in=incomplete_user_events.values_list("event_id", flat=True))
     all_events = Event.objects.exclude(event_id__in=all_user_events.values_list("event_id", flat=True))
-    context = {"user_events": incomplete_user_events, "events": all_events}
+    
+    context = {"user_events": user_events, "events": all_events}
     return render(request, "events.html", context)
 
 def join_event(request):
@@ -260,7 +274,8 @@ def get_event_tasks(request, event_id):
 def settings_view(request):
     user = request.user
     context = {
-        "name" : user.username
+        "name" : user.username,
+        "points": user.points
     }
     return render(request, "settings.html", context)
 
@@ -321,9 +336,14 @@ def update_fontsize(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            font_size = data.get("preferred_font_size")
+            # Convert the incoming font size value to an integer.
+            try:
+                font_size = int(data.get("preferred_font_size"))
+            except (TypeError, ValueError):
+                return JsonResponse({"status": "error", "message": "Invalid font size"})
 
-            if font_size not in ["SMALL", "MEDIUM", "LARGE"]:
+            # Validate against the numeric choices
+            if font_size not in [CustomUser.FONT_SIZE_SMALL, CustomUser.FONT_SIZE_MEDIUM, CustomUser.FONT_SIZE_LARGE]:
                 return JsonResponse({"status": "error", "message": "Invalid font size"})
 
             request.user.preferred_font_size = font_size
@@ -336,3 +356,7 @@ def update_fontsize(request):
 @login_required
 def get_fontsize(request):
     return JsonResponse({"preferred_font_size": request.user.preferred_font_size})
+
+
+def terms_view(request):
+    return render(request, "term.html")

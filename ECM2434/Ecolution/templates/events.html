@@ -4,24 +4,38 @@
 {% block title %}
     <title>Events - Ecolution</title>
     <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+    
     <style>
 
         .event_details {
             display: none;
-            position: fixed;
             background-color: white;
-            width: 320px;
-            height: auto;
+            width: 400px;
+            height: 70vh;
             border-radius: 15px 15px;
-            padding: 5px 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            
+            padding: 20px 20px;
+        }
+
+        .event_details_content {
+            overflow-y: auto;
+            max-height:  calc(70vh - 115px);
+        }
+
+        .event_details_content::-webkit-scrollbar {
+            display: none; /* Hides the scrollbar */
         }
 
         .event_details .show{
             display: block;
         }
+
+        .heading{
+            align-items: center;
+        }
+
 
         .event {
             margin: 5px;
@@ -44,11 +58,61 @@
             align-self: center;
         }
 
+        .button_container {
+            display: flex;
+            position: sticky;
+            padding: 20px;
+            
+        }
+
         h1 {
             text-align: center;
         }
 
+        .datetime {
+            display: flex;
+            justify-content: flex-start;
+            gap: 10px;
+            color: #3a8d84;
+        }
+
+        .taskcard {
+            background-color: #3a8d84;
+            border-radius: 0.8em;
+            padding: 7px 10px;
+            margin-block: 0.4em;
+            opacity: 1;
+        }
+
+        #map { 
+            height: 200px; 
+        }
+
+        .meow {
+            display: flex;
+            justify-content: center;
+            position: fixed;
+        }
+
+        .event_list_container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 0.8em;
+            margin: 5px;
+            opacity: 0.9;
+        }
+
+        .points{
+            display: flex;
+            justify-content: flex-start;
+            font-weight: bold;
+        }
+
     </style>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
 {% endblock %}
 
 {% block main %}
@@ -56,187 +120,171 @@
 
     <body>
         <h1 class="text_light">Events</h1>
-
-        <h2 class="text_light">My Events</h2>
-        <div>
-            {% if user_events %}
-                {% for user_event in user_events%}
-                    <div class="card box_shadow text_light event" 
-                    data-id="{{ user_event.event.event_id }}"
-                    data-name="{{ user_event.event.event_name }}"
-                    data-description="{{ user_event.event.description }}"
-                    data-location="{{ user_event.event.location }}"
-                    data-date="{{ user_event.event.date }}"
-                    data-time="{{ user_event.event.time }}"
-                    data-points="{{ user_event.event.total_points}}"
-                    onclick="openUserEvent(this)">
-                        <h3>{{user_event.event.event_name}}</h3>
-                        <p>{{user_event.event.description}}</p>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p class="text_light">There are no current events ongoing</p>
-            {% endif %}
-        </div>
-
-        <h2 class="text_light">Join Events</h2>
-        <div>
-            {% if events %}
-                {% for event in events%}
-                    <div class="card box_shadow text_light event" 
-                    data-id="{{ event.event_id }}"
-                    data-name="{{ event.event_name }}"
-                    data-description="{{ event.description }}"
-                    data-location="{{ event.location }}"
-                    data-date="{{ event.date }}"
-                    data-time="{{ event.time }}"
-                    data-points="{{ event.total_points}}"
-                    onclick="openOtherEvent(this)">
-                        <h3>{{event.event_name}}</h3>
-                        <p>{{event.description}}</p>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p class="text_light">You have already joined all ongoing events</p>
-            {% endif %}
-        </div>
-
-        <div class="event_details margin_std box_shadow" id="user_event_details">
-            <div class="exit_button_container">
-                <button class="button exit_button text_light" onclick="closeUserEvent()">x</button>
-            </div>
-            <h1 class="text_dark"></h1>
-            <p id="description"></p>
-            <p id="location"></p>
-            <p id="date"></p>
-            <p id="time"></p>
-            <p id="points"></p>
-            
-            <div id="tasks"></div>
-
-            <div class="flex_center">
-                <button class="button text_light join_button" onClick="leaveEvent()" id="leave_button">Leave Event</button>
-            </div>
-
-            <div class="flex_center">
-                <button class="button text_light join_button" onClick="completeEvent()" id="complete_button">Complete Event</button>
-            </div>
-        </div>
-
-        <div class="event_details margin_std box_shadow" id="other_event_details">
-            <div class="exit_button_container">
-                <button class="button exit_button text_light" onclick="closeOtherEvent()">x</button>
-            </div>
-            <h1 class="text_dark"></h1>
-            <p id="description"></p>
-            <p id="location"></p>
-            <p id="date"></p>
-            <p id="time"></p>
-            <p id="points"></p>
-
-            <div id="tasks"></div>
-
-            <div class="flex_center">
-                <button class="button text_light join_button" onClick="joinEvent()" id="join_button">Join Event</button>
-            </div>
-        </div>
     
+        <div class="event_list_container">
+            <h2 class="text_dark ">My Events</h2>
+            <div>
+                {% if user_events %}
+                    {% for user_event in user_events%}
+                        <div class="card box_shadow text_light event" 
+                        data-id="{{ user_event.event_id }}"
+                        data-name="{{ user_event.event_name }}"
+                        data-description="{{ user_event.description }}"
+                        data-location="{{ user_event.location }}"
+                        data-date="{{ user_event.date }}"
+                        data-time="{{ user_event.time }}"
+                        data-points="{{ user_event.total_points}}"
+                        onclick="openEventDetails(this, 'user')">
+                            <p>{{user_event.date}}</p>
+                            <h3>{{user_event.event_name}}</h3>
+                            <p>📍{{user_event.location}}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text_light">There are no current events ongoing</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="event_list_container">
+            <h2 class="text_dark">Join Events</h2>
+            <div>
+                {% if events %}
+                    {% for event in events%}
+                        <div class="card box_shadow text_light event" 
+                        data-id="{{ event.event_id }}"
+                        data-name="{{ event.event_name }}"
+                        data-description="{{ event.description }}"
+                        data-location="{{ event.location }}"
+                        data-date="{{ event.date }}"
+                        data-time="{{ event.time }}"
+                        data-points="{{ event.total_points}}"
+                        onclick="openEventDetails(this, 'general')">
+                            <p>{{event.date}}</p>
+                            <h3>{{event.event_name}}</h3>
+                            <p>📍{{event.location}}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text_light">You have already joined all ongoing events</p>
+                {% endif %}
+            </div>
+        </div>
+        
+
+        <div class="meow">
+            <div class="event_details margin_std box_shadow" id="event_details">
+                <div class="flex_h heading">
+                    <h1 id="name", class="text_dark"></h1>
+                    <button class="button exit_button text_light" onclick="closeEventDetails()"> x </button>
+                </div>
+
+                <div class="event_details_content" >
+
+                    <div class="datetime">
+                        <p id="time"></p>
+                        <p id="date"></p>
+                    </div>
+
+                    <div class="points">
+                        <p id="points"></p>
+                        <p> XP</p>
+                    </div>
+            
+                    
+                    <div id="map" style="width: 100%; height: 200px;"></div>
+                    
+                    <h4>Event Tasks:</h4>
+                    <div id="tasks"></div>
+        
+                    <h4>About Event:</h4>
+                    <p id="description"></p>
+                </div>
+                
+    
+                <div class="flex_center button_container">
+                    <button class="button text_light join_button" id="button"></button>
+                </div>
+        </div>
+
+        
+        </div>
     </body>
     
     
     <script>
-    
-        function openUserEvent(element) {
-            let eventDetails = document.getElementById("user_event_details");
+        let map = null;
+
+        function createMap(lat, lon, zoom = 13) {
+            map = L.map('map').setView([lat, lon], zoom);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            L.marker([lat, lon]).addTo(map);
+        }
+
+        function openEventDetails(element, eventType) {
+            let eventDetails = document.getElementById("event_details");
             eventDetails.setAttribute("event-id", element.dataset.id);
 
-            eventDetails.querySelector("h1").textContent = element.dataset.name;
-            eventDetails.querySelector("#description").textContent = element.dataset.description;
-            eventDetails.querySelector("#location").textContent = element.dataset.location;
-            eventDetails.querySelector("#date").textContent = element.dataset.date;
-            eventDetails.querySelector("#time").textContent = element.dataset.time;
-            eventDetails.querySelector("#points").textContent = element.dataset.points;
-            eventDetails.querySelector("#leave_button").setAttribute("user-event-id", element.dataset.id);
-            eventDetails.querySelector("#complete_button").setAttribute("user-event-id", element.dataset.id);
+            const eventAttributes = ["name", "description", "date", "time", "points"];
+            eventAttributes.forEach(field =>
+                eventDetails.querySelector(`#${field}`).textContent = element.dataset[field]
+            );
 
+            let button =  eventDetails.querySelector("#button");
+            button.setAttribute("event-id", element.dataset.id);
+            if (eventType === "user"){
+                button.onclick = completeEvent;
+                button.textContent = "Complete Event";
+            } else if (eventType === "general") {
+                button.onclick = joinEvent;
+                button.textContent = "Join Event";
+            }
 
             let tasksContainer = eventDetails.querySelector("#tasks");
-            tasksContainer.innerHTML = ""; // Clear previous tasks
+            tasksContainer.innerHTML = ""; 
 
             getEventTask(element.dataset.id)
                 .then(data => {
                     if (data.tasks.length === 0) {
-                        tasksContainer.innerHTML = "<p>No tasks available</p>";  // Show message if no tasks exist
+                        tasksContainer.innerHTML = "<p>No tasks available</p>";
                     } else {
                         data.tasks.forEach(task => {
                             let taskDiv = document.createElement("div");
+                            taskDiv.classList.add("box_shadow", "text_light", "taskcard");
                             taskDiv.innerHTML = `<p>${task.task_name}</p>`;
                             tasksContainer.appendChild(taskDiv);
                         });
                     }
-                })
-                .catch(error => {
-                    console.error("Error fetching tasks:", error);
-                    tasksContainer.innerHTML = "<p>Error loading tasks</p>"; // Show error message
                 });
 
-                
+            createMap(50.734967, -3.533750);
 
             eventDetails.style.display = "block";
         }
 
-        function closeUserEvent() {
-            document.getElementById("user_event_details").style.display = "none";
+        function closeEventDetails() {
+            document.getElementById("event_details").style.display = "none";
+
+            if (map) {
+                map.remove();
+                map = null;
+            }
         }
 
-        function openOtherEvent(element) {
-            let eventDetails = document.getElementById("other_event_details");
-            eventDetails.setAttribute("event-id", element.dataset.id);
-
-            eventDetails.querySelector("h1").textContent = element.dataset.name;
-            eventDetails.querySelector("#description").textContent = element.dataset.description;
-            eventDetails.querySelector("#location").textContent = element.dataset.location;
-            eventDetails.querySelector("#date").textContent = element.dataset.date;
-            eventDetails.querySelector("#time").textContent = element.dataset.time;
-            eventDetails.querySelector("#points").textContent = element.dataset.points;
-            eventDetails.querySelector("#join_button").setAttribute("event-id", element.dataset.id);
-
-            let tasksContainer = eventDetails.querySelector("#tasks");
-            tasksContainer.innerHTML = ""; // Clear previous tasks
-
-            getEventTask(element.dataset.id)
-                .then(data => {
-                    if (data.tasks.length === 0) {
-                        tasksContainer.innerHTML = "<p>No tasks available</p>";  // Show message if no tasks exist
-                    } else {
-                        data.tasks.forEach(task => {
-                            let taskDiv = document.createElement("div");
-                            taskDiv.innerHTML = `<p>${task.task_name}</p>`;
-                            tasksContainer.appendChild(taskDiv);
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error("Error fetching tasks:", error);
-                    tasksContainer.innerHTML = "<p>Error loading tasks</p>"; // Show error message
-                });
-
-            eventDetails.style.display = "block";
-        }
-
-        function closeOtherEvent() {
-            document.getElementById("other_event_details").style.display = "none";
-        }
 
         function joinEvent() {
-            let eventId = document.getElementById("join_button").getAttribute("event-id");
+            let eventId = document.getElementById("button").getAttribute("event-id");
 
             fetch("{% url 'join_event' %}", {
                 method: "POST",
                 headers:{"X-CSRFToken": getCSRFToken() },
                 body: new URLSearchParams({ event_id: eventId })
-            }).then(response => response.json())  // Convert response to JSON
-            .then(data => console.log("Success:", data))  // Log response data
+            }).then(response => response.json())  
+            .then(data => console.log("Success:", data)) 
             .then(data => {
                 location.reload();
             })
@@ -244,29 +292,46 @@
         }
 
         function leaveEvent() {
-            let eventId = document.getElementById("leave_button").getAttribute("user-event-id");
+            let eventId = document.getElementById("button").getAttribute("event-id");
 
             fetch("{% url 'leave_event' %}", {
                 method: "POST",
                 headers:{"X-CSRFToken": getCSRFToken() },
                 body: new URLSearchParams({ event_id: eventId })
-            }).then(response => response.json())  // Convert response to JSON
-            .then(data => console.log("Success:", data))  // Log response data
+            }).then(response => response.json()) 
+            .then(data => console.log("Success:", data))  
             .then(data => {
                 location.reload();
             })
             .catch(error => console.error("Error:", error));
         }
 
+ 
+
         function completeEvent() {
-            let eventId = document.getElementById("complete_button").getAttribute("user-event-id");
+            let eventId = document.getElementById("button").getAttribute("event-id");
 
             fetch("{% url 'complete_event' %}", {
                 method: "POST",
                 headers:{"X-CSRFToken": getCSRFToken() },
                 body: new URLSearchParams({ event_id: eventId })
-            }).then(response => response.json())  // Convert response to JSON
-            .then(data => console.log("Success:", data))  // Log response data
+            }).then(response => response.json())  
+            .then(data => console.log("Success:", data))  
+            .then(data => {
+                location.reload();
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function changeEventInfo(url) {
+            let eventId = document.getElementById("button").getAttribute("event-id");
+
+            fetch("url", {
+                method: "POST",
+                headers:{"X-CSRFToken": getCSRFToken() },
+                body: new URLSearchParams({ event_id: eventId })
+            }).then(response => response.json()) 
+            .then(data => console.log("Success:", data))  
             .then(data => {
                 location.reload();
             })
@@ -274,12 +339,10 @@
         }
 
         function getEventTask(eventId) {
-            console.log(eventId)
             return fetch(`/ecolution/events/gettasks/${eventId}/`)
-                .then(response => response.json())  // Convert response to JSON
+                .then(response => response.json())  
                 .catch(error => {
-                    console.error("Error:", error);
-                    return { tasks: [] }; 
+                    console.error("Error:", error)
                 });
         }
 
