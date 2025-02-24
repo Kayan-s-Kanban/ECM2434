@@ -207,7 +207,7 @@ def events_view(request):
     user_events = Event.objects.filter(event_id__in=incomplete_user_events.values_list("event_id", flat=True))
     all_events = Event.objects.exclude(event_id__in=all_user_events.values_list("event_id", flat=True))
     
-    context = {"user_events": user_events, "events": all_events}
+    context = {"user_events": user_events, "events": all_events, "points": request.user.points}
     return render(request, "events.html", context)
 
 def join_event(request):
