@@ -4,9 +4,9 @@ from django.contrib.auth.models import AbstractUser
 from django.conf import settings  # Best practice for referencing AUTH_USER_MODEL
 from django.utils import timezone
 
-class CustomUser(AbstractUser):  # ✅ Custom User model extending Django's built-in User
+class CustomUser(AbstractUser):  # Custom User model is the user class we use for base users and super users
     
-    FONT_SIZE_SMALL = 13
+    FONT_SIZE_SMALL = 13 #custom data type for font size takes px and converts them to english words
     FONT_SIZE_MEDIUM = 16
     FONT_SIZE_LARGE = 19
 
@@ -15,17 +15,17 @@ class CustomUser(AbstractUser):  # ✅ Custom User model extending Django's buil
         (FONT_SIZE_MEDIUM, 'Medium'),
         (FONT_SIZE_LARGE, 'Large'),
     ]
-    points = models.IntegerField(default=0)  # Keeps your custom points field
-    preferred_font_size = models.PositiveSmallIntegerField(
+    points = models.IntegerField(default=0)  # the points field
+    preferred_font_size = models.PositiveSmallIntegerField( #stores the preferred font size also has a default so that the size of the text exists when a usr is not logged in 
         choices=FONT_SIZE_CHOICES,
         default=FONT_SIZE_MEDIUM,
     )
 
-    def __str__(self):
+    def __str__(self): #function that returns username
         return self.username
 
-class Pet(models.Model):
-    SMALL = 'small'
+class Pet(models.Model): #weak entity pet that relies on user id to exist
+    SMALL = 'small' #cutom data field used for describing size of pets
     MEDIUM = 'medium'
     LARGE = 'large'
 
@@ -35,14 +35,14 @@ class Pet(models.Model):
         (LARGE, 'Large'),
     ]
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ✅ Dynamic reference
-    pet_name = models.CharField(max_length=50)
-    pet_level = models.IntegerField(default=1)
-    pet_exp = models.IntegerField(default=0)
-    pet_type = models.CharField(max_length=50, default='mushroom')  # e.g., 'dragon', 'mushroom', 'cat'
-    size = models.CharField(max_length=10, choices=SIZE_CHOICES, default=SMALL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # since pets is a weak entity when the user is deleted the pet is also deleted thats what cascade does
+    pet_name = models.CharField(max_length=50) #pet name used in the display on the home page
+    pet_level = models.IntegerField(default=1) # pet level used to determine size and is displayed on the home page
+    pet_exp = models.IntegerField(default=0) #pet exp used to determine when a pet should level up also displayed on the home page
+    pet_type = models.CharField(max_length=50, default='mushroom')  # pet type used in the home page to create the file path to where the image of the pets are
+    size = models.CharField(max_length=10, choices=SIZE_CHOICES, default=SMALL) #size is also used when creating the file path to find the pets 
 
-    def determine_size(self):
+    def determine_size(self): #used to update the size of the pets based on the level of them
         """Sets the pet size based on its level."""
         if self.pet_level < 4:
             return self.SMALL
@@ -51,12 +51,12 @@ class Pet(models.Model):
         else:
             return self.LARGE
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs): #used to update the size data item so deterine size isnt constantly used when opening th ehome page
         """Automatically updates the size before saving."""
         self.size = self.determine_size()
         super().save(*args, **kwargs)
 
-    class Meta:
+    class Meta: #used to set constraints on the pet level and pet exp
         unique_together = ('user', 'pet_name')
         constraints = [
             models.CheckConstraint(
@@ -72,7 +72,7 @@ class Pet(models.Model):
     def __str__(self):
         return f'{self.pet_name} - {self.user.username}'
 
-class Event(models.Model):
+class Event(models.Model): 
     event_id = models.AutoField(primary_key=True)
     event_name = models.CharField(max_length=100)
     description = models.TextField()
