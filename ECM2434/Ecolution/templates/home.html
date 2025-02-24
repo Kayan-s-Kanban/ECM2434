@@ -10,9 +10,9 @@
         <div class="flex_v flex_center">
             <div class="image_wrapper">
                 {% if pet %}
-                <img src="{% static 'images/pets/' %}{{ pet_type }}/{{ pet_type }}_{{ pet_size }}.gif" alt="{{ pet_type }} pet">
+                <img src="{% static 'images/pets/' %}{{ pet_type }}/{{ pet_type }}_{{ pet_size }}.gif" alt="{{ pet_type }} pet"> <!-- this loads the pet img from the images file it uses the info in the database to generate the correct file path -->
                 {% else %}
-                    <img src="{% static 'images/pets/mushroom/mushroom_large.gif' %}" alt="Default Pet">
+                    <img src="{% static 'images/pets/mushroom/mushroom_large.gif' %}" alt="Default Pet"> <!-- if no pet is found this defaults -->
                 {% endif %}
             </div>
             <p></p>
@@ -22,13 +22,13 @@
     <section class="spacer_large"></section>
     <section class="status_bar flex_h flex_center text_light">
         <div class="pet_status flex_v margin_sml flex_v_fill">
-            <p>Pet Name: {{ pet_name }}     Level: {{ level }}</p>
+            <p>Pet Name: {{ pet_name }}     Level: {{ level }}</p> <!-- this displays the pets name and level -->
             <div class="xp_bar box_shadow">
-                <div class="xp_bar_progress" style="width: {{ pet_exp }}%;"></div>
+                <div class="xp_bar_progress" style="width: {{ pet_exp }}%;"></div> <!-- this is a bar with the amount of xp that the pet has -->
             </div>
             <div class="flex_h">
-                <p class="xp_bar_label" id="xp_bar_xp_current">{{ pet_exp }}XP</p>
-                <p class="xp_bar_label" id="xp_bar_xp_to_next_level">100XP</p>
+                <p class="xp_bar_label" id="xp_bar_xp_current">{{ pet_exp }}XP</p> <!-- this is the amount of xp the pet currently has -->
+                <p class="xp_bar_label" id="xp_bar_xp_to_next_level">100XP</p> <!-- this is the amount the pet needs to reach the next level it should always be set to 100 -->
             </div>
         </div>
     </section>
