@@ -11,7 +11,7 @@ class HomepageTestCase(TestCase):
         self.client.login(username = 'testuser', password = 'password')
         response = self.client.get(reverse('home'))
 
-    # As a user, I can open and close the menu
+    ## As a user, I can open and close the menu
     def test_homepage_menu_open(self):
        self.client.get(reverse('home'))
        response = self.client.post(reverse('home'), {'show menu': True}, follow = True)  # TODO: check syntax
@@ -31,4 +31,17 @@ class HomepageTestCase(TestCase):
 
         # check XP bar appears on user page (even if 0 xp)
         self.assertContains(response, 'xp')
+
+    ## As a user, I can view tasks page by selecting "View all"
+    def test_homepage_view_all(self):
+        response = self.client.get(reverse('home'))
+
+        # check that "View all" button exists
+        self.assertContains(response, 'View all')
+
+        # user selects "View all"
+        self.client.post(reverse('view_all'))
+
+        # user is redirected to task's page
+        self.assertRedirects(response, reverse('tasks'))
 
