@@ -11,9 +11,11 @@
             position: fixed;
             background-color: white;
             width: 320px;
-            height: 600px;
+            height: auto;
             border-radius: 15px 15px;
             padding: 5px 20px;
+            left: 50%;
+            transform: translateX(-50%);
             
         }
 
@@ -59,7 +61,15 @@
         <div>
             {% if user_events %}
                 {% for user_event in user_events%}
-                    <div class="card box_shadow text_light event" onclick="openUserEvent('{{ user_event.event.event_id }}', '{{ user_event.event.event_name }}', '{{ user_event.event.description }}')">
+                    <div class="card box_shadow text_light event" 
+                    data-id="{{ user_event.event.event_id }}"
+                    data-name="{{ user_event.event.event_name }}"
+                    data-description="{{ user_event.event.description }}"
+                    data-location="{{ user_event.event.location }}"
+                    data-date="{{ user_event.event.date }}"
+                    data-time="{{ user_event.event.time }}"
+                    data-points="{{ user_event.event.total_points}}"
+                    onclick="openUserEvent(this)">
                         <h3>{{user_event.event.event_name}}</h3>
                         <p>{{user_event.event.description}}</p>
                     </div>
@@ -73,7 +83,15 @@
         <div>
             {% if events %}
                 {% for event in events%}
-                    <div class="card box_shadow text_light event" onclick="openOtherEvent('{{ event.event_id }}', '{{ event.event_name }}', '{{ event.description }}')">
+                    <div class="card box_shadow text_light event" 
+                    data-id="{{ event.event_id }}"
+                    data-name="{{ event.event_name }}"
+                    data-description="{{ event.description }}"
+                    data-location="{{ event.location }}"
+                    data-date="{{ event.date }}"
+                    data-time="{{ event.time }}"
+                    data-points="{{ event.total_points}}"
+                    onclick="openOtherEvent(this)">
                         <h3>{{event.event_name}}</h3>
                         <p>{{event.description}}</p>
                     </div>
@@ -88,9 +106,20 @@
                 <button class="button exit_button text_light" onclick="closeUserEvent()">x</button>
             </div>
             <h1 class="text_dark"></h1>
-            <p ></p>
+            <p id="description"></p>
+            <p id="location"></p>
+            <p id="date"></p>
+            <p id="time"></p>
+            <p id="points"></p>
+            
+            <div id="tasks"></div>
+
             <div class="flex_center">
                 <button class="button text_light join_button" onClick="leaveEvent()" id="leave_button">Leave Event</button>
+            </div>
+
+            <div class="flex_center">
+                <button class="button text_light join_button" onClick="completeEvent()" id="complete_button">Complete Event</button>
             </div>
         </div>
 
@@ -99,7 +128,14 @@
                 <button class="button exit_button text_light" onclick="closeOtherEvent()">x</button>
             </div>
             <h1 class="text_dark"></h1>
-            <p></p>
+            <p id="description"></p>
+            <p id="location"></p>
+            <p id="date"></p>
+            <p id="time"></p>
+            <p id="points"></p>
+
+            <div id="tasks"></div>
+
             <div class="flex_center">
                 <button class="button text_light join_button" onClick="joinEvent()" id="join_button">Join Event</button>
             </div>
@@ -110,12 +146,41 @@
     
     <script>
     
-        function openUserEvent(id, name, description) {
+        function openUserEvent(element) {
             let eventDetails = document.getElementById("user_event_details");
+            eventDetails.setAttribute("event-id", element.dataset.id);
 
-            eventDetails.querySelector("h1").textContent = name;
-            eventDetails.querySelector("p").textContent = description;
-            eventDetails.querySelector("#leave_button").setAttribute("user-event-id", id);
+            eventDetails.querySelector("h1").textContent = element.dataset.name;
+            eventDetails.querySelector("#description").textContent = element.dataset.description;
+            eventDetails.querySelector("#location").textContent = element.dataset.location;
+            eventDetails.querySelector("#date").textContent = element.dataset.date;
+            eventDetails.querySelector("#time").textContent = element.dataset.time;
+            eventDetails.querySelector("#points").textContent = element.dataset.points;
+            eventDetails.querySelector("#leave_button").setAttribute("user-event-id", element.dataset.id);
+            eventDetails.querySelector("#complete_button").setAttribute("user-event-id", element.dataset.id);
+
+
+            let tasksContainer = eventDetails.querySelector("#tasks");
+            tasksContainer.innerHTML = ""; // Clear previous tasks
+
+            getEventTask(element.dataset.id)
+                .then(data => {
+                    if (data.tasks.length === 0) {
+                        tasksContainer.innerHTML = "<p>No tasks available</p>";  // Show message if no tasks exist
+                    } else {
+                        data.tasks.forEach(task => {
+                            let taskDiv = document.createElement("div");
+                            taskDiv.innerHTML = `<p>${task.task_name}</p>`;
+                            tasksContainer.appendChild(taskDiv);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching tasks:", error);
+                    tasksContainer.innerHTML = "<p>Error loading tasks</p>"; // Show error message
+                });
+
+                
 
             eventDetails.style.display = "block";
         }
@@ -124,12 +189,37 @@
             document.getElementById("user_event_details").style.display = "none";
         }
 
-        function openOtherEvent(event_id, name, description) {
+        function openOtherEvent(element) {
             let eventDetails = document.getElementById("other_event_details");
+            eventDetails.setAttribute("event-id", element.dataset.id);
 
-            eventDetails.querySelector("h1").textContent = name;
-            eventDetails.querySelector("p").textContent = description;
-            eventDetails.querySelector("#join_button").setAttribute("event-id", event_id);
+            eventDetails.querySelector("h1").textContent = element.dataset.name;
+            eventDetails.querySelector("#description").textContent = element.dataset.description;
+            eventDetails.querySelector("#location").textContent = element.dataset.location;
+            eventDetails.querySelector("#date").textContent = element.dataset.date;
+            eventDetails.querySelector("#time").textContent = element.dataset.time;
+            eventDetails.querySelector("#points").textContent = element.dataset.points;
+            eventDetails.querySelector("#join_button").setAttribute("event-id", element.dataset.id);
+
+            let tasksContainer = eventDetails.querySelector("#tasks");
+            tasksContainer.innerHTML = ""; // Clear previous tasks
+
+            getEventTask(element.dataset.id)
+                .then(data => {
+                    if (data.tasks.length === 0) {
+                        tasksContainer.innerHTML = "<p>No tasks available</p>";  // Show message if no tasks exist
+                    } else {
+                        data.tasks.forEach(task => {
+                            let taskDiv = document.createElement("div");
+                            taskDiv.innerHTML = `<p>${task.task_name}</p>`;
+                            tasksContainer.appendChild(taskDiv);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching tasks:", error);
+                    tasksContainer.innerHTML = "<p>Error loading tasks</p>"; // Show error message
+                });
 
             eventDetails.style.display = "block";
         }
@@ -166,6 +256,31 @@
                 location.reload();
             })
             .catch(error => console.error("Error:", error));
+        }
+
+        function completeEvent() {
+            let eventId = document.getElementById("complete_button").getAttribute("user-event-id");
+
+            fetch("{% url 'complete_event' %}", {
+                method: "POST",
+                headers:{"X-CSRFToken": getCSRFToken() },
+                body: new URLSearchParams({ event_id: eventId })
+            }).then(response => response.json())  // Convert response to JSON
+            .then(data => console.log("Success:", data))  // Log response data
+            .then(data => {
+                location.reload();
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function getEventTask(eventId) {
+            console.log(eventId)
+            return fetch(`/ecolution/events/gettasks/${eventId}/`)
+                .then(response => response.json())  // Convert response to JSON
+                .catch(error => {
+                    console.error("Error:", error);
+                    return { tasks: [] }; 
+                });
         }
 
         function getCSRFToken() {

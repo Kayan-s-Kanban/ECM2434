@@ -176,9 +176,10 @@ def complete_task(request, task_id):
     return JsonResponse({"status": "error"}, status=400)
 
 def events_view(request):
-    user_events = UserEvent.objects.filter(user=request.user)
-    all_events = Event.objects.exclude(event_id__in=user_events.values_list("event_id", flat=True))
-    context = {"user_events": user_events, "events": all_events}
+    all_user_events = UserEvent.objects.filter(user=request.user)
+    incomplete_user_events = UserEvent.objects.filter(user=request.user, completed = False)
+    all_events = Event.objects.exclude(event_id__in=all_user_events.values_list("event_id", flat=True))
+    context = {"user_events": incomplete_user_events, "events": all_events}
     return render(request, "events.html", context)
 
 def join_event(request):
@@ -204,6 +205,44 @@ def leave_event(request):
         except Exception as e:
             return JsonResponse({"success": False, "message": str(e)})
     return JsonResponse({"success": False, "message": "Invalid request"})
+
+def complete_event(request):
+    if request.method == "POST":
+        try:
+            event_id = request.POST.get("event_id")
+            event = get_object_or_404(Event, event_id=event_id)
+            event_points = event.total_points
+            UserEvent.objects.filter(user=request.user, event=event).update(completed=True)
+            CustomUser.objects.filter(id=request.user.id).update(points=request.user.points + event_points)
+
+            return JsonResponse({"success": True})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)})
+    return JsonResponse({"success": False, "message": "Invalid request"})
+
+def get_event_tasks(request, event_id):
+    try:    
+        event = get_object_or_404(Event, event_id=event_id)
+        tasks =  Task.objects.filter(event=event)
+
+        tasks_data = [
+            {
+                "task_id": task.task_id,
+                "task_name": task.task_name,
+                "description": task.description,  # Add more fields as needed
+                "points_given": task.points_given,
+                "xp_given": task.xp_given,
+            }
+            for task in tasks
+        ]
+
+        return JsonResponse({"tasks": tasks_data})
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+
+
 def settings_view(request):
     return render(request, "settings.html")
 
