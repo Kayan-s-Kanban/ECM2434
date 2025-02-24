@@ -43,57 +43,6 @@
             font-weight: bold;
         }
 
-        .task {
-            background: white;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .task-header {
-            margin-bottom: 8px;
-        }
-
-        .task-title {
-            display: block;
-            font-weight: bold;
-            font-size: 16px;
-        }
-
-        .task-points-small {
-            display: block;
-            font-size: 12px;
-            color: #555;
-            margin-top: 2px;
-        }
-
-        .task-description {
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .task-actions {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 5px;
-        }
-
-        .task-date {
-            margin-right: 10px;
-            font-size: 12px;
-            color: gray;
-        }
-
-        .delete-icon, .complete-icon {
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
         .popup-bg {
             display: none;
             position: fixed;
@@ -147,20 +96,7 @@
         <div id="current-tasks">
             {% for user_task in user_tasks %}
                 {% if not user_task.completed %}
-                <div class="task">
-                    <div class="task-header">
-                        <span class="task-title">{{ user_task.task.task_name }}</span>
-                        <span class="task-points-small">Points: {{ user_task.task.points_given }} ⚪</span>
-                    </div>
-                    <div class="task-actions">
-                        <span class="task-date">{{ user_task.date|date:"M d, Y" }}</span>
-                        {% if not user_task.completed %}
-                            <span class="complete-icon" onclick="completeTask(this, {{ user_task.task.task_id }})">✔️</span>
-                        {% endif %}
-                        <span class="delete-icon" onclick="deleteTask(this, {{ user_task.id }})">🗑️</span>
-                    </div>
-                </div>
-                
+                    {% include 'partials/task_card.html' with user_task=user_task %}
                 {% endif %}
             {% empty %}
                 <p>No current tasks available.</p>
@@ -170,16 +106,7 @@
         <div id="completed-tasks" style="display: none;">
             {% for user_task in user_tasks %}
                 {% if user_task.completed %}
-                <div class="task">
-                    <div class="task-header">
-                        <span class="task-title">{{ user_task.task.task_name }}</span>
-                        <span class="task-points-small">Points: {{ user_task.task.points_given }} 🟢</span>
-                    </div>
-                    <div class="task-actions">
-                        <span class="task-date">{{ user_task.date|date:"M d, Y" }}</span>
-                        <span class="delete-icon" onclick="deleteTask(this, {{ user_task.id }})">🗑️</span>
-                    </div>
-                </div>
+                    {% include 'partials/task_card.html' with user_task=user_task %}
                 {% endif %}
             {% empty %}
                 <p>No completed tasks available.</p>
@@ -233,6 +160,7 @@
 {% endblock %}
 
 {% block additional %}
+    {{ block.super }}
     <script>
         function openPopup() {
             document.getElementById("popup").style.display = "block";
@@ -285,48 +213,6 @@
             }).then(response => response.json())
             .then(data => location.reload());
         }
-
-        function completeTask(element, taskId) {
-            fetch(`/ecolution/tasks/complete/${taskId}/`, {
-                method: 'POST',
-                headers: { 'X-CSRFToken': getCSRFToken() }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "success") {
-                    document.querySelector(".currency_indicator h3").innerText = data.points;
-                    
-                    const taskElement = element.closest(".task");
-                    const completeIcon = taskElement.querySelector(".complete-icon");
-                    if (completeIcon) {
-                        completeIcon.remove();
-                    }
-                    let pointsSpan = taskElement.querySelector(".task-points-small");
-                    if (pointsSpan) {
-                        pointsSpan.innerHTML = pointsSpan.innerHTML.replace("⚪", "🟢");
-                    }
-                    const completedTasksContainer = document.getElementById("completed-tasks");
-                    completedTasksContainer.appendChild(taskElement);
-                }
-            })
-            .catch(error => console.error('Error completing task:', error));
-        }
-
-
-
-
-        function deleteTask(element, userTaskId) {
-            fetch(`/ecolution/tasks/delete/${userTaskId}/`, {
-                method: 'POST',
-                headers: { 'X-CSRFToken': getCSRFToken() }
-            }).then(response => response.json())
-            .then(data => {
-                if (data.status === "success") {
-                    element.closest(".task").remove();
-                }
-            });
-        }
-
 
         function showTasks(tab) {
             const currentTasks = document.getElementById("current-tasks");
