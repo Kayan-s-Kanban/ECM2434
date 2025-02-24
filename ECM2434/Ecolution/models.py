@@ -64,7 +64,7 @@ class Pet(models.Model):
                 name='pet_level_range'
             ),
             models.CheckConstraint(
-                check=models.Q(pet_exp__gte=0) & models.Q(pet_exp__lte=100 + (F('pet_level') * 20)),
+                check=models.Q(pet_exp__gte=0) & models.Q(pet_exp__lte=100),
                 name='pet_exp_range'
             )
         ]
