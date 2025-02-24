@@ -11,14 +11,14 @@
 
 {% block main %}
     <section class="spacer_big"></section>
-    <section class="signup card flex_v flex_center box_shadow">
-        <h2 class="text_dark margin_std_bot">Login to Ecolution</h2>
+    <section class="signup card flex_v flex_center box_shadow"> <!-- box where the form to login exists -->
+        <h2 class="text_dark margin_std_bot">Login to Ecolution</h2> 
         <form class="flex_v flex_v_fill" method="POST">
             {% csrf_token %}
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
             <button class="button box_shadow" type="submit">Login</button>
         </form>
-        <p class="text_dark font_small margin_std_top">Don't have an account? <a href="{% url 'signup' %}">Sign up here</a></p>
+        <p class="text_dark font_small margin_std_top">Don't have an account? <a href="{% url 'signup' %}">Sign up here</a></p> <!-- link to the sign up page to create an account if the user doesnt have one -->
     </section>
 {% endblock %}
