@@ -110,6 +110,19 @@
                     </select>
                 </div>                
                 <button class="button button_menu box_shadow" type="button" id="change-password-btn">Change Password</button>
+                <form id="change-password-form" method="POST" action="{% url 'change_password' %}">
+                    {% csrf_token %}
+                    <label for="current_password">Current Password:</label>
+                    <input type="password" id="current_password" name="current_password" required>
+                    <p></p>
+                    <label for="new_password1">New Password:</label>
+                    <input type="password" id="new_password1" name="new_password1" required>
+                    <p></p>
+                    <label for="new_password2">Confirm New Password:</label>
+                    <input type="password" id="new_password2" name="new_password2" required>
+                    <p></p>
+                    <button type="submit">Update Password</button>
+                </form>
                 <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'delete_account' %}'">Delete Account</button>
                 <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'login' %}'">Logout</button>
             </div>
