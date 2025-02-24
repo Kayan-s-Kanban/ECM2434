@@ -260,7 +260,8 @@ def get_event_tasks(request, event_id):
 def settings_view(request):
     user = request.user
     context = {
-        "name" : user.username
+        "name" : user.username,
+        "points": user.points
     }
     return render(request, "settings.html", context)
 
