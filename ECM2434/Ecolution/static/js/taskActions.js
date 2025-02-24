@@ -22,6 +22,11 @@
                 if (taskElement) {
                     taskElement.remove();
                 }
+                if (window.location.href.includes("tasks")) {
+                    window.location.href = "/ecolution/tasks/";
+                } else {
+                    window.location.href = "/ecolution/home/";
+                }
             }
         })
         .catch(error => console.error('Error completing task:', error));
