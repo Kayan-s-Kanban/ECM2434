@@ -10,7 +10,7 @@ class AdminTestCase(TestCase):
             password = 'password'
         )
         # admin page url
-        self.admin_url = reverse('admin')
+        self.admin_url = reverse('/admin/')
 
     ## As an admin, I can log into admin page
     def test_admin_login(self):

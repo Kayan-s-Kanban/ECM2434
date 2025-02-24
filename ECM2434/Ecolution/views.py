@@ -6,11 +6,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse, Http404
 from django.db import IntegrityError
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+from django.views.decorators.cache import never_cache
 from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent  
 
 # Create your views here.
 def index(request):
-    return HttpResponse("Hello, world. You're at the Ecolution index")
+    return redirect("home")
 
 User = get_user_model()
 
@@ -57,6 +60,11 @@ def login_view(request):
             messages.error(request, "Invalid username or password")
 
     return render(request, "login.html")
+
+@never_cache
+def logout_view(request):
+    logout(request)
+    return redirect("login")  # replace 'home' with your actual home page URL name
 
 @login_required
 def home_view(request):
@@ -263,7 +271,8 @@ def get_event_tasks(request, event_id):
 def settings_view(request):
     user = request.user
     context = {
-        "name" : user.username
+        "name" : user.username,
+        "points": user.points
     }
     return render(request, "settings.html", context)
 
@@ -324,9 +333,14 @@ def update_fontsize(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            font_size = data.get("preferred_font_size")
+            # Convert the incoming font size value to an integer.
+            try:
+                font_size = int(data.get("preferred_font_size"))
+            except (TypeError, ValueError):
+                return JsonResponse({"status": "error", "message": "Invalid font size"})
 
-            if font_size not in ["SMALL", "MEDIUM", "LARGE"]:
+            # Validate against the numeric choices
+            if font_size not in [CustomUser.FONT_SIZE_SMALL, CustomUser.FONT_SIZE_MEDIUM, CustomUser.FONT_SIZE_LARGE]:
                 return JsonResponse({"status": "error", "message": "Invalid font size"})
 
             request.user.preferred_font_size = font_size
@@ -339,3 +353,7 @@ def update_fontsize(request):
 @login_required
 def get_fontsize(request):
     return JsonResponse({"preferred_font_size": request.user.preferred_font_size})
+
+
+def terms_view(request):
+    return render(request, "term.html")
