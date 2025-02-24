@@ -322,9 +322,14 @@ def update_fontsize(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            font_size = data.get("preferred_font_size")
+            # Convert the incoming font size value to an integer.
+            try:
+                font_size = int(data.get("preferred_font_size"))
+            except (TypeError, ValueError):
+                return JsonResponse({"status": "error", "message": "Invalid font size"})
 
-            if font_size not in ["SMALL", "MEDIUM", "LARGE"]:
+            # Validate against the numeric choices
+            if font_size not in [CustomUser.FONT_SIZE_SMALL, CustomUser.FONT_SIZE_MEDIUM, CustomUser.FONT_SIZE_LARGE]:
                 return JsonResponse({"status": "error", "message": "Invalid font size"})
 
             request.user.preferred_font_size = font_size
