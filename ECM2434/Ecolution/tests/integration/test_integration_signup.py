@@ -21,7 +21,7 @@ class SignupIntegrationTests(TestCase):
         self.assertRedirects(response, '/ecolution/login/')
 
         # checks that the user is created
-        user = CustomUser.objects.get(username = 'newuser')
+        user = CustomUser.objects.get(username = 'testuser')
         self.assertIsNotNone(user)  # checks that the user exists in the database
 
     ## As a user, I cannot sign up for an account with an invalid email and valid password
@@ -82,7 +82,7 @@ class SignupIntegrationTests(TestCase):
     ## As a user, I cannot sign up for an account with the password fields not matching
     def test_signup_different_passwords(self):
         response = self.client.post(self.signup_url, {
-            'email': self.user_data['email'],
+            'email': self.user_data['email@valid'],
             'username': self.user_data['username'],
             'password1': '',  # password1 (it should match password2)
             'password2': self.user_data['password2'],  # password2
