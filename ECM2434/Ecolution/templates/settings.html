@@ -104,53 +104,43 @@
                 <div class="dropdown-container flex_h flex_start button button_menu box_shadow" style="justify-content: start; gap: 8px;">
                     <label for="font-size-select">Font Size:</label>
                     <select id="font-size-select" class="dropdown">
-                        <option value="SMALL" {% if user.preferred_font_size == "SMALL" %}selected{% endif %}>Small</option>
-                        <option value="MEDIUM" {% if user.preferred_font_size == "MEDIUM" %}selected{% endif %}>Medium</option>
-                        <option value="LARGE" {% if user.preferred_font_size == "LARGE" %}selected{% endif %}>Large</option>
+                        <option value=13 {% if user.preferred_font_size == 13 %}selected{% endif %}>Small</option>
+                        <option value=16 {% if user.preferred_font_size == 16 %}selected{% endif %}>Medium</option>
+                        <option value=19 {% if user.preferred_font_size == 19 %}selected{% endif %}>Large</option>
                     </select>
                 </div>                
-                <button class="button button_menu box_shadow" type="button" id="change-password-btn">Change Password</button>
-                <form id="change-password-form" method="POST" action="{% url 'change_password' %}">
-                    {% csrf_token %}
-                    <label for="current_password">Current Password:</label>
-                    <input type="password" id="current_password" name="current_password" required>
-                    <p></p>
-                    <label for="new_password1">New Password:</label>
-                    <input type="password" id="new_password1" name="new_password1" required>
-                    <p></p>
-                    <label for="new_password2">Confirm New Password:</label>
-                    <input type="password" id="new_password2" name="new_password2" required>
-                    <p></p>
-                    <button type="submit">Update Password</button>
-                </form>
+                <button class="button button_menu box_shadow" type="button" id="change-password-btn">Change Password</button>      
+                <div id="password-form">
+                    <form id="change-password-form" method="POST" action="{% url 'change_password' %}">
+                        {% csrf_token %}
+                        <div class="form-group-horizontal">
+                            <label for="current_password">Current Password:</label>
+                            <input type="password" id="current_password" name="current_password" required>
+                        </div>
+                        <div class="form-group-horizontal">
+                            <label for="new_password1">New Password:</label>
+                            <input type="password" id="new_password1" name="new_password1" required>
+                        </div>
+                        <div class="form-group-horizontal">
+                            <label for="new_password2">Confirm New Password:</label>
+                            <input type="password" id="new_password2" name="new_password2" required>
+                        </div>
+                        <button type="submit">Update Password</button>
+                    </form>
+                </div>
                 <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'delete_account' %}'">Delete Account</button>
                 <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'login' %}'">Logout</button>
                 <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'term_of_use' %}'">Terms and Conditions</button>
             </div>
         </section>
-
-        <div id="password-form">
-            <form id="change-password-form" method="POST" action="{% url 'change_password' %}">
-                {% csrf_token %}
-                <label for="current_password">Current Password:</label>
-                <input type="password" id="current_password" name="current_password" required>
-
-                <label for="new_password1">New Password:</label>
-                <input type="password" id="new_password1" name="new_password1" required>
-
-                <label for="new_password2">Confirm New Password:</label>
-                <input type="password" id="new_password2" name="new_password2" required>
-
-                <button type="submit">Update Password</button>
-            </form>
-        </div>
     </section>
 {% endblock %}
 
-{% block script %}
+{% block additional %}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const fontSizeSelect = document.getElementById("font-size-select");
+        console.log("fontSizeSelect element:", fontSizeSelect);
 
         // Fetch the user's current font size and set the dropdown value
         fetch("{% url 'get_fontsize' %}")
@@ -161,8 +151,22 @@
                 }
             })
             .catch(error => console.error("Error fetching font size:", error));
+        
+        document.getElementById("change-password-btn").addEventListener("click", function () {
+            const passwordForm = document.getElementById("password-form");
+            // Get the computed display value
+            const computedDisplay = window.getComputedStyle(passwordForm).display;
+            console.log("Computed display:", computedDisplay);
+            // Toggle based on computed value
+            if (computedDisplay === "none") {
+                passwordForm.style.display = "block";
+            } else {
+                passwordForm.style.display = "none";
+            }
+        });
 
         fontSizeSelect.addEventListener("change", function () {
+            console.log("Dropdown changed, new value:", this.value);
             fetch("{% url 'update_fontsize' %}", {
                 method: "POST",
                 headers: {
