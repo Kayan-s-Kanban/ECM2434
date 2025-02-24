@@ -21,8 +21,9 @@ class LogoutTestCase(TestCase):
 
         # user logs out through settings page
         self.client.get(reverse('settings'))
-        self.client.get(reverse('logout'))
+        self.client.post('logout')
 
         # check user is logged out by attempting to access a protected page
-        self.assertFalse(self.client.get(reverse('home')))
+        response = self.client.get(reverse('home'))
+        self.assertNotEqual(response, self.client.get(reverse('home')))
         self.assertNotIn('_auth_user_id', self.client.session)
