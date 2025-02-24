@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    <title>Terms Of Use - Ecolution</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+{% endblock %}
+
+{% block main %}
+    <!-- Main Content -->
+    <body>
+        <div>
+            <h1>Terms Of Use</h1>
+
+            <div>
+                <h2>Terms & Conditions</h2>
+                <iframe src="{% static 'GDPR/T&C_Sprint_1_(PDF).pdf' %}"></iframe>
+
+                <p>If you are unable to view the terms and conditions you can download them:</p>
+                <a href="{% static 'GDPR/T&C_Sprint_1_(PDF).pdf' %}">Terms and Conditions</a>
+            </div>
+
+            <div>
+                <h2>Privacy Policy</h2>
+                <iframe src="{% static 'GDPR/PP_Sprint_1_(PDF).pdf' %}"></iframe>
+
+                <p>If you are unable to view the privacy policy you can download them:</p>
+                <a href="{% static 'GDPR/PP_Sprint_1_(PDF).pdf' %}">Privacy Policy</a>
+
+            </div>
+
+        </div>
+    </body>
+
+{% endblock %}
+

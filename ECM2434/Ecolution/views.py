@@ -257,4 +257,8 @@ def update_fontsize(request):
 
 @login_required
 def get_fontsize(request):
-    return JsonResponse({"preferred_font_size": request.user.preferred_font_size})    
+    return JsonResponse({"preferred_font_size": request.user.preferred_font_size})
+
+
+def terms_veiw(request):
+    return render(request, "term.html")
