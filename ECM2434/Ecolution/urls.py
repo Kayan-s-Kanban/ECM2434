@@ -26,5 +26,5 @@ urlpatterns = [
     path("update-fontsize/", update_fontsize, name="update_fontsize"),
     path("get-fontsize/", get_fontsize, name="get_fontsize"),
     path("term_of_use/",views.terms_view, name="term_of_use"),
-    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
+    path('logout/', views.logout_view, name='logout'),
 ]
