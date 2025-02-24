@@ -44,7 +44,12 @@
 
             <!-- Pet Name Input (Hidden by Default) -->
             <input type="text" name="pet_name" id="pet_name_input" placeholder="Pet Name" style="display: none;">
-
+            
+            <label class="terms_checkbox">
+                <input type="checkbox" name="agree_terms" required>
+                <span>I have read and agree to the <a href="/terms" target="_blank">Terms and Conditions</a></span>
+            </label>            
+            
             <button class="button box_shadow" type="submit">Sign Up</button>
         </form>
         <p class="text_dark font_small margin_std_top">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
