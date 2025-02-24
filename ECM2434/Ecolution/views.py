@@ -1,6 +1,8 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth import authenticate, login, logout, get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse, Http404
 from django.db import IntegrityError
@@ -18,6 +20,8 @@ def signup_view(request):
         username = request.POST["username"]
         password1 = request.POST["password1"]
         password2 = request.POST["password2"]
+        pet_type = request.POST.get("pet_type", "mushroom")  # Default to mushroom
+        pet_name = request.POST.get("pet_name", "") if pet_type else None
 
         if password1 != password2:
             messages.error(request, "Passwords do not match!")
@@ -30,6 +34,10 @@ def signup_view(request):
         # Create and save the new user
         user = User.objects.create_user(username=username, email=email, password=password1)
         user.save()
+
+        # Assign a pet to the new user
+        pet = Pet.objects.create(user=user, pet_name=pet_name if pet_name else pet_type, pet_type=pet_type)
+        pet.save()
 
         messages.success(request, "Account created! You can now log in.")
         return redirect("login")
@@ -53,24 +61,20 @@ def login_view(request):
 @login_required
 def home_view(request):
     user = request.user  # Get the logged-in user
-
-    # Fetch the user's pet (assuming one pet per user)
     pet = Pet.objects.filter(user=user).first()  
 
-    # Fetch the user's points
-    points = user.points
-
-    # Get pet details (default values if no pet exists)
-    pet_exp = pet.pet_exp if pet else 0
-    pet_name = pet.pet_name if pet else "No Pet"
-
     context = {
-        "points": points,
-        "pet_exp": pet_exp,
-        "pet_name": pet_name
+        "points": user.points,
+        "pet_exp": pet.pet_exp if pet else 0,
+        "pet_name": pet.pet_name if pet else "No Pet",
+        "pet_type": pet.pet_type.lower() if pet else "default",
+        "pet_size": pet.determine_size() if pet else "small",  # Determine size
+        "level": pet.pet_level if pet else 0,
+        "pet": pet,
     }
 
-    return render(request, "home.html", context)
+    return render(request, 'home.html', context)
+
 
 @login_required
 def tasks_view(request):
@@ -85,7 +89,8 @@ def tasks_view(request):
     return render(request, "tasks.html", {
         "user_tasks": user_tasks,
         "predefined_tasks": predefined_tasks,
-        "custom_tasks": custom_tasks
+        "custom_tasks": custom_tasks,
+        "points": request.user.points
     })
 
 @login_required
@@ -164,23 +169,100 @@ def delete_task(request, user_task_id):
 
 @login_required
 def complete_task(request, task_id):
-    """Marks a UserTask as completed."""
     if request.method == "POST":
         user_task = get_object_or_404(UserTask, task__task_id=task_id, user=request.user)
-        user_task.completed = True
-        user_task.save()
-        return JsonResponse({"status": "success"})
+        if not user_task.completed:
+            user_task.completed = True
+            user_task.save()
 
+            # Add points to the users total points
+            task = user_task.task
+            request.user.points += task.points_given
+            request.user.save()
+
+            # Add task xp to the pet's overall xp, currently this will just get the first pet in the list
+            pet = Pet.objects.filter(user=request.user).first()
+            if pet:
+                pet.pet_exp += task.xp_given
+                pet.save()
+                
+        return JsonResponse({"status": "success", "points": request.user.points})
     return JsonResponse({"status": "error"}, status=400)
 
 def events_view(request):
-    user_events = UserEvent.objects.filter(user=request.user)
-    all_events = Event.objects.exclude(event_id__in=user_events)
-    context = {"user_events": user_events, "events": all_events}
+    all_user_events = UserEvent.objects.filter(user=request.user)
+    incomplete_user_events = UserEvent.objects.filter(user=request.user, completed = False)
+    all_events = Event.objects.exclude(event_id__in=all_user_events.values_list("event_id", flat=True))
+    context = {"user_events": incomplete_user_events, "events": all_events}
     return render(request, "events.html", context)
 
+def join_event(request):
+    if request.method == "POST":
+        try:
+            event_id = request.POST.get("event_id")
+            event = get_object_or_404(Event, event_id=event_id)
+            UserEvent.objects.create(user=request.user, event=event)
+
+            return JsonResponse({"success": True})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)})
+    return JsonResponse({"success": False, "message": "Invalid request"})
+
+def leave_event(request):
+    if request.method == "POST":
+        try:
+            event_id = request.POST.get("event_id")
+            event = get_object_or_404(Event, event_id=event_id)
+            UserEvent.objects.filter(user=request.user, event=event).delete()
+
+            return JsonResponse({"success": True})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)})
+    return JsonResponse({"success": False, "message": "Invalid request"})
+
+def complete_event(request):
+    if request.method == "POST":
+        try:
+            event_id = request.POST.get("event_id")
+            event = get_object_or_404(Event, event_id=event_id)
+            event_points = event.total_points
+            UserEvent.objects.filter(user=request.user, event=event).update(completed=True)
+            CustomUser.objects.filter(id=request.user.id).update(points=request.user.points + event_points)
+
+            return JsonResponse({"success": True})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)})
+    return JsonResponse({"success": False, "message": "Invalid request"})
+
+def get_event_tasks(request, event_id):
+    try:    
+        event = get_object_or_404(Event, event_id=event_id)
+        tasks =  Task.objects.filter(event=event)
+
+        tasks_data = [
+            {
+                "task_id": task.task_id,
+                "task_name": task.task_name,
+                "description": task.description,  # Add more fields as needed
+                "points_given": task.points_given,
+                "xp_given": task.xp_given,
+            }
+            for task in tasks
+        ]
+
+        return JsonResponse({"tasks": tasks_data})
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+
+
 def settings_view(request):
-    return render(request, "settings.html")
+    user = request.user
+    context = {
+        "name" : user.username
+    }
+    return render(request, "settings.html", context)
 
 @login_required
 def delete_account(request):
@@ -205,3 +287,52 @@ def delete_account(request):
         return redirect("home")  # Change "home" to your homepage URL name
 
     return render(request, "delete_account.html")
+
+
+@login_required
+def change_password(request):
+    if request.method == "POST":
+        current_password = request.POST["current_password"]
+        new_password1 = request.POST["new_password1"]
+        new_password2 = request.POST["new_password2"]
+        
+        if new_password1 != new_password2:
+            messages.error(request, "New passwords do not match!")
+            return redirect("settings")
+
+        user = request.user
+        if not user.check_password(current_password):
+            messages.error(request, "Current password is incorrect!")
+            return redirect("settings")
+
+        user.set_password(new_password1)
+        user.save()
+
+        # Keep the user logged in after password change
+        update_session_auth_hash(request, user)
+
+        messages.success(request, "Password updated successfully!")
+        return redirect("settings")
+
+    return redirect("settings")
+
+@login_required
+def update_fontsize(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            font_size = data.get("preferred_font_size")
+
+            if font_size not in ["SMALL", "MEDIUM", "LARGE"]:
+                return JsonResponse({"status": "error", "message": "Invalid font size"})
+
+            request.user.preferred_font_size = font_size
+            request.user.save()
+            return JsonResponse({"status": "success"})
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)})
+    return JsonResponse({"status": "error", "message": "Invalid request"})
+
+@login_required
+def get_fontsize(request):
+    return JsonResponse({"preferred_font_size": request.user.preferred_font_size})

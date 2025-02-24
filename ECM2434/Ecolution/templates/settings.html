@@ -5,7 +5,6 @@
     <title>Settings - Ecolution</title>
 {% endblock %}
 
-<!-- Style Content Here (Should be integrated into styles.css eventually) -->
 {% block style %}
     <style>
         .settings-container {
@@ -81,34 +80,119 @@
             color: red;
             font-weight: bold;
         }
+
+        #password-form {
+            display: none;
+            padding: 15px;
+        }
     </style>
 {% endblock %}
 
-
 {% block main %}
-    <div class="settings-container">
-        <div class="header">
-            <h2>Settings</h2>
-        </div>
+    <section class="spacer_big"></section>
+    <section class="signup card flex_v flex_center box_shadow">
+        <h2 class="text_dark margin_sml_bot">Settings</h2>
+        <section class="menu card flex_v flex_v_fill">
+            <section class="spacer"></section>
+            <div class="user_info flex_h flex_center">
+                {% comment %} <img src="{% static 'images/profile.jpg' %}" alt="Profile Picture" class="profile-pic"> {% endcomment %}
+                <img src="{% static 'images/person.svg' %}" alt="Profile Picture" class="profile_pic box_shadow">
+                <h3>{{name}}</h3>
+            </div>
+            <section class="spacer"></section>
+            <div class="menu_container flex_v flex_v_fill">
+                <div class="dropdown-container flex_h flex_start button button_menu box_shadow" style="justify-content: start; gap: 8px;">
+                    <label for="font-size-select">Font Size:</label>
+                    <select id="font-size-select" class="dropdown">
+                        <option value="SMALL" {% if user.preferred_font_size == "SMALL" %}selected{% endif %}>Small</option>
+                        <option value="MEDIUM" {% if user.preferred_font_size == "MEDIUM" %}selected{% endif %}>Medium</option>
+                        <option value="LARGE" {% if user.preferred_font_size == "LARGE" %}selected{% endif %}>Large</option>
+                    </select>
+                </div>                
+                <button class="button button_menu box_shadow" type="button" id="change-password-btn">Change Password</button>
+                <form id="change-password-form" method="POST" action="{% url 'change_password' %}">
+                    {% csrf_token %}
+                    <label for="current_password">Current Password:</label>
+                    <input type="password" id="current_password" name="current_password" required>
+                    <p></p>
+                    <label for="new_password1">New Password:</label>
+                    <input type="password" id="new_password1" name="new_password1" required>
+                    <p></p>
+                    <label for="new_password2">Confirm New Password:</label>
+                    <input type="password" id="new_password2" name="new_password2" required>
+                    <p></p>
+                    <button type="submit">Update Password</button>
+                </form>
+                <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'delete_account' %}'">Delete Account</button>
+                <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'login' %}'">Logout</button>
+            </div>
+        </section>
 
-        <div class="user-info">
-            <img src="static/images/profile.jpg" alt="Profile Picture" class="profile-pic">
-            <h2>User Name</h2>
-            <p>Joined on DD/MM/YYYY</p>
-        </div>
+        <div id="password-form">
+            <form id="change-password-form" method="POST" action="{% url 'change_password' %}">
+                {% csrf_token %}
+                <label for="current_password">Current Password:</label>
+                <input type="password" id="current_password" name="current_password" required>
 
-        <div class="details">
-            <span>📍 Exeter, United Kingdom</span>
-            <span>✔ XX Tasks Completed</span>
-        </div>
+                <label for="new_password1">New Password:</label>
+                <input type="password" id="new_password1" name="new_password1" required>
 
-        <ul class="settings-list">
-            <li onclick="location.href='edit-profile.html'">Edit Profile</li>
-            <li onclick="location.href='completed-tasks.html'">Completed Tasks</li>
-            <li onclick="location.href='location.html'">Location</li>
-            <li onclick="location.href='{% url 'delete_account' %}'">Delete Account</li>
-            <li class="logout" onclick="location.href='home.html'">Logout</li>
-        </ul>
-    </div>
+                <label for="new_password2">Confirm New Password:</label>
+                <input type="password" id="new_password2" name="new_password2" required>
+
+                <button type="submit">Update Password</button>
+            </form>
+        </div>
+    </section>
 {% endblock %}
 
+{% block script %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const fontSizeSelect = document.getElementById("font-size-select");
+
+        // Fetch the user's current font size and set the dropdown value
+        fetch("{% url 'get_fontsize' %}")
+            .then(response => response.json())
+            .then(data => {
+                if (data.preferred_font_size) {
+                    fontSizeSelect.value = data.preferred_font_size;
+                }
+            })
+            .catch(error => console.error("Error fetching font size:", error));
+
+        fontSizeSelect.addEventListener("change", function () {
+            fetch("{% url 'update_fontsize' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken()
+                },
+                body: JSON.stringify({ preferred_font_size: this.value })
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.status === "success") {
+                      console.log("Font size updated to", this.value);
+                  } else {
+                      console.error("Failed to update font size");
+                  }
+              }).catch(error => console.error("Error:", error));
+        });
+
+        function getCSRFToken() {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                let cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    let cookie = cookies[i].trim();
+                    if (cookie.startsWith("csrftoken=")) {
+                        cookieValue = cookie.substring("csrftoken=".length, cookie.length);
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    });
+</script>
+{% endblock %}

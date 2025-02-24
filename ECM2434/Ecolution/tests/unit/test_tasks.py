@@ -35,8 +35,6 @@ class TasksUnitTests(TestCase):
         # check task is no longer in user's list
         self.assertFalse(UserTask.objects.filter(user = self.user1, task = self.task1).exists())
 
-    ## As a user, I can edit tasks (?)
-
     ## As a user, I can complete tasks
     def test_user_completes_tasks(self):
         # add task to user list

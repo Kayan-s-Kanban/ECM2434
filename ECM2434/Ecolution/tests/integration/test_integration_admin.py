@@ -9,9 +9,8 @@ class AdminTestCase(TestCase):
             username = 'admin',
             password = 'password'
         )
-
+        # admin page url
         self.admin_url = reverse('admin')
-        self.client.login(username = 'admin', password = 'password')
 
     ## As an admin, I can log into admin page
     def test_admin_login(self):
@@ -23,7 +22,8 @@ class AdminTestCase(TestCase):
 
         # check that the user is logged in and redirected to the intended page
         self.assertRedirects(response, '/admin/')
-        # or check if the user is logged in using session or user info
+
+        # check if the user is logged in using session or user info
         self.assertTrue('_auth_user_id', self.client.session)
 
     ## As an admin, I cannot log into admin page with invalid user
@@ -36,7 +36,8 @@ class AdminTestCase(TestCase):
 
         # check that the user is logged in and redirected to the intended page
         self.assertNotEqual(response, '/admin/')
-        # or check if the user is logged in using session or user info
+
+        # check if the user is logged in using session or user info
         self.assertFalse('_auth_user_id', self.client.session)
 
     # As an admin, I cannot log into admin page with invalid password
@@ -49,11 +50,6 @@ class AdminTestCase(TestCase):
 
         # check that the user is logged in and redirected to the intended page
         self.assertNotEqual(response, '/admin/')
-        # or check if the user is logged in using session or user info
+        # check if the user is logged in using session or user info
         self.assertFalse('_auth_user_id', self.client.session)
 
-    ## As an admin, I can add content
-    ## As an admin, I can remove content
-    ## As an admin, I can edit content
-    ## As an admin, I can remove(?) users
-    ## As an admin, I can add(?) users

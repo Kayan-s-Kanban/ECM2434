@@ -1,7 +1,7 @@
 from django.urls import path
 from django.contrib import admin
 from . import views
-from .views import login_view, signup_view, delete_account
+from .views import login_view, signup_view, delete_account, change_password, update_fontsize, get_fontsize
 
 
 urlpatterns = [
@@ -16,5 +16,12 @@ urlpatterns = [
     path("tasks/complete/<int:task_id>/", views.complete_task, name="complete_task"),
     path('tasks/delete/<int:user_task_id>/', views.delete_task, name='delete_task'),
     path("events/", views.events_view, name="events"),
+    path("events/joinevent/", views.join_event, name="join_event"),
+    path("events/leaveevent/", views.leave_event, name="leave_event"),
+    path("events/completeevent/", views.complete_event, name="complete_event"),
+    path("events/gettasks/<int:event_id>/", views.get_event_tasks, name="get_event_tasks"),
     path('delete-account/', delete_account, name='delete_account'),
+    path("change_password/", change_password, name="change_password"),
+    path("update-fontsize/", update_fontsize, name="update_fontsize"),
+    path("get-fontsize/", get_fontsize, name="get_fontsize"),
 ]

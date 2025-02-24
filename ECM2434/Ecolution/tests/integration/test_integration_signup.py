@@ -18,7 +18,7 @@ class SignupIntegrationTests(TestCase):
         response = self.client.post(self.signup_url, self.user_data)
 
         # check if the user is redirected after successful signup
-        self.assertRedirects(response, '/home/')  # TODO: adjust the redirect URL (e.g., home page or login page)
+        self.assertRedirects(response, '/ecolution/login/')
 
         # checks that the user is created
         user = CustomUser.objects.get(username = 'newuser')
@@ -61,7 +61,8 @@ class SignupIntegrationTests(TestCase):
     def test_signup_redirect(self):
         # user is successfully signed up
         response = self.client.post(self.signup_url, self.user_data)
-        self.assertEqual(response.status_code, 302)  # expect redirect after sign-up
+        # check if the user is redirected after successful signup
+        self.assertRedirects(response, '/ecolution/login/')
         self.assertTrue(CustomUser.objects.filter(username = 'testuser').exists())
 
         # user is successfully logged in
@@ -71,12 +72,12 @@ class SignupIntegrationTests(TestCase):
         }
 
         response = self.client.post(self.login_url, login_data)
-        self.assertEqual(response.status_code, 200)  # expect redirect after login
+        # user should be redirected to homepage after login
+        self.assertRedirects(response, '/ecolution/home/')
 
         # check that user has been authenticated
-        response = self.client.get(reverse('home'))  # TODO: replace 'home' with a logged-in page URL name
+        response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
-        # self.assertContains(response, 'testuser')  # TODO: if applicable, verify username is shown on the page
 
     ## As a user, I cannot sign up for an account with the password fields not matching
     def test_signup_different_passwords(self):

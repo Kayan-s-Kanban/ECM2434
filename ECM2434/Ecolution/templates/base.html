@@ -16,6 +16,16 @@
     {% block style %}
         <!-- Style Content Here (Should be integrated into styles.css eventually) -->
     {% endblock %}
+    {% if user.is_authenticated %}
+    <style>
+        :root {
+            --font_size_rem: {{ user.preferred_font_size }}px;
+        }
+        html {
+            font-size: var(--font_size_rem);
+        }
+    </style>
+    {% endif %}
 </head>
 
 <body class="background">

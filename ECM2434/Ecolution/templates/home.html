@@ -10,21 +10,19 @@
         <div class="flex_v flex_center">
             <div class="image_wrapper">
                 {% if pet %}
-                    <img src="{% static 'images/pets/' %}{{ pet.pet_type|lower }}/{{ pet.size }}.gif" 
-                         alt="{{ pet.pet_name }}">
+                <img src="{% static 'images/pets/' %}{{ pet_type }}/{{ pet_type }}_{{ pet_size }}.gif" alt="{{ pet_type }} pet">>
                 {% else %}
                     <img src="{% static 'images/pets/mushroom/mushroom_large.gif' %}" alt="Default Pet">
                 {% endif %}
             </div>
-            <h3 class="text_light">{{ pet.pet_name|default:"No Pet" }}</h3>
-            <p>Level: {{ pet.level }}</p>
+            <p></p>
         </div>
     </section>
 
-    <section class="spacer_big"></section>
+    <section class="spacer_large"></section>
     <section class="status_bar flex_h flex_center text_light">
         <div class="pet_status flex_v margin_sml flex_v_fill">
-            <p>Pet Name: {{ pet_name }}</p>
+            <p>Pet Name: {{ pet_name }}     Level: {{ level }}</p>
             <div class="xp_bar box_shadow">
                 <div class="xp_bar_progress" style="width: {{ pet_exp }}%;"></div>
             </div>
@@ -40,7 +38,7 @@
                 <h2 class="text_light">Current Tasks</h2>
                 <p class="text_light">Select a task to view or edit details</p>
             </div>
-            <button class="button box_shadow text_light" type="button" onclick="toggleMenu()">View All</button>
+            <button class="button box_shadow text_light" type="button" onclick="window.location.href='{% url 'tasks' %}'">View All</button>
         </section>
         <section class="card_task card box_shadow text_light">
             <div class="content flex_h flex_fill_h flex_center flex_gap_std margin_sml">
