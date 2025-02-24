@@ -69,8 +69,10 @@ def logout_view(request):
 @login_required
 def home_view(request):
     user = request.user  # Get the logged-in user
-    pet = Pet.objects.filter(user=user).first()  
-
+    pet = Pet.objects.filter(user=user).first() 
+    # This retrieves the 5 most recent tasks by date to display on home page 
+    user_tasks = UserTask.objects.filter(user=user).order_by('date')[:5]
+    
     context = {
         "points": user.points,
         "pet_exp": pet.pet_exp if pet else 0,
@@ -79,6 +81,7 @@ def home_view(request):
         "pet_size": pet.determine_size() if pet else "small",  # Determine size
         "level": pet.pet_level if pet else 0,
         "pet": pet,
+        "user_tasks":user_tasks
     }
 
     return render(request, 'home.html', context)
