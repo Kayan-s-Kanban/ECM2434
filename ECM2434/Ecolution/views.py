@@ -6,6 +6,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse, Http404
 from django.db import IntegrityError
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+from django.views.decorators.cache import never_cache
 from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent  
 
 # Create your views here.
@@ -57,6 +60,11 @@ def login_view(request):
             messages.error(request, "Invalid username or password")
 
     return render(request, "login.html")
+
+@never_cache
+def logout_view(request):
+    logout(request)
+    return redirect("login")  # replace 'home' with your actual home page URL name
 
 @login_required
 def home_view(request):
