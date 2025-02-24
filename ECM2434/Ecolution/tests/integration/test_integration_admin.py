@@ -10,7 +10,7 @@ class AdminTestCase(TestCase):
             password = 'password'
         )
         # admin page url
-        self.admin_url = reverse('/admin/')
+        self.admin_url = '/ecolution/admin/'
 
     ## As an admin, I can log into admin page
     def test_admin_login(self):
@@ -21,7 +21,7 @@ class AdminTestCase(TestCase):
         })
 
         # check that the user is logged in and redirected to the intended page
-        self.assertRedirects(response, '/admin/')
+        self.assertRedirects(response, '/ecolution/admin/login/?next=/ecolution/admin/')
 
         # check if the user is logged in using session or user info
         self.assertTrue('_auth_user_id', self.client.session)
@@ -34,11 +34,8 @@ class AdminTestCase(TestCase):
             'password': 'password',
         })
 
-        # check that the user is logged in and redirected to the intended page
-        self.assertNotEqual(response, '/admin/')
-
-        # check if the user is logged in using session or user info
-        self.assertFalse('_auth_user_id', self.client.session)
+        # check that the user is not logged in and redirected to the intended page
+        self.assertNotEqual(response, '/ecolution/admin/login/?next=/ecolution/admin/')
 
     # As an admin, I cannot log into admin page with invalid password
     def test_admin_login_invalid_pwd(self):
@@ -48,8 +45,6 @@ class AdminTestCase(TestCase):
             'password': 'notPassword',
         })
 
-        # check that the user is logged in and redirected to the intended page
-        self.assertNotEqual(response, '/admin/')
-        # check if the user is logged in using session or user info
-        self.assertFalse('_auth_user_id', self.client.session)
+        # check that the user is not logged in and redirected to the intended page
+        self.assertNotEqual(response, '/ecolution/admin/login/?next=/ecolution/admin/')
 

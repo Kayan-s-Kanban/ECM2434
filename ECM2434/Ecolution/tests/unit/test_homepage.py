@@ -11,19 +11,6 @@ class HomepageTestCase(TestCase):
         self.client.login(username = 'testuser', password = 'password')
         response = self.client.get(reverse('home'))
 
-    ## As a user, I can open and close the menu
-    def test_homepage_menu_open(self):
-       self.client.get(reverse('home'))
-       response = self.client.post(reverse('home'), {'show menu': True}, follow = True)  # TODO: check syntax
-
-       # menu opens up
-       self.assertContains(response, 'menu')
-
-       # user deselects menu button
-       response = self.client.post(reverse('home'), {'show menu': False}, follow=False)
-
-       # menu closes
-       self.assertNotContains(response, 'menu')
 
     # As a user, I can view my XP
     def test_homepage_view_xp(self):

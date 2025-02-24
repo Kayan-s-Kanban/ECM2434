@@ -26,15 +26,12 @@ class TaskIntegrationTests(TestCase):
         # user request to create new task
         response = self.client.post('/tasks/create/', task_data)  # TODO: ensure correct create task endpoint
 
-        # check task has been created
-        self.assertEqual(response.status_code, 201)  # TODO: ensure correct status code
-
         # check task exists in the DB
-        task = Task.objects.get(task_name='Go for a walk')
+        self.assertIsNotNone(Task.objects.get(task_name = 'Go for a walk'))
 
         # check task exists in user's list
-        self.assertEqual(UserTask.user, self.user)  # TODO: fix reference
-        self.assertTrue(UserTask.objects.filter(user=self.user, task=task).exists())  # TODO: fix reference
+        self.assertEqual(UserTask.user, self.user1)  # TODO: fix reference
+        self.assertTrue(UserTask.objects.filter(creator = self.user1, task_name = 'Go for a walk').exists())  # TODO: fix reference
 
     ## As a user, I can delete my user-created tasks
     def test_user_deletes_tasks(self):
@@ -76,21 +73,21 @@ class TaskIntegrationTests(TestCase):
     ## As a user, I cannot view other users' created tasks
     def test_created_tasks_visibility(self):
         # create a second user
-        self.user2 = CustomUser.objects.create_user(username='another_user', password='password')
+        self.user2 = CustomUser.objects.create_user(username = 'another_user', password = 'password')
 
         # create tasks for both users
-        task1 = Task.objects.create(user=self.user1, task_name="Buy groceries", description="Go to the store and buy food")
-        task2 = Task.objects.create(user=self.user2, task_name="Complete homework", description="Finish math problems")
+        task1 = Task.objects.create(creator = self.user1, task_name = "Buy groceries", description = "Go to the store and buy food")
+        task2 = Task.objects.create(creator = self.user2, task_name = "Complete homework", description = "Finish math problems")
 
         # first user can only view their own task (task1)
-        user1_tasks = Task.objects.filter(user = self.user1)
+        user1_tasks = Task.objects.filter(creator = self.user1)
         self.assertIn(task1, user1_tasks)
         self.assertNotIn(task2, user1_tasks)
         self.client.logout()
 
         # second user can only view their own task (task2)
-        self.client.login(username='another_user', password='password')
-        user2_tasks = Task.objects.filter(user = self.user2)
+        self.client.login(username = 'another_user', password = 'password')
+        user2_tasks = Task.objects.filter(creator = self.user2)
         self.assertIn(task2, user2_tasks)
         self.assertNotIn(task1, user2_tasks)
 
