@@ -10,9 +10,9 @@
         <div class="flex_v flex_center">
             <div class="image_wrapper">
                 {% if pet %}
-                <img src="{% static 'images/pets/' %}{{ pet_type }}/{{ pet_type }}_{{ pet_size }}.gif" alt="{{ pet_type }} pet">>
+                <img src="{% static 'images/pets/' %}{{ pet_type }}/{{ pet_type }}_{{ pet_size }}.gif" alt="{{ pet_type }} pet"> <!-- this loads the pet img from the images file it uses the info in the database to generate the correct file path -->
                 {% else %}
-                    <img src="{% static 'images/pets/mushroom/mushroom_large.gif' %}" alt="Default Pet">
+                    <img src="{% static 'images/pets/mushroom/mushroom_large.gif' %}" alt="Default Pet"> <!-- if no pet is found this defaults -->
                 {% endif %}
             </div>
             <p></p>
@@ -22,13 +22,13 @@
     <section class="spacer_large"></section>
     <section class="status_bar flex_h flex_center text_light">
         <div class="pet_status flex_v margin_sml flex_v_fill">
-            <p>Pet Name: {{ pet_name }}     Level: {{ level }}</p>
+            <p>Pet Name: {{ pet_name }}     Level: {{ level }}</p> <!-- this displays the pets name and level -->
             <div class="xp_bar box_shadow">
-                <div class="xp_bar_progress" style="width: {{ pet_exp }}%;"></div>
+                <div class="xp_bar_progress" style="width: {{ pet_exp }}%;"></div> <!-- this is a bar with the amount of xp that the pet has -->
             </div>
             <div class="flex_h">
-                <p class="xp_bar_label" id="xp_bar_xp_current">{{ pet_exp }}XP</p>
-                <p class="xp_bar_label" id="xp_bar_xp_to_next_level">100XP</p>
+                <p class="xp_bar_label" id="xp_bar_xp_current">{{ pet_exp }}XP</p> <!-- this is the amount of xp the pet currently has -->
+                <p class="xp_bar_label" id="xp_bar_xp_to_next_level">100XP</p> <!-- this is the amount the pet needs to reach the next level it should always be set to 100 -->
             </div>
         </div>
     </section>
@@ -38,43 +38,12 @@
                 <h2 class="text_light">Current Tasks</h2>
                 <p class="text_light">Select a task to view or edit details</p>
             </div>
-            <button class="button box_shadow text_light" type="button" onclick="toggleMenu()">View All</button>
+            <button class="button box_shadow text_light" type="button" onclick="window.location.href='{% url 'tasks' %}'">View All</button>
         </section>
-        <section class="card_task card box_shadow text_light">
-            <div class="content flex_h flex_fill_h flex_center flex_gap_std margin_sml">
-                <div class="task_icon flex_v flex_center">🌲</div>
-                <div class="flex_v flex_v_fill ">
-                    <h3>Task Title</h3>
-                    <p class="task_description">Task Description</p>
-                </div>
-                <button class="button_img_light flex_v flex_center" type="button" onclick="toggleMenu()">
-                    <img src="/static/images/icon_button.png" alt="Settings">
-                </button>
-            </div>
-        </section>
-        <section class="card_task card box_shadow text_light">
-            <div class="content flex_h flex_fill_h flex_center flex_gap_std margin_sml">
-                <div class="task_icon flex_v flex_center">♻️</div>
-                <div class="flex_v flex_v_fill ">
-                    <h3>Task Title</h3>
-                    <p class="task_description">Task Description</p>
-                </div>
-                <button class="button_img_light flex_v flex_center" type="button" onclick="toggleMenu()">
-                    <img src="/static/images/icon_button.png" alt="Settings">
-                </button>
-            </div>
-        </section>
-        <section class="card_task card box_shadow text_light">
-            <div class="content flex_h flex_fill_h flex_center flex_gap_std margin_sml">
-                <div class="task_icon flex_v flex_center">🚀</div>
-                <div class="flex_v flex_v_fill ">
-                    <h3>Task Title</h3>
-                    <p class="task_description">Task Description</p>
-                </div>
-                <button class="button_img_light flex_v flex_center" type="button" onclick="toggleMenu()">
-                    <img src="/static/images/icon_button.png" alt="Settings">
-                </button>
-            </div>
-        </section>
+        {% for user_task in user_tasks %}
+            {% include 'partials/task_card.html' with user_task=user_task %}
+        {% empty %}
+            <p>No tasks available.</p>
+        {% endfor %}
     </section>
 {% endblock %}

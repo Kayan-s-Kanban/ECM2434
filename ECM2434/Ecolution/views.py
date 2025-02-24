@@ -6,11 +6,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse, Http404
 from django.db import IntegrityError
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+from django.views.decorators.cache import never_cache
 from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent  
 
 # Create your views here.
 def index(request):
-    return HttpResponse("Hello, world. You're at the Ecolution index")
+    return redirect("home")
 
 User = get_user_model()
 
@@ -21,7 +24,7 @@ def signup_view(request):
         password1 = request.POST["password1"]
         password2 = request.POST["password2"]
         pet_type = request.POST.get("pet_type", "mushroom")  # Default to mushroom
-        plant_name = request.POST.get("plant_name", "") if pet_type == "plant" else None
+        pet_name = request.POST.get("pet_name", "") if pet_type else None
 
         if password1 != password2:
             messages.error(request, "Passwords do not match!")
@@ -36,7 +39,7 @@ def signup_view(request):
         user.save()
 
         # Assign a pet to the new user
-        pet = Pet.objects.create(user=user, pet_name=plant_name if plant_name else pet_type, pet_type=pet_type)
+        pet = Pet.objects.create(user=user, pet_name=pet_name if pet_name else pet_type, pet_type=pet_type)
         pet.save()
 
         messages.success(request, "Account created! You can now log in.")
@@ -58,11 +61,18 @@ def login_view(request):
 
     return render(request, "login.html")
 
+@never_cache
+def logout_view(request):
+    logout(request)
+    return redirect("login")  # replace 'home' with your actual home page URL name
+
 @login_required
 def home_view(request):
     user = request.user  # Get the logged-in user
-    pet = Pet.objects.filter(user=user).first()  
-
+    pet = Pet.objects.filter(user=user).first() 
+    # This retrieves the 5 most recent tasks by date to display on home page 
+    user_tasks = UserTask.objects.filter(user=user).order_by('date')[:5]
+    
     context = {
         "points": user.points,
         "pet_exp": pet.pet_exp if pet else 0,
@@ -71,6 +81,7 @@ def home_view(request):
         "pet_size": pet.determine_size() if pet else "small",  # Determine size
         "level": pet.pet_level if pet else 0,
         "pet": pet,
+        "user_tasks":user_tasks
     }
 
     return render(request, 'home.html', context)
@@ -89,7 +100,8 @@ def tasks_view(request):
     return render(request, "tasks.html", {
         "user_tasks": user_tasks,
         "predefined_tasks": predefined_tasks,
-        "custom_tasks": custom_tasks
+        "custom_tasks": custom_tasks,
+        "points": request.user.points
     })
 
 @login_required
@@ -168,13 +180,24 @@ def delete_task(request, user_task_id):
 
 @login_required
 def complete_task(request, task_id):
-    """Marks a UserTask as completed."""
     if request.method == "POST":
         user_task = get_object_or_404(UserTask, task__task_id=task_id, user=request.user)
-        user_task.completed = True
-        user_task.save()
-        return JsonResponse({"status": "success"})
+        if not user_task.completed:
+            user_task.completed = True
+            user_task.save()
 
+            # Add points to the users total points
+            task = user_task.task
+            request.user.points += task.points_given
+            request.user.save()
+
+            # Add task xp to the pet's overall xp, currently this will just get the first pet in the list
+            pet = Pet.objects.filter(user=request.user).first()
+            if pet:
+                pet.pet_exp += task.xp_given
+                pet.save()
+                
+        return JsonResponse({"status": "success", "points": request.user.points})
     return JsonResponse({"status": "error"}, status=400)
 
 def events_view(request):
@@ -249,7 +272,12 @@ def get_event_tasks(request, event_id):
 
 
 def settings_view(request):
-    return render(request, "settings.html")
+    user = request.user
+    context = {
+        "name" : user.username,
+        "points": user.points
+    }
+    return render(request, "settings.html", context)
 
 @login_required
 def delete_account(request):
@@ -303,23 +331,32 @@ def change_password(request):
 
     return redirect("settings")
 
-
-@csrf_exempt
 @login_required
 def update_fontsize(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            new_font_size = int(data.get("preferred_font_size", 3))
-            request.user.preferred_font_size = new_font_size
+            # Convert the incoming font size value to an integer.
+            try:
+                font_size = int(data.get("preferred_font_size"))
+            except (TypeError, ValueError):
+                return JsonResponse({"status": "error", "message": "Invalid font size"})
+
+            # Validate against the numeric choices
+            if font_size not in [CustomUser.FONT_SIZE_SMALL, CustomUser.FONT_SIZE_MEDIUM, CustomUser.FONT_SIZE_LARGE]:
+                return JsonResponse({"status": "error", "message": "Invalid font size"})
+
+            request.user.preferred_font_size = font_size
             request.user.save()
-            print(f"Updated font size to: {request.user.preferred_font_size}")  # Debugging
-            return JsonResponse({"status": "success", "preferred_font_size": request.user.preferred_font_size})
+            return JsonResponse({"status": "success"})
         except Exception as e:
-            print(f"Error updating font size: {e}")  # Debugging
             return JsonResponse({"status": "error", "message": str(e)})
     return JsonResponse({"status": "error", "message": "Invalid request"})
 
 @login_required
 def get_fontsize(request):
-    return JsonResponse({"preferred_font_size": request.user.preferred_font_size})    
+    return JsonResponse({"preferred_font_size": request.user.preferred_font_size})
+
+
+def terms_view(request):
+    return render(request, "term.html")

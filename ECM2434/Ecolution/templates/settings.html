@@ -97,102 +97,94 @@
             <div class="user_info flex_h flex_center">
                 {% comment %} <img src="{% static 'images/profile.jpg' %}" alt="Profile Picture" class="profile-pic"> {% endcomment %}
                 <img src="{% static 'images/person.svg' %}" alt="Profile Picture" class="profile_pic box_shadow">
-                <h3>User Name</h3>
+                <h3>{{name}}</h3>
             </div>
-            <section class="spacer"></section>
+            <section class="spacer"></section> <!-- section to change the font size of for the website -->
             <div class="menu_container flex_v flex_v_fill">
-                <div class="slider-container flex_h flex_start button button_menu box_shadow" style="justify-content: start; gap: 8px;">
-                    <label for="font-size-slider">Font Size:</label>
-                    <input type="range" id="font-size-slider" min="1" max="5" value="{{ user.preferred_fontsize }}" class="slider">
-                    <span id="font-size-value">{{ user.preferred_fontsize }}</span>
+                <div class="dropdown-container flex_h flex_start button button_menu box_shadow" style="justify-content: start; gap: 8px;">
+                    <label for="font-size-select">Font Size:</label>
+                    <select id="font-size-select" class="dropdown">
+                        <option value=13 {% if user.preferred_font_size == 13 %}selected{% endif %}>Small</option>
+                        <option value=16 {% if user.preferred_font_size == 16 %}selected{% endif %}>Medium</option>
+                        <option value=19 {% if user.preferred_font_size == 19 %}selected{% endif %}>Large</option>
+                    </select>
+                </div>                
+                <button class="button button_menu box_shadow" type="button" id="change-password-btn">Change Password</button>       <!-- code to change the password for your account -->
+                <div id="password-form">
+                    <form id="change-password-form" method="POST" action="{% url 'change_password' %}"> <!-- form to change button is hidden until button press -->
+                        {% csrf_token %}
+                        <div class="form-group-horizontal">
+                            <label for="current_password">Current Password:</label>
+                            <input type="password" id="current_password" name="current_password" required>
+                        </div>
+                        <div class="form-group-horizontal">
+                            <label for="new_password1">New Password:</label>
+                            <input type="password" id="new_password1" name="new_password1" required>
+                        </div>
+                        <div class="form-group-horizontal">
+                            <label for="new_password2">Confirm New Password:</label>
+                            <input type="password" id="new_password2" name="new_password2" required>
+                        </div>
+                        <button type="submit">Update Password</button>
+                    </form>
                 </div>
-                <button class="button button_menu box_shadow" type="button" id="change-password-btn">Change Password</button>
-                <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'delete_account' %}'">Delete Account</button>
-                <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'login' %}'">Logout</button>
+                <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'delete_account' %}'">Delete Account</button> <!-- links to the delete account page -->
+                <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'logout' %}'">Logout</button> <!-- links to the login page -->
+                <button class="button button_menu box_shadow" type="button" onclick="window.open('{% url 'term_of_use' %}', '_blank')">Terms and Conditions</button> <!-- opens a new tab with the terms and conditions page -->
+
             </div>
         </section>
-
-        <div id="password-form">
-            <form id="change-password-form" method="POST" action="{% url 'change_password' %}">
-                {% csrf_token %}
-                <label for="current_password">Current Password:</label>
-                <input type="password" id="current_password" name="current_password" required><br>
-
-                <label for="new_password1">New Password:</label>
-                <input type="password" id="new_password1" name="new_password1" required><br>
-
-                <label for="new_password2">Confirm New Password:</label>
-                <input type="password" id="new_password2" name="new_password2" required><br>
-
-                <button type="submit">Update Password</button>
-            </form>
-        </div>
     </section>
-
-    {% comment %} <div class="settings-container">
-        <div class="header">
-            <h2>Settings</h2>
-        </div>
-
-        <div class="user-info">
-            <img src="{% static 'images/profile.jpg' %}" alt="Profile Picture" class="profile-pic">
-            <h2>User Name</h2>
-        </div>
-
-        <ul class="settings-list">
-            <li>
-                <div class="slider-container">
-                    <label for="font-size-slider">Font Size:</label>
-                    <input type="range" id="font-size-slider" min="1" max="5" value="{{ user.preferred_fontsize }}" class="slider">
-                    <span id="font-size-value">{{ user.preferred_fontsize }}</span>
-                </div>
-            </li>
-            <li id="change-password-btn">Change Password</li>
-            <li onclick="location.href='{% url 'delete_account' %}'">Delete Account</li>
-            <li class="logout" onclick="location.href='{% url 'login' %}'">Logout</li>
-        </ul>
-    </div> {% endcomment %}
 {% endblock %}
 
-{% block script %}
+{% block additional %}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Toggle password form
-        function togglePasswordForm() {
-            let formContainer = document.getElementById("password-form");
-            formContainer.style.display = (formContainer.style.display === "none" || formContainer.style.display === "") ? "block" : "none";
-        }
+        const fontSizeSelect = document.getElementById("font-size-select");
+        console.log("fontSizeSelect element:", fontSizeSelect);
 
-        document.getElementById("change-password-btn").addEventListener("click", togglePasswordForm);
-
-        // Font size slider logic
-        const fontSizeSlider = document.getElementById("font-size-slider");
-        const fontSizeValue = document.getElementById("font-size-value");
-
-        fontSizeSlider.addEventListener("input", function () {
-            fontSizeValue.textContent = this.value;
+        // Fetch the user's current font size and set the dropdown value
+        fetch("{% url 'get_fontsize' %}")
+            .then(response => response.json())
+            .then(data => {
+                if (data.preferred_font_size) {
+                    fontSizeSelect.value = data.preferred_font_size;
+                }
+            })
+            .catch(error => console.error("Error fetching font size:", error));
+        
+        document.getElementById("change-password-btn").addEventListener("click", function () {
+            const passwordForm = document.getElementById("password-form");
+            // Get the computed display value
+            const computedDisplay = window.getComputedStyle(passwordForm).display;
+            console.log("Computed display:", computedDisplay);
+            // Toggle based on computed value
+            if (computedDisplay === "none") {
+                passwordForm.style.display = "block";
+            } else {
+                passwordForm.style.display = "none";
+            }
         });
 
-        fontSizeSlider.addEventListener("change", function () {
+        fontSizeSelect.addEventListener("change", function () {
+            console.log("Dropdown changed, new value:", this.value);
             fetch("{% url 'update_fontsize' %}", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "X-CSRFToken": getCSRFToken()
                 },
-                body: JSON.stringify({ preferred_fontsize: this.value })
+                body: JSON.stringify({ preferred_font_size: this.value })
             }).then(response => response.json())
               .then(data => {
                   if (data.status === "success") {
-                      console.log("Font size updated successfully");
-                      document.documentElement.style.fontSize = `${this.value * 2}px`; // Apply immediately
+                      console.log("Font size updated to", this.value);
                   } else {
                       console.error("Failed to update font size");
                   }
               }).catch(error => console.error("Error:", error));
         });
 
-        // Function to get CSRF token from cookies
         function getCSRFToken() {
             let cookieValue = null;
             if (document.cookie && document.cookie !== "") {
