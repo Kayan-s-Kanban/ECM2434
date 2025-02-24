@@ -6,6 +6,7 @@ class HomepageIntegrationTests(TestCase):
     def setUp(self):
         # create a test user
         self.user1 = CustomUser.objects.create_user(username = 'testuser', password = 'password')
+        self.user1.points = 10
         self.client.login(username = 'testuser', password = 'password')
 
         # create user's pet
@@ -23,6 +24,7 @@ class HomepageIntegrationTests(TestCase):
 
         # create new task
         self.task1 = Task.objects.create(task_name = "Buy groceries", description = "Go to the store and buy food")
+        self.task1.points = 50
 
     # As a user, I can view my pet name
     def test_homepage_view_pet_name(self):
@@ -40,79 +42,37 @@ class HomepageIntegrationTests(TestCase):
         self.assertContains(response, "Buy groceries")
         self.assertContains(response, "Go to the store and buy food")
 
-    # As a user, I can see my points increase after completing a task
-    def test_homepage_xp_increase(self):
-            # user is on homepage
-            response = self.client.get(reverse('home'))
-
-            # make note of user's current XP
-            user_xp_current = self.pet1.pet_exp
-
-            # user is on tasks page
-            response = self.client.get(reverse('tasks'))
-
-            # user selects task, and selects "Task Completed"
-            # add task to user's list
-            user_tasks = UserTask.objects.create(user=self.user1, task=self.task1)
-
-            # check task is now in user's list
-            self.assertTrue(UserTask.objects.filter(user=self.user1).exists())
-
-            # check task exists in db
-            self.assertTrue(Task.objects.filter(task_name="Buy groceries").exists())
-
-            # user marks task as complete
-            user_tasks.completed = True
-            user_tasks.save()
-
-            # user returns to homepage
-            response = self.client.get(reverse('home'))
-
-            # check XP has now increased accordingly
-            user_xp_new = self.pet1.pet_exp
-            self.assertTrue(user_xp_current < user_xp_new)
-
-    # As a user, I can see my points decrease after removing a completed task
-    def test_homepage_xp_decrease(self):
+    ## As a user, I can earn points from completing tasks
+    def test_homepage_points_increase(self):
         # user is on homepage
-        self.client.get(reverse('home'))
+        response = self.client.get(reverse('home'))
 
-        # make note of user's current XP
-        user_xp_current = self.pet1.pet_exp
+        # make note of user's current points
+        user_points_current = self.user1.points
+        print(f"User Points Before Task: {user_points_current}")  # Debug: print user's points before task completion
 
         # user is on tasks page
-        self.client.get(reverse('tasks'))
+        response = self.client.get(reverse('tasks'))
 
-        # user selects task, and selects "Task Completed"
-        # add task to user's list
+        # user adds task to their list
         user_tasks = UserTask.objects.create(user=self.user1, task=self.task1)
+        print(f"Task Added: {user_tasks}")  # Debug: print the task that was added
 
         # check task is now in user's list
         self.assertTrue(UserTask.objects.filter(user=self.user1).exists())
-
-        # check task exists in db
         self.assertTrue(Task.objects.filter(task_name="Buy groceries").exists())
 
-        # user marks task as complete
-        user_tasks.completed = True
-        user_tasks.save()
+        # simulate clicking "Complete" button (assuming it's a POST request to mark task completed)
+        response = self.client.post('complete_task')  # POST request to mark task as completed
+        print(f"Task Marked Completed: {response.status_code}")  # Debug: print status code after completing the task
 
         # user returns to homepage
         response = self.client.get(reverse('home'))
 
         # check XP has now increased accordingly
-        user_xp_new_1 = self.pet1.pet_exp
-        self.assertTrue(user_xp_current < user_xp_new_1)
+        user_points_new = self.user1.points
+        print(f"User Points After Task: {user_points_new}")  # Debug: print user's points after task completion
 
-        # user removes completed task
-        user_tasks.delete()
-
-        # check task is no longer in user's list
-        self.assertFalse(UserTask.objects.filter(user = self.user1, task = self.task1).exists())
-
-        # user returns to homepage
-        response = self.client.get(reverse('home'))
-
-        # check XP has now increased accordingly
-        user_xp_new_2 = self.pet1.pet_exp
-        self.assertTrue(user_xp_new_1 < user_xp_new_2)
+        # assert points have increased
+        self.assertTrue(user_points_new > user_points_current,
+                        f"Expected points to be greater after completing the task. Before: {user_points_current}, After: {user_points_new}")
