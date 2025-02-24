@@ -37,7 +37,7 @@ class Pet(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ✅ Dynamic reference
     pet_name = models.CharField(max_length=50)
-    pet_level = models.IntegerField(default=0)
+    pet_level = models.IntegerField(default=1)
     pet_exp = models.IntegerField(default=0)
     pet_type = models.CharField(max_length=50, default='mushroom')  # e.g., 'dragon', 'mushroom', 'cat'
     size = models.CharField(max_length=10, choices=SIZE_CHOICES, default=SMALL)
@@ -83,7 +83,7 @@ class Event(models.Model):
     @property
     def total_points(self):
         # Assuming a reverse relation name of 'task_set' or something else if you specified `related_name`.
-        return self.task_set.aggregate(total=Sum('points'))['total'] or 0
+        return self.task_set.aggregate(total=Sum('points_given'))['total'] or 0
 
     def __str__(self):
         return self.event_name

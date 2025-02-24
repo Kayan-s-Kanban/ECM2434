@@ -21,7 +21,7 @@ def signup_view(request):
         password1 = request.POST["password1"]
         password2 = request.POST["password2"]
         pet_type = request.POST.get("pet_type", "mushroom")  # Default to mushroom
-        plant_name = request.POST.get("plant_name", "") if pet_type == "plant" else None
+        pet_name = request.POST.get("pet_name", "") if pet_type else None
 
         if password1 != password2:
             messages.error(request, "Passwords do not match!")
@@ -36,7 +36,7 @@ def signup_view(request):
         user.save()
 
         # Assign a pet to the new user
-        pet = Pet.objects.create(user=user, pet_name=plant_name if plant_name else pet_type, pet_type=pet_type)
+        pet = Pet.objects.create(user=user, pet_name=pet_name if pet_name else pet_type, pet_type=pet_type)
         pet.save()
 
         messages.success(request, "Account created! You can now log in.")
@@ -89,7 +89,8 @@ def tasks_view(request):
     return render(request, "tasks.html", {
         "user_tasks": user_tasks,
         "predefined_tasks": predefined_tasks,
-        "custom_tasks": custom_tasks
+        "custom_tasks": custom_tasks,
+        "points": request.user.points
     })
 
 @login_required
@@ -168,23 +169,101 @@ def delete_task(request, user_task_id):
 
 @login_required
 def complete_task(request, task_id):
-    """Marks a UserTask as completed."""
     if request.method == "POST":
         user_task = get_object_or_404(UserTask, task__task_id=task_id, user=request.user)
-        user_task.completed = True
-        user_task.save()
-        return JsonResponse({"status": "success"})
+        if not user_task.completed:
+            user_task.completed = True
+            user_task.save()
 
+            # Add points to the users total points
+            task = user_task.task
+            request.user.points += task.points_given
+            request.user.save()
+
+            # Add task xp to the pet's overall xp, currently this will just get the first pet in the list
+            pet = Pet.objects.filter(user=request.user).first()
+            if pet:
+                pet.pet_exp += task.xp_given
+                pet.save()
+                
+        return JsonResponse({"status": "success", "points": request.user.points})
     return JsonResponse({"status": "error"}, status=400)
 
 def events_view(request):
-    user_events = UserEvent.objects.filter(user=request.user)
-    all_events = Event.objects.exclude(event_id__in=user_events)
-    context = {"user_events": user_events, "events": all_events}
+    all_user_events = UserEvent.objects.filter(user=request.user)
+    incomplete_user_events = UserEvent.objects.filter(user=request.user, completed = False)
+    all_events = Event.objects.exclude(event_id__in=all_user_events.values_list("event_id", flat=True))
+    context = {"user_events": incomplete_user_events, "events": all_events}
     return render(request, "events.html", context)
 
+def join_event(request):
+    if request.method == "POST":
+        try:
+            event_id = request.POST.get("event_id")
+            event = get_object_or_404(Event, event_id=event_id)
+            UserEvent.objects.create(user=request.user, event=event)
+
+            return JsonResponse({"success": True})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)})
+    return JsonResponse({"success": False, "message": "Invalid request"})
+
+def leave_event(request):
+    if request.method == "POST":
+        try:
+            event_id = request.POST.get("event_id")
+            event = get_object_or_404(Event, event_id=event_id)
+            UserEvent.objects.filter(user=request.user, event=event).delete()
+
+            return JsonResponse({"success": True})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)})
+    return JsonResponse({"success": False, "message": "Invalid request"})
+
+def complete_event(request):
+    if request.method == "POST":
+        try:
+            event_id = request.POST.get("event_id")
+            event = get_object_or_404(Event, event_id=event_id)
+            event_points = event.total_points
+            UserEvent.objects.filter(user=request.user, event=event).update(completed=True)
+            CustomUser.objects.filter(id=request.user.id).update(points=request.user.points + event_points)
+
+            return JsonResponse({"success": True})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)})
+    return JsonResponse({"success": False, "message": "Invalid request"})
+
+def get_event_tasks(request, event_id):
+    try:    
+        event = get_object_or_404(Event, event_id=event_id)
+        tasks =  Task.objects.filter(event=event)
+
+        tasks_data = [
+            {
+                "task_id": task.task_id,
+                "task_name": task.task_name,
+                "description": task.description,  # Add more fields as needed
+                "points_given": task.points_given,
+                "xp_given": task.xp_given,
+            }
+            for task in tasks
+        ]
+
+        return JsonResponse({"tasks": tasks_data})
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+
+
 def settings_view(request):
-    return render(request, "settings.html")
+    user = request.user
+    context = {
+        "name" : user.username,
+        "points": user.points
+    }
+    return render(request, "settings.html", context)
 
 @login_required
 def delete_account(request):
@@ -238,20 +317,20 @@ def change_password(request):
 
     return redirect("settings")
 
-
-@csrf_exempt
 @login_required
 def update_fontsize(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            new_font_size = int(data.get("preferred_font_size", 3))
-            request.user.preferred_font_size = new_font_size
+            font_size = data.get("preferred_font_size")
+
+            if font_size not in ["SMALL", "MEDIUM", "LARGE"]:
+                return JsonResponse({"status": "error", "message": "Invalid font size"})
+
+            request.user.preferred_font_size = font_size
             request.user.save()
-            print(f"Updated font size to: {request.user.preferred_font_size}")  # Debugging
-            return JsonResponse({"status": "success", "preferred_font_size": request.user.preferred_font_size})
+            return JsonResponse({"status": "success"})
         except Exception as e:
-            print(f"Error updating font size: {e}")  # Debugging
             return JsonResponse({"status": "error", "message": str(e)})
     return JsonResponse({"status": "error", "message": "Invalid request"})
 

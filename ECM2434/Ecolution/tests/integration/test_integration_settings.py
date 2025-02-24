@@ -15,11 +15,47 @@ class SettingsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # TODO: user can selecting reset pwd button (if exists)
+        
+
 
         # TODO: user can enter new password into both fields
+        response = self.client.post(self.change_password, {
+            'current_password': self.user_data['password'],
+            'new_password1': self.user_data['new_password'],
+            'new_password2': self.user_data['new_password'],
+        })
 
         # TODO: new password is saved
+        user = CustomUser.objects.get(password = 'new_password')
 
         # TODO: user can login to site with new pwd
+        
+
 
     ## As a user, I can delete my account
+    def test_settings_delete_account(self):
+        # user is on settings page
+        response = self.client.get(reverse('settings'))
+
+        # user selects "delete account"
+        response = self.client.post(reverse('delete_account'))
+        self.assertEqual(response.status_code, 200)
+
+        # user selects "confirm"
+        response = self.client.post(reverse('delete_account_confirm'))
+        self.assertEqual(response.status_code, 302)
+
+        # user should be logged out
+        self.assertNotIn('_auth_user_id', self.client.session)
+
+        # user should no longer exist in database
+        try:
+            # attempt to get the user from the database
+            CustomUser.objects.get(username = 'testuser')
+            self.fail("user should not exist in the database")
+        except CustomUser.DoesNotExist:
+            pass # user is deleted from db
+
+
+
+

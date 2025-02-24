@@ -294,6 +294,8 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === "success") {
+                    document.querySelector(".currency_indicator h3").innerText = data.points;
+                    
                     const taskElement = element.closest(".task");
                     const completeIcon = taskElement.querySelector(".complete-icon");
                     if (completeIcon) {
@@ -309,6 +311,7 @@
             })
             .catch(error => console.error('Error completing task:', error));
         }
+
 
 
 
