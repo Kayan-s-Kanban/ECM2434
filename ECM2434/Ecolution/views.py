@@ -89,7 +89,8 @@ def tasks_view(request):
     return render(request, "tasks.html", {
         "user_tasks": user_tasks,
         "predefined_tasks": predefined_tasks,
-        "custom_tasks": custom_tasks
+        "custom_tasks": custom_tasks,
+        "points": request.user.points
     })
 
 @login_required
@@ -168,13 +169,24 @@ def delete_task(request, user_task_id):
 
 @login_required
 def complete_task(request, task_id):
-    """Marks a UserTask as completed."""
     if request.method == "POST":
         user_task = get_object_or_404(UserTask, task__task_id=task_id, user=request.user)
-        user_task.completed = True
-        user_task.save()
-        return JsonResponse({"status": "success"})
+        if not user_task.completed:
+            user_task.completed = True
+            user_task.save()
 
+            # Add points to the users total points
+            task = user_task.task
+            request.user.points += task.points_given
+            request.user.save()
+
+            # Add task xp to the pet's overall xp, currently this will just get the first pet in the list
+            pet = Pet.objects.filter(user=request.user).first()
+            if pet:
+                pet.pet_exp += task.xp_given
+                pet.save()
+                
+        return JsonResponse({"status": "success", "points": request.user.points})
     return JsonResponse({"status": "error"}, status=400)
 
 def events_view(request):
