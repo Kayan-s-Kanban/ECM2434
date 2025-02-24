@@ -4,28 +4,87 @@
 {% block title %}
     <title>Terms Of Use - Ecolution</title>
     <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <style>
+        body {
+            color: white;
+        }
+        .mainArea {
+            height: 95vh;
+        }
+
+        .mainArea h1 {
+            display: block;
+            text-align: center;
+        }
+        .cardFrame {
+            padding: 1rem;
+            height: 35%;
+        }
+        .pdf {
+            border: 5px solid #65dba9;
+            border-radius: 15px;
+
+            height: 77%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .downloads {
+            padding: 1rem;
+        }
+
+        .downloads ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        .downloads ul li {
+            color: white;
+            font-weight: bold;
+        }
+
+        .downloads ul li a {
+            color: white;
+            font-weight: bold;
+
+            /* Removes the Link decorations */
+            text-decoration: none;
+        }
+
+        /* Adds a hover effect for the links */
+        ul li a:hover {
+            color: lightgray; /* Change link color on hover */
+            text-decoration: underline
+        }
+    </style>
+{% endblock %}
+
+<!-- Overrides header block so there isn't a navbar on this page -->
+{% block header %}
 {% endblock %}
 
 {% block main %}
     <!-- Main Content -->
-    <body>
-        <div>
+    <body class="text_light flex_v">
+        <div class="mainArea">
             <h1>Terms Of Use</h1>
 
-            <div>
-                <h2>Terms & Conditions</h2>
-                <iframe src="{% static 'GDPR/T&C_Sprint_1_(PDF).pdf' %}"></iframe>
-
-                <p>If you are unable to view the terms and conditions you can download them:</p>
-                <a href="{% static 'GDPR/T&C_Sprint_1_(PDF).pdf' %}">Terms and Conditions</a>
+            <div class="card cardFrame">
+                <h2 class="flex_center">Terms & Conditions</h2>
+                <iframe src="{% static 'GDPR/T&C_Sprint_1_(PDF).pdf' %}" class="pdf"></iframe>
             </div>
 
-            <div>
-                <h2>Privacy Policy</h2>
-                <iframe src="{% static 'GDPR/PP_Sprint_1_(PDF).pdf' %}"></iframe>
+            <div class="card cardFrame">
+                <h2 class="flex_center">Privacy Policy</h2>
+                <iframe src="{% static 'GDPR/PP_Sprint_1_(PDF).pdf' %}" scrolling="no" seamless="seamless" class="pdf"></iframe>
+            </div>
 
-                <p>If you are unable to view the privacy policy you can download them:</p>
-                <a href="{% static 'GDPR/PP_Sprint_1_(PDF).pdf' %}">Privacy Policy</a>
+            <div class="card downloads">
+                <p>You can also view them:</p>
+                <ul>
+                    <li><a href="{% static 'GDPR/T&C_Sprint_1_(PDF).pdf' %}">Terms and Conditions</a></li>
+                    <li><a href="{% static 'GDPR/PP_Sprint_1_(PDF).pdf' %}">Privacy Policy</a></li>
+                </ul>
 
             </div>
 
