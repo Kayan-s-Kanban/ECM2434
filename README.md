@@ -43,7 +43,7 @@ Technical documents are broken down into front end and back end etc.
 ## PRODUCT DOCUMENTS
 Our product documents are primarily in the form of a product UI. Below is a link to our latest version.
 
-public link: []
+public link: [https://www.figma.com/design/fAOD9lxiUZpChOvwcV0yKX/ECM2434-Mobile?node-id=512-4549&t=z21kqQ5KSciCJO4v-1]
 
 The UI and design documents for the client have also been archived under the link below:
 
