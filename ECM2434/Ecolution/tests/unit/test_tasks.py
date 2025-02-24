@@ -54,6 +54,6 @@ class TasksUnitTests(TestCase):
         # task now appears in completed tasks list
         self.assertTrue(UserTask.objects.filter(task = self.task1, completed = True).exists())
 
-    ## As a user, I can complete tasks for events
-    def test_user_complete_event_tasks(self):
-        user_tasks = UserTask.objects.create(user = self.user1, task = self.task1)
+    ## As a user, I can earn points from completing tasks
+    def test_user_earns_points(self):
+

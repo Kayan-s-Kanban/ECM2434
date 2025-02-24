@@ -73,10 +73,6 @@ class TaskIntegrationTests(TestCase):
         # check the response code for successful deletion
         self.assertEqual(response.status_code, 200)  # TODO: ensure correct success status code for deletion
 
-    ## As a user, I can view task details
-    def test_user_view_task(self):
-        self.client.login(username = 'testuser', password = 'password')
-
     ## As a user, I cannot view other users' created tasks
     def test_created_tasks_visibility(self):
         # create a second user

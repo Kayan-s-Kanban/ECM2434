@@ -15,12 +15,22 @@ class SettingsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # TODO: user can selecting reset pwd button (if exists)
+        
+
 
         # TODO: user can enter new password into both fields
+        response = self.client.post(self.change_password, {
+            'current_password': self.user_data['password'],
+            'new_password1': self.user_data['new_password'],
+            'new_password2': self.user_data['new_password'],
+        })
 
         # TODO: new password is saved
+        user = CustomUser.objects.get(password = 'new_password')
 
         # TODO: user can login to site with new pwd
+        
+
 
     ## As a user, I can delete my account
     def test_settings_delete_account(self):
