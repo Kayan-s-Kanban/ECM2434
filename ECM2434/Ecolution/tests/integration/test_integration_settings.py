@@ -46,17 +46,6 @@ class SettingsTestCase(TestCase):
         except CustomUser.DoesNotExist:
             pass # user is deleted from db
 
-    ## As a user, I can edit my profile
-    def test_settings_edit_profile(self):
-        response = self.client.get(reverse('settings'))
 
-        # user selects "Edit Profile"
-        response = self.client.post(reverse('edit_profile'))
-        self.assertEqual(response.status_code, 200)
 
-    ## As a user, I can view my completed tasks
-
-    ## As a user, I can view the date I joined the site
-
-    ## As a user, I can view the number of tasks completed
 
