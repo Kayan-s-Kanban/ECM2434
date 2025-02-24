@@ -516,7 +516,6 @@ img.profile_pic {
     border: 5px solid var(--color_light);
 }
 
-/* Task Stuff */
 .task-title {
     display: block;
     font-weight: bold;
