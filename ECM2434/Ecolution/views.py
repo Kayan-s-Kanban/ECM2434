@@ -192,8 +192,11 @@ def complete_task(request, task_id):
 def events_view(request):
     all_user_events = UserEvent.objects.filter(user=request.user)
     incomplete_user_events = UserEvent.objects.filter(user=request.user, completed = False)
+
+    user_events = Event.objects.filter(event_id__in=incomplete_user_events.values_list("event_id", flat=True))
     all_events = Event.objects.exclude(event_id__in=all_user_events.values_list("event_id", flat=True))
-    context = {"user_events": incomplete_user_events, "events": all_events}
+    
+    context = {"user_events": user_events, "events": all_events}
     return render(request, "events.html", context)
 
 def join_event(request):
