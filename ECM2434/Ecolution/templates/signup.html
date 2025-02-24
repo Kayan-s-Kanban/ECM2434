@@ -5,6 +5,7 @@
     <title>Sign Up - Ecolution</title>
 {% endblock %}
 
+<!-- Overrides header block so there isn't a navbar on this page -->
 {% block header %}
 {% endblock %}
 
@@ -20,23 +21,29 @@
             <input type="password" name="password2" placeholder="Confirm Password" required>
 
             <!-- Pet Selection -->
-            <div class="pet-selection flex_h flex_center">
-                <label class="pet-option">
+            <section class="pet_selection flex_h flex_center">
+                <label class="pet_option">
                     <input type="radio" name="pet_type" value="mushroom" required>
-                    <img src="{% static 'images/pets/mushroom/mushroom_small.gif' %}" alt="Mushroom Pet">
+                    <div class="image_wrapper">
+                        <img src="{% static 'images/pets/mushroom/mushroom_small.gif' %}" alt="Mushroom Pet">
+                    </div>
                 </label>
-                <label class="pet-option">
+                <label class="pet_option">
                     <input type="radio" name="pet_type" value="plant" required>
-                    <img src="{% static 'images/pets/plant/plant_small.gif' %}" alt="Plant Pet">
+                    <div class="image_wrapper">
+                        <img src="{% static 'images/pets/plant/plant_small.gif' %}" alt="Plant Pet">
+                    </div>
                 </label>
-                <label class="pet-option">
+                <label class="pet_option">
                     <input type="radio" name="pet_type" value="acorn" required>
-                    <img src="{% static 'images/pets/acorn/acorn_small.gif' %}" alt="Acorn Pet">
+                    <div class="image_wrapper">
+                        <img src="{% static 'images/pets/acorn/acorn_small.gif' %}" alt="Acorn Pet">
+                    </div>
                 </label>
-            </div>
+            </section>
 
-            <!-- Plant Name Input (Hidden by Default) -->
-            <input type="text" name="pet_name" id="pet-name-input" placeholder="Pet Name" style="display: none;">
+            <!-- Pet Name Input (Hidden by Default) -->
+            <input type="text" name="pet_name" id="pet_name_input" placeholder="Pet Name" style="display: none;">
 
             <button class="button box_shadow" type="submit">Sign Up</button>
         </form>
@@ -54,7 +61,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             let petOptions = document.querySelectorAll("input[name='pet_type']");
-            let petNameInput = document.getElementById("pet-name-input");
+            let petNameInput = document.getElementById("pet_name_input");
     
             function togglePetNameInput() {
                 let selectedPet = document.querySelector("input[name='pet_type']:checked");
@@ -81,38 +88,3 @@
     
 
 {% endblock %}
-
-
-
-<style>
-    .pet-selection {
-        gap: 20px;
-        margin: 20px 0;
-    }
-
-    .pet-option {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        cursor: pointer;
-        padding: 10px;
-        border: 2px solid transparent;
-        border-radius: 10px;
-        transition: border 0.3s;
-    }
-
-    .pet-option input {
-        display: none;
-    }
-
-    .pet-option img {
-        width: 80px;
-        height: 80px;
-        object-fit: contain;
-        border-radius: 10px;
-    }
-
-    .pet-option input:checked + img {
-        border: 3px solid #4CAF50;
-    }
-</style>

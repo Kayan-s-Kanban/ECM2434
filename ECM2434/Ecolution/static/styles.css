@@ -14,6 +14,12 @@
     --color_light: white;
     --color_light_off: #ddd;
     --color_primary: #3a8d84;
+    --color_button: var(--color_primary);
+    --color_button_hover: #2F746C;
+    --color_button_active: #29665F;
+    --color_button_menu: var(--color_light);
+    --color_button_menu_hover: #F5F5F5;
+    --color_button_menu_active: var(--color_light_off);
     --color_secondary: #65dba9;
     --color_background: var(--color_primary);
     --color_page_background: #8abd8f;
@@ -75,12 +81,50 @@ p {
 /* [[[ 2.A) Buttons ]]] */
 /* Element: Button */
 .button {
-    background-color: var(--color_primary);
+    font-family: var(--font_family_stack);
+    background-color: var(--color_button);
     border: none;
     border-radius: 2em;
     height: fit-content;
     padding: 0.5rem 1rem;
     letter-spacing: var(--letter_spacing_lg);
+    padding: 10px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 330ms ease;
+}
+
+.button:hover {
+    background-color: var(--color_button_hover);
+}
+
+.button:active {
+    background-color: var(--color_button_active);
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125), var(--box_shadow);
+}
+
+/* Element: Menu Button */
+.button_menu {
+    background-color: var(--color_button_menu);
+    font-size: 0.9rem;
+    padding: 1rem;
+    color: var(--color_dark);
+    border-radius: 0;
+    text-align: left;
+}
+
+.button_menu:hover {
+    background-color: var(--color_button_menu_hover);
+}
+
+.button_menu:active {
+    background-color: var(--color_button_menu_active);
+}
+
+/* Element: Range Slider */
+input[type="range"] {
+    cursor: pointer;
 }
 
 /* Element: Button With Image */
@@ -112,6 +156,7 @@ p {
     height: inherit;
 }
 
+/* Element: Submit Button */
 .button[type="submit"] {
     padding: 10px;
     color: white;
@@ -141,7 +186,7 @@ img.img_leaf {
 
 /* [[[ 3. Helper Classes ]]] */
 .font_small {
-    font-size: small;
+    font-size: 0.8rem;
 }
 
 .margin_sml {
@@ -254,7 +299,7 @@ img.img_leaf {
     height: 100%;
 }
 
-.image_wrapper {
+section.pet div.image_wrapper {
     width: 160px;
     height: 160px;
     /* overflow: hidden; */
@@ -284,6 +329,10 @@ img.img_leaf {
 /* Section: Spacer */
 section.spacer {
     height: 1rem;
+}
+
+section.spacer_large {
+    height: 128px;
 }
 
 section.spacer_big {
@@ -318,7 +367,7 @@ section.status_bar .xp_bar_progress {
 }
 
 section.status_bar .xp_bar_label {
-    font-size: small;
+    font-size: 0.8rem;
     margin-top: 5px;
     letter-spacing: var(--letter_spacing_lg);
 }
@@ -355,7 +404,7 @@ section.task_icon p {
 
 /* Section: Current Tasks */
 section.current_tasks>.heading p {
-    font-size: small;
+    font-size: 0.8rem;
 }
 
 section.current_tasks>.heading button {
@@ -364,7 +413,7 @@ section.current_tasks>.heading button {
 }
 
 .current_tasks .task_description {
-    font-size: small;
+    font-size: 0.8rem;
 }
 
 
@@ -410,36 +459,59 @@ section.settings_menu a:hover {
     color: var(--color_light);
 }
 
+/* Section: Pet Selection */
+section.pet_selection {
+    gap: 16px;
+}
 
-<style>
-    .pet-selection {
-        gap: 0px;
-        margin: 20px 0;
-    }
+section.pet_selection img {
+    width: 192px;
+    image-rendering: pixelated;
+    margin-left: calc((192px - 96px) / -2);
+    margin-top: calc(96px / -2);
+}
 
-    .pet-option {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        cursor: pointer;
-        padding: 10px;
-        border: 2px solid transparent;
-        border-radius: 10px;
-        transition: border 0.3s;
-    }
+section.pet_selection div.image_wrapper {
+    width: 96px;
+    height: 96px;
+    overflow: hidden;
+    border: 3px solid transparent;
+    transition: border 0.3s;
+    border-radius: 5px;
+}
 
-    .pet-option input {
-        display: none;
-    }
+section.pet_selection label.pet_option input {
+    display: none;
+}
 
-    .pet-option img {
-        width: 80px;
-        height: 80px;
-        object-fit: contain;
-        border-radius: 10px;
-    }
+section.pet_selection label.pet_option input:checked + div {
+    border: 3px solid var(--color_primary);
+}
 
-    .pet-option input:checked + img {
-        border: 3px solid #4CAF50;
-    }
-</style>
+
+/* Section: Settings Menu */
+.menu_container {
+    border-radius: 5px;
+}
+
+
+.menu_container button {
+    border-top: 1px solid var(--color_light_off);
+}
+
+.menu_container button:last-child {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.user_info {
+    color: var(--color_light);
+    gap: 16px;
+}
+
+img.profile_pic {
+    background-color: var(--color_light);
+    width: 60px;
+    border-radius: 50%;
+    border: 5px solid var(--color_light);
+}

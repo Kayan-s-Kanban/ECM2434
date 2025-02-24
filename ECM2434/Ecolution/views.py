@@ -1,6 +1,8 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth import authenticate, login, logout, get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse, Http404
 from django.db import IntegrityError
@@ -269,3 +271,52 @@ def delete_account(request):
         return redirect("home")  # Change "home" to your homepage URL name
 
     return render(request, "delete_account.html")
+
+
+@login_required
+def change_password(request):
+    if request.method == "POST":
+        current_password = request.POST["current_password"]
+        new_password1 = request.POST["new_password1"]
+        new_password2 = request.POST["new_password2"]
+        
+        if new_password1 != new_password2:
+            messages.error(request, "New passwords do not match!")
+            return redirect("settings")
+
+        user = request.user
+        if not user.check_password(current_password):
+            messages.error(request, "Current password is incorrect!")
+            return redirect("settings")
+
+        user.set_password(new_password1)
+        user.save()
+
+        # Keep the user logged in after password change
+        update_session_auth_hash(request, user)
+
+        messages.success(request, "Password updated successfully!")
+        return redirect("settings")
+
+    return redirect("settings")
+
+
+@csrf_exempt
+@login_required
+def update_fontsize(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            new_font_size = int(data.get("preferred_font_size", 3))
+            request.user.preferred_font_size = new_font_size
+            request.user.save()
+            print(f"Updated font size to: {request.user.preferred_font_size}")  # Debugging
+            return JsonResponse({"status": "success", "preferred_font_size": request.user.preferred_font_size})
+        except Exception as e:
+            print(f"Error updating font size: {e}")  # Debugging
+            return JsonResponse({"status": "error", "message": str(e)})
+    return JsonResponse({"status": "error", "message": "Invalid request"})
+
+@login_required
+def get_fontsize(request):
+    return JsonResponse({"preferred_font_size": request.user.preferred_font_size})    
