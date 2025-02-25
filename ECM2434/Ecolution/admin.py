@@ -9,11 +9,24 @@ User = get_user_model()
 
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserChangeForm
+    form = CustomUserChangeForm    
     model = CustomUser
     list_display = ('email', 'username', 'points', 'preferred_font_size',)
 
     fieldsets = UserAdmin.fieldsets + (
         ('Custom Fields', {'fields': ('points', 'preferred_font_size',)}),
+    )
+
+    # This controls what fields appear when adding a NEW user:
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': (
+                'username', 'email',
+                'points', 'preferred_font_size',
+                'password',
+            ),
+        }),
     )
 
 @admin.register(Task)
