@@ -11,10 +11,10 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserChangeForm
     form = CustomUserChangeForm    
     model = CustomUser
-    list_display = ('email', 'username', 'points', 'preferred_font_size',)
+    list_display = ('email', 'username', 'points', 'preferred_font_size', 'displayed_pet')
 
     fieldsets = UserAdmin.fieldsets + (
-        ('Custom Fields', {'fields': ('points', 'preferred_font_size',)}),
+        ('Custom Fields', {'fields': ('points', 'preferred_font_size', 'displayed_pet')}),
     )
 
     # This controls what fields appear when adding a NEW user:

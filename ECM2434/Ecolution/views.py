@@ -34,13 +34,17 @@ def signup_view(request):
             messages.error(request, "Username already taken!")
             return render(request, "signup.html")
 
-        # Create and save the new user
+        # Create the new user
         user = User.objects.create_user(username=username, email=email, password=password1)
         user.save()
 
         # Assign a pet to the new user
         pet = Pet.objects.create(user=user, pet_name=pet_name if pet_name else pet_type, pet_type=pet_type)
         pet.save()
+
+        ## Assigns the pet to the user and saves the user
+        user.displayed_pet = pet
+        user.save()
 
         messages.success(request, "Account created! You can now log in.")
         return redirect("login")
@@ -69,7 +73,7 @@ def logout_view(request):
 @login_required
 def home_view(request):
     user = request.user  # Get the logged-in user
-    pet = Pet.objects.filter(user=user).first() 
+    pet = request.user.displayed_pet # Get the pet displayed by the user
     # This retrieves the 5 most recent tasks by date to display on home page 
     user_tasks = UserTask.objects.filter(user=user, completed=False).order_by('date')[:5]
     

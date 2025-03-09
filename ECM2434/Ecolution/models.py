@@ -20,6 +20,13 @@ class CustomUser(AbstractUser):  # Custom User model is the user class we use fo
         choices=FONT_SIZE_CHOICES,
         default=FONT_SIZE_MEDIUM,
     )
+    displayed_pet = models.ForeignKey(
+        'Pet',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='displayed_for'
+    )
 
     def __str__(self): #function that returns username
         return self.username
@@ -59,10 +66,6 @@ class Pet(models.Model): #weak entity pet that relies on user id to exist
     class Meta: #used to set constraints on the pet level and pet exp
         unique_together = ('user', 'pet_name')
         constraints = [
-            models.CheckConstraint(
-                check=models.Q(pet_level__gte=1) & models.Q(pet_level__lte=10),
-                name='pet_level_range'
-            ),
             models.CheckConstraint(
                 check=models.Q(pet_exp__gte=0) & models.Q(pet_exp__lte=100),
                 name='pet_exp_range'
@@ -132,3 +135,22 @@ class UserEvent(models.Model):
 
     def __str__(self):
         return f'{self.user.username} - {self.event.event_name}'
+    
+class ShopItem(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    price = models.IntegerField(default=5000)
+    # image = models.ImageField(upload_to='shop_items/', default='shop_items/default.png') # haven't added yet but go ahead
+
+    def __str__(self):
+        return self.name
+
+class UserItem(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ✅ Dynamic reference
+    shopitem = models.ForeignKey(ShopItem, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'shopitem')
+
+    def __str__(self):
+        return f'{self.user.username} - {self.shopitem.name}'
