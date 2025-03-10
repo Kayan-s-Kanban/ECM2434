@@ -27,4 +27,6 @@ urlpatterns = [
     path("get-fontsize/", get_fontsize, name="get_fontsize"),
     path("term_of_use/",views.terms_view, name="term_of_use"),
     path('logout/', views.logout_view, name='logout'),
+    path("shop/", views.shop_view, name="shop"),
+    path("shop/buy/<int:item_id>/", views.buy_item, name="buy_item"),
 ]

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>Shop | Ecolution</title>
+{% endblock %}
+
+{% block main %}
+<div class="shop-page margin_std">
+    <h2>Shop</h2>
+    <div class="shop-items">
+        {% if shop_items %}
+            <ul class="shop-list">
+                {% for item in shop_items %}
+                    <li class="shop-item card margin_std">
+                        <img src="{{ item.image_url }}" alt="{{ item.name }}" class="shop-item-image" style="width:100%; height:auto;">
+                        <h3 class="shop-item-title margin_sml">{{ item.name }}</h3>
+                        <p class="shop-item-description margin_sml">{{ item.description }}</p>
+                        <p class="shop-item-price margin_sml">Price: {{ item.price }}</p>
+                        {% if item.id in purchased_item_ids %}
+                            <div class="sold-out-banner">Sold Out</div>
+                            <button class="button margin_std" disabled>Sold Out</button>
+                        {% elif item.price > user.points %}
+                            <div class="insufficient-banner">Not Enough Points</div>
+                            <button class="button margin_std" disabled>Buy</button>
+                        {% else %}
+                            <button class="button margin_std" onclick="buyItem('{{ item.id }}')">Buy</button>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No items available at the moment. Please check back later.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block additional %}
+<script>
+  function buyItem(itemId) {
+    fetch("{% url 'buy_item' item_id=0 %}".replace("0", itemId), {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({item_id: itemId})
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === "success") {
+         alert(data.message);
+         window.location.reload();
+      } else {
+         alert(data.message);
+      }
+    })
+    .catch(error => console.error("Error:", error));
+  }
+</script>
+{% endblock %}
