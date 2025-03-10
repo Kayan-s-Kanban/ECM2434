@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Pet, Task, UserTask, Event, UserEvent
+from .models import Pet, Task, UserTask, Event, UserEvent, ShopItem, UserItem
 from django.contrib.auth import get_user_model
 from .models import CustomUser
 from .forms import CustomUserChangeForm
@@ -36,3 +36,5 @@ admin.site.register(UserTask)
 admin.site.register(Event)
 admin.site.register(UserEvent)
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(ShopItem)
+admin.site.register(UserItem)

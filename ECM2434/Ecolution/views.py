@@ -9,7 +9,7 @@ from django.db import IntegrityError
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.views.decorators.cache import never_cache
-from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent, ShopItem
+from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent, ShopItem, UserItem
 
 # Create your views here.
 def index(request):
@@ -368,7 +368,7 @@ def terms_view(request):
 @login_required
 def shop_view(request):
     shop_items = ShopItem.objects.all()
-    purchased_item_ids = UserItem.objects.filter(user=request.user).values_list('shop_item__id', flat=True)
+    purchased_item_ids = UserItem.objects.filter(user=request.user).values_list('shopitem__id', flat=True)
     return render(request, "shop.html", {
         "shop_items": shop_items,
         "purchased_item_ids": list(purchased_item_ids)
@@ -378,7 +378,7 @@ def shop_view(request):
 def buy_item(request, item_id):
     if request.method == "POST":
         shop_item = get_object_or_404(ShopItem, id=item_id)
-        if UserItem.objects.filter(user=request.user, shop_item=shop_item).exists():
+        if UserItem.objects.filter(user=request.user, shopitem=shop_item).exists():
             return JsonResponse({
                 "status": "error",
                 "message": "You have already purchased this item."
@@ -392,7 +392,7 @@ def buy_item(request, item_id):
         
         request.user.points -= shop_item.price
         request.user.save()
-        UserItem.objects.create(user=request.user, shop_item=shop_item)
+        UserItem.objects.create(user=request.user, shopitem=shop_item)
         return JsonResponse({
             "status": "success",
             "message": "Purchase successful!",
