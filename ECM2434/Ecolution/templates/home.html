@@ -10,7 +10,7 @@
         <div class="flex_v flex_center">
             <div class="image_wrapper">
                 {% if pet %}
-                <img src="{% static 'images/pets/' %}{{ pet_type }}/{{ pet_type }}_{{ pet_size }}.gif" alt="{{ pet_type }} pet"> <!-- this loads the pet img from the images file it uses the info in the database to generate the correct file path -->
+                    <img src="{{ pet.computed_image_url }}" alt="{{ pet.pet_type }} pet"> <!-- this displays the pet image -->
                 {% else %}
                     <img src="{% static 'images/pets/mushroom/mushroom_large.gif' %}" alt="Default Pet"> <!-- if no pet is found this defaults -->
                 {% endif %}

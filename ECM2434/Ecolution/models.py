@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Q, F, Sum
+from django.db.models import Q, F, Sum, Max
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings  # Best practice for referencing AUTH_USER_MODEL
 from django.utils import timezone
@@ -28,11 +28,16 @@ class CustomUser(AbstractUser):  # Custom User model is the user class we use fo
         related_name='displayed_for'
     )
 
+    @property
+    def highest_pet_level(self):
+        result = self.pet_set.aggregate(max_level=Max('pet_level'))
+        return result['max_level'] or 1
+
     def __str__(self): #function that returns username
         return self.username
 
 class Pet(models.Model): #weak entity pet that relies on user id to exist
-    SMALL = 'small' #cutom data field used for describing size of pets
+    SMALL = 'small' #custom data field used for describing size of pets
     MEDIUM = 'medium'
     LARGE = 'large'
 
@@ -41,12 +46,21 @@ class Pet(models.Model): #weak entity pet that relies on user id to exist
         (MEDIUM, 'Medium'),
         (LARGE, 'Large'),
     ]
+    MUSHROOM = 'mushroom' #custom data field used for describing type of pet
+    ACORN = 'acorn'
+    PLANT = 'plant'
+
+    PET_CHOICES = [
+        (MUSHROOM, 'Mushroom'),
+        (ACORN, 'Acorn'),
+        (PLANT, 'Plant'),
+    ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # since pets is a weak entity when the user is deleted the pet is also deleted thats what cascade does
     pet_name = models.CharField(max_length=50) #pet name used in the display on the home page
     pet_level = models.IntegerField(default=1) # pet level used to determine size and is displayed on the home page
     pet_exp = models.IntegerField(default=0) #pet exp used to determine when a pet should level up also displayed on the home page
-    pet_type = models.CharField(max_length=50, default='mushroom')  # pet type used in the home page to create the file path to where the image of the pets are
+    pet_type = models.CharField(max_length=10, choices=PET_CHOICES, default=MUSHROOM)  # pet type used in the home page to create the file path to where the image of the pets are
     size = models.CharField(max_length=10, choices=SIZE_CHOICES, default=SMALL) #size is also used when creating the file path to find the pets 
 
     def determine_size(self): #used to update the size of the pets based on the level of them
@@ -71,6 +85,10 @@ class Pet(models.Model): #weak entity pet that relies on user id to exist
                 name='pet_exp_range'
             )
         ]
+    
+    @property # generate image url for the pet
+    def computed_image_url(self):
+        return f"/static/images/pets/{self.pet_type}/{self.pet_type}_{self.size}.gif" # Might need to change this or the determine size so it updates on changes
 
     def __str__(self):
         return f'{self.pet_name} - {self.user.username}'
@@ -140,7 +158,7 @@ class ShopItem(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     price = models.IntegerField(default=5000)
-    # image = models.ImageField(upload_to='shop_items/', default='shop_items/default.png') # haven't added yet but go ahead
+    image_path = models.CharField(max_length=255, default='') # haven't added a default image path yet
 
     def __str__(self):
         return self.name

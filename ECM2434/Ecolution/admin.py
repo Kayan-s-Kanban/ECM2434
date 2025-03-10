@@ -11,7 +11,7 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserChangeForm
     form = CustomUserChangeForm    
     model = CustomUser
-    list_display = ('email', 'username', 'points', 'preferred_font_size', 'displayed_pet')
+    list_display = ('email', 'username', 'points', 'preferred_font_size', 'displayed_pet', 'highest_pet_level')
 
     fieldsets = UserAdmin.fieldsets + (
         ('Custom Fields', {'fields': ('points', 'preferred_font_size', 'displayed_pet')}),
