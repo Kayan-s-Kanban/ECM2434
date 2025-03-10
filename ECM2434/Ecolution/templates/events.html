@@ -207,7 +207,7 @@
         let map = null;
 
         //creates the map which is displayed within the event popup
-        function createMap(lat, lon, zoom = 13) {
+        function createMap(lat, lon, zoom = 18) {
             map = L.map('map').setView([lat, lon], zoom);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
