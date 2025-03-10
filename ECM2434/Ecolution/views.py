@@ -199,6 +199,9 @@ def complete_task(request, task_id):
             pet = Pet.objects.filter(user=request.user).first()
             if pet:
                 pet.pet_exp += task.xp_given
+                if pet.pet_exp >= 100:
+                    pet.pet_level += 1
+                    pet.pet_exp -= 100
                 pet.save()
                 
         return JsonResponse({"status": "success", "points": request.user.points})
