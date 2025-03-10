@@ -220,6 +220,7 @@
         //opens an event's details popup
         function openEventDetails(element, eventType) {
             let eventDetails = document.getElementById("event_details");
+            eventDetails.style.display = "block";
             eventDetails.setAttribute("event-id", element.dataset.id);
 
             const eventAttributes = ["name", "description", "date", "time", "points"];
