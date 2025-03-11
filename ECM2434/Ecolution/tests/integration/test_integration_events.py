@@ -9,15 +9,15 @@ class EventsTestCase(TestCase):
         self.client.login(username = 'testuser', password = 'password')
 
         # create a Pet related to the user
-        self.pet1 = Pet.objects.create(user = self.user1, name = 'Test Pet', xp = 0)
+        self.pet1 = Pet.objects.create(user = self.user1, pet_name ='Test Pet', pet_exp = 0)
 
         # create a test event
         self.event = Event.objects.create(
-            name = 'Test Event',
+            event_name = 'Test Event',
             description = 'Test Event Description',
             location = 'Test Event Location',
-            start = '2025-03-15 18:00:00',
-            end = '2025-03-15 20:00:00'
+            date = '2025-03-15',
+            event_id = 1
         )
 
     # As a user, I can earn points from completing events
@@ -26,7 +26,7 @@ class EventsTestCase(TestCase):
         initial_points = self.user1.points
 
         # user completes event
-        response = self.client.post(reverse('complete_event', args=[self.event.id]))  # Adjust this to match your URL
+        self.client.post(reverse('complete_event'))  # TODO: check URL
 
         # reload user data after event completion
         self.user1.refresh_from_db()
@@ -37,13 +37,13 @@ class EventsTestCase(TestCase):
     # As a user, I can earn XP from completing events
     def test_earn_xp_from_event(self):
         # check xp at start
-        initial_xp = self.pet1.xp
+        initial_xp = self.pet1.pet_exp
 
         # user completes event
-        response = self.client.post(reverse('complete_event', args=[self.event.id]))  # Adjust this to match your URL
+        self.client.post(reverse('complete_event'))  # Adjust this to match your URL
 
         # reload pet data after event completion
         self.pet1.refresh_from_db()
 
         # check pet's xp has increased
-        self.assertGreater(self.pet1.xp, initial_xp)
+        self.assertGreater(self.pet1.pet_exp, initial_xp)
