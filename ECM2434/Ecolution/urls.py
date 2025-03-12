@@ -2,7 +2,7 @@ from django.urls import path
 from django.contrib import admin
 from . import views
 from django.contrib.auth.views import LogoutView
-from .views import login_view, signup_view, delete_account, change_password, update_fontsize, get_fontsize
+from .views import login_view, signup_view, delete_account, change_password, update_fontsize, get_fontsize, validate_qr
 
 
 urlpatterns = [
@@ -29,4 +29,5 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path("shop/", views.shop_view, name="shop"),
     path("shop/buy/<int:item_id>/", views.buy_item, name="buy_item"),
+    path('validate/<uuid:token>/', validate_qr, name='validate_qr'),
 ]

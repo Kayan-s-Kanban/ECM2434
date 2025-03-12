@@ -1,8 +1,13 @@
+import uuid
+import io
+import qrcode
 from django.db import models
 from django.db.models import Q, F, Sum, Max
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings  # Best practice for referencing AUTH_USER_MODEL
 from django.utils import timezone
+from django.core.files.base import ContentFile
+from django.urls import reverse
 
 class CustomUser(AbstractUser):  # Custom User model is the user class we use for base users and super users
     
@@ -34,7 +39,7 @@ class CustomUser(AbstractUser):  # Custom User model is the user class we use fo
         return result['max_level'] or 1
 
     def __str__(self): #function that returns username
-        return self.username
+        return f'{self.username}'
 
 class Pet(models.Model): #weak entity pet that relies on user id to exist
     SMALL = 'small' #custom data field used for describing size of pets
@@ -100,6 +105,9 @@ class Event(models.Model):
     location = models.CharField(max_length=100, blank=True)
     date = models.DateField(default=timezone.now)
     time = models.TimeField(default=timezone.now)
+    unique_token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    qr_code = models.ImageField(upload_to='qr_codes/', blank=True, null=True)
+    url_qr_code = models.URLField(blank=True, null=True) # This field is here to allow me to test the view without currently needing to scan the QR Code
 
     @property
     def total_points(self):
@@ -107,7 +115,40 @@ class Event(models.Model):
         return self.task_set.aggregate(total=Sum('points_given'))['total'] or 0
 
     def __str__(self):
-        return self.event_name
+        return f'{self.event_name}'
+    
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        # First, save the object to get a primary key if it’s new
+        super().save(*args, **kwargs)
+        
+        # Generate and save QR code if this is a new instance or if there is no QR code yet.
+        if is_new or not self.qr_code:
+            # Generate the relative URL using reverse()
+            relative_url = reverse('validate_qr', kwargs={'token': self.unique_token})
+            # Combine with the base URL
+            full_url = f'http://127.0.0.1:8000/{relative_url}'
+            
+            # Create the QR code image using the qrcode library.
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_L,
+                box_size=10,
+                border=4,
+            )
+            qr.add_data(full_url)
+            qr.make(fit=True)
+            img = qr.make_image(fill_color="black", back_color="white")
+            
+            # Save the image to a bytes buffer.
+            buffer = io.BytesIO()
+            img.save(buffer, format='PNG')
+            
+            # Create a filename that might include the event's pk.
+            file_name = f'event_{self.pk}_qr.png'
+            self.qr_code.save(file_name, ContentFile(buffer.getvalue()), save=False)
+            self.url_qr_code = full_url
+            super().save(*args, **kwargs)
     
 class Task(models.Model):
     task_id = models.AutoField(primary_key=True)
@@ -127,7 +168,7 @@ class Task(models.Model):
         ]
 
     def __str__(self):
-        return self.task_name
+        return f'{self.task_name}'
 
 
 class UserTask(models.Model):
@@ -147,6 +188,7 @@ class UserEvent(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     completed = models.BooleanField(default=False)
     date = models.DateField(default=timezone.now)
+    validated = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('user', 'event', 'date')
@@ -161,7 +203,7 @@ class ShopItem(models.Model):
     image_path = models.CharField(max_length=255, default='') # haven't added a default image path yet
 
     def __str__(self):
-        return self.name
+        return f'{self.name}'
 
 class UserItem(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ✅ Dynamic reference

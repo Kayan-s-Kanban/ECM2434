@@ -403,3 +403,22 @@ def buy_item(request, item_id):
             "remaining_points": request.user.points
         })
     return JsonResponse({"status": "error", "message": "Invalid request."}, status=400)
+
+@login_required
+def validate_qr(request, token):
+    # Retrieve the event using the unique token
+    event = get_object_or_404(Event, unique_token=token)
+    
+    # Retrieve the UserEvent linking the current user to the event
+    user_event = get_object_or_404(UserEvent, event=event, user=request.user)
+    
+    # Mark the attendance as validated if not already done
+    if not user_event.validated:
+        user_event.validated = True
+        user_event.save()
+        message = "Attendance validated."
+    else:
+        message = "Attendance already validated."
+    
+    # Return a JSON response with the validation message
+    return JsonResponse({'message': message})
