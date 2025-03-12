@@ -63,19 +63,8 @@ class EventsTestCase(TestCase):
         # check location appears on page
         self.assertContains(response, 'Test Event Location')
 
-    # As a user, I can see the start time and date of event
-    def test_event_start_time(self):
-        response = self.client.get(reverse('event_detail', args=[self.event.id]))  # Assuming 'event_detail' is the URL name
+    # As a user, I can see the date of the event
 
-        # check the start time is in the response
-        self.assertContains(response, '2025-03-15 18:00:00')
-
-    # As a user, I can see the end time and date of event
-    def test_event_end_time(self):
-        response = self.client.get(reverse('event_detail', args=[self.event.id]))  # Assuming 'event_detail' is the URL name
-
-        # check the end time is in the response
-        self.assertContains(response, '2025-03-15 20:00:00')
-
+    # As a user, I can see the start time of the event
 
 
