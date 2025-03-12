@@ -9,7 +9,7 @@ from django.db import IntegrityError
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.views.decorators.cache import never_cache
-from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent  
+from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent, ShopItem, UserItem
 
 # Create your views here.
 def index(request):
@@ -34,13 +34,17 @@ def signup_view(request):
             messages.error(request, "Username already taken!")
             return render(request, "signup.html")
 
-        # Create and save the new user
+        # Create the new user
         user = User.objects.create_user(username=username, email=email, password=password1)
         user.save()
 
         # Assign a pet to the new user
         pet = Pet.objects.create(user=user, pet_name=pet_name if pet_name else pet_type, pet_type=pet_type)
         pet.save()
+
+        ## Assigns the pet to the user and saves the user
+        user.displayed_pet = pet
+        user.save()
 
         messages.success(request, "Account created! You can now log in.")
         return redirect("login")
@@ -69,7 +73,7 @@ def logout_view(request):
 @login_required
 def home_view(request):
     user = request.user  # Get the logged-in user
-    pet = Pet.objects.filter(user=user).first() 
+    pet = request.user.displayed_pet # Get the pet displayed by the user
     # This retrieves the 5 most recent tasks by date to display on home page 
     user_tasks = UserTask.objects.filter(user=user, completed=False).order_by('date')[:5]
     
@@ -195,6 +199,9 @@ def complete_task(request, task_id):
             pet = Pet.objects.filter(user=request.user).first()
             if pet:
                 pet.pet_exp += task.xp_given
+                if pet.pet_exp >= 100:
+                    pet.pet_level += 1
+                    pet.pet_exp -= 100
                 pet.save()
                 
         return JsonResponse({"status": "success", "points": request.user.points})
@@ -360,3 +367,58 @@ def get_fontsize(request):
 
 def terms_view(request):
     return render(request, "term.html")
+
+@login_required
+def shop_view(request):
+    shop_items = ShopItem.objects.all()
+    purchased_item_ids = UserItem.objects.filter(user=request.user).values_list('shopitem__id', flat=True)
+    return render(request, "shop.html", {
+        "shop_items": shop_items,
+        "purchased_item_ids": list(purchased_item_ids)
+    })
+
+@login_required
+def buy_item(request, item_id):
+    if request.method == "POST":
+        shop_item = get_object_or_404(ShopItem, id=item_id)
+        if UserItem.objects.filter(user=request.user, shopitem=shop_item).exists():
+            return JsonResponse({
+                "status": "error",
+                "message": "You have already purchased this item."
+            }, status=400)
+        
+        if request.user.points < shop_item.price:
+            return JsonResponse({
+                "status": "error",
+                "message": "Insufficient points to purchase this item."
+            }, status=400)
+        
+        request.user.points -= shop_item.price
+        request.user.save()
+        UserItem.objects.create(user=request.user, shopitem=shop_item)
+        return JsonResponse({
+            "status": "success",
+            "message": "Purchase successful!",
+            "item": shop_item.name,
+            "remaining_points": request.user.points
+        })
+    return JsonResponse({"status": "error", "message": "Invalid request."}, status=400)
+
+@login_required
+def validate_qr(request, token):
+    # Retrieve the event using the unique token
+    event = get_object_or_404(Event, unique_token=token)
+    
+    # Retrieve the UserEvent linking the current user to the event
+    user_event = get_object_or_404(UserEvent, event=event, user=request.user)
+    
+    # Mark the attendance as validated if not already done
+    if not user_event.validated:
+        user_event.validated = True
+        user_event.save()
+        message = "Attendance validated."
+    else:
+        message = "Attendance already validated."
+    
+    # Return a JSON response with the validation message
+    return JsonResponse({'message': message})

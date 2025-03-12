@@ -351,6 +351,12 @@ section.pet h3 {
     font-weight: normal;
 }
 
+.pet_info_bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
 /* Section: Status Bar */
 section.status_bar .xp_bar {
     background-color: var(--color_light);
@@ -549,7 +555,7 @@ img.profile_pic {
 
 .delete-icon, .complete-icon {
     cursor: pointer;
-  margin-left: 10px;
+    margin-left: 10px;
 }
 
 .form-group-horizontal {
@@ -567,4 +573,14 @@ img.profile_pic {
     flex: 1; /* take up remaining space */
     padding: 0.4rem;
     box-sizing: border-box;
+}
+
+.sold-out-banner, .insufficient-banner {
+    background-color: rgba(255, 0, 0, 0.8);
+    color: white;
+    padding: 5px;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 5px;
+    margin-bottom: 8px;
 }
