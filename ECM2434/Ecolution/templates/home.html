@@ -10,7 +10,7 @@
         <div class="flex_v flex_center">
             <div class="image_wrapper">
                 {% if pet %}
-                <img src="{% static 'images/pets/' %}{{ pet_type }}/{{ pet_type }}_{{ pet_size }}.gif" alt="{{ pet_type }} pet"> <!-- this loads the pet img from the images file it uses the info in the database to generate the correct file path -->
+                    <img src="{{ pet.computed_image_url }}" alt="{{ pet.pet_type }} pet"> <!-- this displays the pet image -->
                 {% else %}
                     <img src="{% static 'images/pets/mushroom/mushroom_large.gif' %}" alt="Default Pet"> <!-- if no pet is found this defaults -->
                 {% endif %}
@@ -22,7 +22,10 @@
     <section class="spacer_large"></section>
     <section class="status_bar flex_h flex_center text_light">
         <div class="pet_status flex_v margin_sml flex_v_fill">
-            <p>Pet Name: {{ pet_name }}     Level: {{ level }}</p> <!-- this displays the pets name and level -->
+            <div class="pet_info_bar flex_h" style="justify-content: space-between;"> <!-- this displays the pets name and level -->
+                <p>Pet Name: {{ pet_name }}</p>
+                <p>Level: {{ level }}</p>
+            </div>
             <div class="xp_bar box_shadow">
                 <div class="xp_bar_progress" style="width: {{ pet_exp }}%;"></div> <!-- this is a bar with the amount of xp that the pet has -->
             </div>

@@ -60,7 +60,7 @@ Instructions for running Django Server for first time on personal computer (Wind
 6. Then: pip install -r requirements.txt
 7. Navigate to second ECM2434 folder
 8. Run command: python manage.py runserver
-9. Access server using 127.0.0.1:8000/Ecolution
+9. Access server using 127.0.0.1:8000/ecolution
 10. Exit server using Ctrl+C
 11. Then exit venv using deactivate
 (Do not be surprised if your venv folder does not upload when committing, it is meant to be ignored and not be on the github, they are personal)
@@ -70,7 +70,7 @@ Every other time use these steps:
 2. Run command: .\venv\Scripts\activate
 3. Navigate to second ECM2434 folder
 4. Run command: python manage.py runserver
-5. Access server using 127.0.0.1:8000/Ecolution
+5. Access server using 127.0.0.1:8000/ecolution
 6. Exit server using exit
 7. Then exit venv using deactivate
 
