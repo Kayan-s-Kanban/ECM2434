@@ -62,9 +62,9 @@ class HomepageIntegrationTests(TestCase):
         self.assertTrue(UserTask.objects.filter(user=self.user1).exists())
         self.assertTrue(Task.objects.filter(task_name="Buy groceries").exists())
 
-        # simulate clicking "Complete" button (assuming it's a POST request to mark task completed)
+        # simulate clicking "Complete" button
         response = self.client.post('complete_task')  # POST request to mark task as completed
-        print(f"Task Marked Completed: {response.status_code}")  # Debug: print status code after completing the task
+        print(f"Task Marked Completed: {response.status_code}")  # debug: print status code after completing the task
 
         # user returns to homepage
         response = self.client.get(reverse('home'))

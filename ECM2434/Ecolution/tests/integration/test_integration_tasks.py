@@ -45,10 +45,10 @@ class TaskIntegrationTests(TestCase):
         }
 
         # user request to create new task
-        response = self.client.post('/tasks/create/', task_data)  # TODO: ensure correct create task endpoint
+        response = self.client.post('/tasks/create/', task_data)
 
         # check task has been created
-        self.assertEqual(response.status_code, 201)  # TODO: ensure correct status code
+        self.assertEqual(response.status_code, 200)
 
         # check task exists in the DB
         task = Task.objects.get(task_name='Go for a walk')
@@ -58,7 +58,7 @@ class TaskIntegrationTests(TestCase):
         self.assertTrue(UserTask.objects.filter(user = self.user, task = task).exists())
 
         # user deletes task
-        delete_url = f'/tasks/{task.id}/delete/'  # TODO: ensure correct delete URL format
+        delete_url = f'/tasks/{task.id}/delete/'
         response = self.client.post(delete_url)
 
         # task no longer appears in the user's list

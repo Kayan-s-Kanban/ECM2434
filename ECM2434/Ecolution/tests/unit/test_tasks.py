@@ -64,8 +64,8 @@ class TasksUnitTests(TestCase):
         # task now appears in completed tasks list
         self.assertTrue(UserTask.objects.filter(task = self.task1, completed = True).exists())
 
-    ## As a user, I can earn points from completing tasks
-    def test_user_earns_points(self):
+    ## As a user, I can earn XP from completing tasks
+    def test_user_earns_xp(self):
         # check user xp before completing task
         user_xp_before = self.pet1.pet_exp
         print(f"XP Before: {user_xp_before}")  # TODO: debug statement
@@ -91,3 +91,31 @@ class TasksUnitTests(TestCase):
         user_exp_after = self.pet1.pet_exp
         print(f"XP After: {user_exp_after}")  # TODO: debug statement
         self.assertTrue(user_xp_before < user_exp_after)
+
+    ## As a user, I can earn points from completing tasks
+    def test_user_earns_points(self):
+        # check user's points before completing task
+        user_points_before = self.user1.points
+        print(f"Points Before: {user_points_before}")  # TODO: debug statement
+
+        # add task to user list
+        user_tasks = UserTask.objects.create(user = self.user1, task = self.task3)
+
+        # check task is now in user's current tasks list
+        self.assertTrue(UserTask.objects.filter(user = self.user1).exists())
+        self.assertTrue(UserTask.objects.filter(task = self.task3, completed = False).exists())
+
+        # user marks task as "complete"
+        user_tasks.completed = True
+        user_tasks.save()
+
+        # task no longer appears in current tasks list
+        self.assertFalse(UserTask.objects.filter(task = self.task3, completed = False).exists())
+
+        # task now appears in completed tasks list
+        self.assertTrue(UserTask.objects.filter(task = self.task3, completed = True).exists())
+
+        # check points have been awarded
+        user_points_after = self.pet1.pet_exp
+        print(f"XP After: {user_points_before}")  # TODO: debug statement
+        self.assertTrue(user_points_before < user_points_after)

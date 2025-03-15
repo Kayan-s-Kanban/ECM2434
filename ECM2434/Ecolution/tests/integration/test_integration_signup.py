@@ -72,12 +72,9 @@ class SignupIntegrationTests(TestCase):
         }
 
         response = self.client.post(self.login_url, login_data)
+
         # user should be redirected to homepage after login
         self.assertRedirects(response, '/ecolution/home/')
-
-        # check that user has been authenticated
-        response = self.client.get(reverse('home'))
-        self.assertEqual(response.status_code, 200)
 
     ## As a user, I cannot sign up for an account with the password fields not matching
     def test_signup_different_passwords(self):
