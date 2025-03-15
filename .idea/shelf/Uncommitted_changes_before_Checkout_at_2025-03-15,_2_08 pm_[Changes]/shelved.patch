@@ -1,0 +1,34 @@
+Index: ECM2434/Ecolution/tests/integration/test_integration_events.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.test import TestCase\nfrom django.urls import reverse\nfrom django.db import connection\nfrom Ecolution.models import CustomUser, Event, Pet\n\nclass EventsTestCase(TestCase):\n    def setUp(self):\n        self.user1 = CustomUser.objects.create_user(username='testuser', password='password')\n        self.client.login(username = 'testuser', password = 'password')\n        self.pet1 = Pet.objects.create(user = self.user1, pet_name = 'Test Pet', pet_exp = 10)\n\n    # As a user, I can earn points from completing events\n    def test_earn_points_from_event(self):\n        # create test event\n        self.event1 = Event.objects.create(event_name = 'Test Event')\n\n        user_from_db = CustomUser.objects.get(username = 'testuser')\n        print(\"DB Check - Points:\", user_from_db.points)\n\n        # ensure the event was created and saved\n        self.assertEqual(Event.objects.count(), 1)\n        created_event = Event.objects.first()\n        self.assertEqual(created_event.event_name, 'Test Event')\n\n        print(\"Event exists\")\n\n        # refresh user data before checking points\n        self.user1.refresh_from_db()\n        initial_points = self.user1.points\n        print(\"Initial Points:\", initial_points)\n\n        user_from_db = CustomUser.objects.get(username='testuser')\n        print(\"DB Check - Points:\", user_from_db.points)\n\n        # user completes event\n        response = self.client.post('events/complete/', {'event_id': self.event1.event_id})\n\n        # reload user data after event completion\n        connection.close()\n        self.user1.refresh_from_db()\n        print(\"Final Points:\", self.user1.points)\n\n        user_from_db = CustomUser.objects.get(username = 'testuser')\n        print(\"DB Check - Points:\", user_from_db.points)\n\n        # check user points have increased\n        self.assertGreater(self.user1.points, initial_points)\n\n        # ensure the response was successful (status code 200)\n        self.assertEqual(response.status_code, 200)\n\n    # As a user, I can earn XP from completing events\n    def test_earn_xp_from_event(self):\n        # check xp at start\n        initial_xp = self.pet1.pet_exp\n\n        print(\"Initial XP:\", initial_xp)\n\n        # create test event\n        self.event1 = Event.objects.create(\n            event_name='Test Event'\n        )\n\n        # Ensure the event was created and saved\n        self.assertEqual(Event.objects.count(), 1)  # Check that 1 event exists in the database\n        created_event = Event.objects.first()  # Get the first (and only) event created\n        self.assertEqual(created_event.event_name, 'Test Event')  # Ensure the event name matches\n\n        print(\"Event exists\")\n\n        # user completes event\n        self.client.post(reverse('complete_event'), {'event': self.event1})\n\n        # reload user + pet data after event completion\n        self.user1.refresh_from_db()\n        self.pet1.refresh_from_db()\n        self.event1.refresh_from_db()\n\n        print(\"Final XP:\", self.pet1.pet_exp)\n\n        # reload pet data after event completion\n        self.pet1.refresh_from_db()\n\n        # check pet's xp has increased\n        self.assertTrue(self.pet1.pet_exp > initial_xp)\n\n    def test_updating_user_points(self):\n        \"\"\"Test that updating a user's points works correctly\"\"\"\n        self.user1.points += 5\n        self.user1.save()\n\n        updated_user = CustomUser.objects.get(username = 'testuser')\n        self.assertEqual(updated_user.points, 5)\n\n        self.user1.points += 10\n        self.user1.save()\n\n        updated_user = CustomUser.objects.get(username='testuser')\n        self.assertEqual(updated_user.points, 15)\n\n    # As a user, I can scan a valid QR code\n\n    # As a user, I can scan a valid QR code and be redirected to the associated event\n\n    # As a user, I can mark tasks off as complete\n
+===================================================================
+diff --git a/ECM2434/Ecolution/tests/integration/test_integration_events.py b/ECM2434/Ecolution/tests/integration/test_integration_events.py
+--- a/ECM2434/Ecolution/tests/integration/test_integration_events.py	(revision 60f94fe959b526df7adfcac5a4847565f64acfa9)
++++ b/ECM2434/Ecolution/tests/integration/test_integration_events.py	(date 1742047661211)
+@@ -34,20 +34,25 @@
+ 
+         # user completes event
+         response = self.client.post('events/complete/', {'event_id': self.event1.event_id})
++        print(response.content)
+ 
+         # reload user data after event completion
+         connection.close()
+         self.user1.refresh_from_db()
+         print("Final Points:", self.user1.points)
++        print(response.content)
+ 
+         user_from_db = CustomUser.objects.get(username = 'testuser')
+         print("DB Check - Points:", user_from_db.points)
++        print(response.content)
+ 
+         # check user points have increased
+         self.assertGreater(self.user1.points, initial_points)
++        print(response.content)
+ 
+         # ensure the response was successful (status code 200)
+         self.assertEqual(response.status_code, 200)
++        print(response.content)
+ 
+     # As a user, I can earn XP from completing events
+     def test_earn_xp_from_event(self):

@@ -1,0 +1,133 @@
+Index: ECM2434/Ecolution/tests/integration/test_integration_homepage.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.test import TestCase\nfrom django.urls import reverse\nfrom Ecolution.models import Task, CustomUser, UserTask, Pet\n\nclass HomepageIntegrationTests(TestCase):\n    def setUp(self):\n        # create a test user\n        self.user1 = CustomUser.objects.create_user(username = 'testuser', password = 'password')\n        self.user1.points = 10\n        self.client.login(username = 'testuser', password = 'password')\n\n        # create user's pet\n        self.pet1 = Pet.objects.create(\n            user=self.user1,\n            pet_name = \"TestPet\",\n            pet_level = 1,\n            pet_exp = 0,  # pet starts with 0 XP\n            pet_type = \"mushroom\"\n        )\n\n        # log user in\n        self.client.login(username ='testuser', password = 'password')\n        response = self.client.get(reverse('home'))\n\n        # create new task\n        self.task1 = Task.objects.create(task_name = \"Buy groceries\", description = \"Go to the store and buy food\")\n        self.task1.points = 50\n\n    # As a user, I can view my pet name\n    def test_homepage_view_pet_name(self):\n        response = self.client.get(reverse('home'))\n\n        # check pet name appears\n        self.assertContains(response, 'TestPet')\n\n    # As a user, I can view my current tasks\n    def test_homepage_current_tasks(self):\n        # user is on homepage\n        response = self.client.get(reverse('home'))\n\n        # check tasks appear on homepage\n        self.assertContains(response, \"Buy groceries\")\n        self.assertContains(response, \"Go to the store and buy food\")\n\n    ## As a user, I can earn points from completing tasks\n    def test_homepage_points_increase(self):\n        # user is on homepage\n        response = self.client.get(reverse('home'))\n\n        # make note of user's current points\n        user_points_current = self.user1.points\n        print(f\"User Points Before Task: {user_points_current}\")  # Debug: print user's points before task completion\n\n        # user is on tasks page\n        response = self.client.get(reverse('tasks'))\n\n        # user adds task to their list\n        user_tasks = UserTask.objects.create(user=self.user1, task=self.task1)\n        print(f\"Task Added: {user_tasks}\")  # Debug: print the task that was added\n\n        # check task is now in user's list\n        self.assertTrue(UserTask.objects.filter(user=self.user1).exists())\n        self.assertTrue(Task.objects.filter(task_name=\"Buy groceries\").exists())\n\n        # simulate clicking \"Complete\" button (assuming it's a POST request to mark task completed)\n        response = self.client.post('complete_task')  # POST request to mark task as completed\n        print(f\"Task Marked Completed: {response.status_code}\")  # Debug: print status code after completing the task\n\n        # user returns to homepage\n        response = self.client.get(reverse('home'))\n\n        # check XP has now increased accordingly\n        user_points_new = self.user1.points\n        print(f\"User Points After Task: {user_points_new}\")  # Debug: print user's points after task completion\n\n        # assert points have increased\n        self.assertTrue(user_points_new > user_points_current,\n                        f\"Expected points to be greater after completing the task. Before: {user_points_current}, After: {user_points_new}\")\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ECM2434/Ecolution/tests/integration/test_integration_homepage.py b/ECM2434/Ecolution/tests/integration/test_integration_homepage.py
+--- a/ECM2434/Ecolution/tests/integration/test_integration_homepage.py	(revision 0beaff7f387bef413a7e97ec9eae4206c898391e)
++++ b/ECM2434/Ecolution/tests/integration/test_integration_homepage.py	(date 1740418035920)
+@@ -62,9 +62,9 @@
+         self.assertTrue(UserTask.objects.filter(user=self.user1).exists())
+         self.assertTrue(Task.objects.filter(task_name="Buy groceries").exists())
+ 
+-        # simulate clicking "Complete" button (assuming it's a POST request to mark task completed)
++        # simulate clicking "Complete" button
+         response = self.client.post('complete_task')  # POST request to mark task as completed
+-        print(f"Task Marked Completed: {response.status_code}")  # Debug: print status code after completing the task
++        print(f"Task Marked Completed: {response.status_code}")  # debug: print status code after completing the task
+ 
+         # user returns to homepage
+         response = self.client.get(reverse('home'))
+Index: ECM2434/Ecolution/tests/unit/test_tasks.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.test import TestCase\nfrom Ecolution.models import CustomUser, Pet\nfrom Ecolution.models import UserTask\nfrom Ecolution.models import Task\n\nclass TasksUnitTests(TestCase):\n    def setUp(self):\n        # create a test user\n        self.user1 = CustomUser.objects.create_user(username = 'testuser', password = 'password')\n        self.client.login(username = 'testuser', password = 'password')\n\n        # create a test task\n        self.task1 = Task.objects.create(task_name = \"Buy groceries\", description = \"Go to the store and buy food\")\n        self.task2 = Task.objects.create(task_name = \"Task 2\", description = \"Task description here\")\n        self.task3 = Task.objects.create(task_name = \"Task 3\", description = \"Task description here\", xp_given = 100)\n\n        # create user's pet\n        self.pet1 = Pet.objects.create(\n            user = self.user1,\n            pet_name = \"TestPet\",\n            pet_level = 1,\n            pet_exp = 0,  # pet starts with 0 XP\n            pet_type = \"mushroom\"\n        )\n\n    ## As a user, I can add (pre-defined) tasks to my list\n    def test_user_adds_tasks(self):\n        # add task to user list\n        user_tasks = UserTask.objects.create(user = self.user1, task = self.task1)\n\n        # check task is now in user's list\n        self.assertTrue(UserTask.objects.filter(user = self.user1).exists())\n\n    ## As a user, I can remove tasks from my list\n    def test_user_removes_tasks(self):\n        # add task to user list\n        user_task = UserTask.objects.create(user = self.user1, task = self.task1)\n\n        # check task is now in user's list\n        self.assertTrue(UserTask.objects.filter(user = self.user1).exists())\n\n        # remove task from list\n        user_task.delete()\n\n        # check task is no longer in user's list\n        self.assertFalse(UserTask.objects.filter(user = self.user1, task = self.task1).exists())\n\n    ## As a user, I can complete tasks\n    def test_user_completes_tasks(self):\n        # add task to user list\n        user_tasks = UserTask.objects.create(user = self.user1, task = self.task1)\n\n        # check task is now in user's current tasks list\n        self.assertTrue(UserTask.objects.filter(user = self.user1).exists())\n        self.assertTrue(UserTask.objects.filter(task = self.task1, completed = False).exists())\n\n        # user marks task as \"complete\"\n        user_tasks.completed = True\n        user_tasks.save()\n\n        # task no longer appears in current tasks list\n        self.assertFalse(UserTask.objects.filter(task = self.task1, completed = False).exists())\n\n        # task now appears in completed tasks list\n        self.assertTrue(UserTask.objects.filter(task = self.task1, completed = True).exists())\n\n    ## As a user, I can earn points from completing tasks\n    def test_user_earns_points(self):\n        # check user xp before completing task\n        user_xp_before = self.pet1.pet_exp\n        print(f\"XP Before: {user_xp_before}\")  # TODO: debug statement\n\n        # add task to user list\n        user_tasks = UserTask.objects.create(user = self.user1, task = self.task3)\n\n        # check task is now in user's current tasks list\n        self.assertTrue(UserTask.objects.filter(user = self.user1).exists())\n        self.assertTrue(UserTask.objects.filter(task = self.task3, completed = False).exists())\n\n        # user marks task as \"complete\"\n        user_tasks.completed = True\n        user_tasks.save()\n\n        # task no longer appears in current tasks list\n        self.assertFalse(UserTask.objects.filter(task = self.task3, completed = False).exists())\n\n        # task now appears in completed tasks list\n        self.assertTrue(UserTask.objects.filter(task = self.task3, completed = True).exists())\n\n        # check points have been awarded\n        user_exp_after = self.pet1.pet_exp\n        print(f\"XP After: {user_exp_after}\")  # TODO: debug statement\n        self.assertTrue(user_xp_before < user_exp_after)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ECM2434/Ecolution/tests/unit/test_tasks.py b/ECM2434/Ecolution/tests/unit/test_tasks.py
+--- a/ECM2434/Ecolution/tests/unit/test_tasks.py	(revision 0beaff7f387bef413a7e97ec9eae4206c898391e)
++++ b/ECM2434/Ecolution/tests/unit/test_tasks.py	(date 1741627109336)
+@@ -64,8 +64,8 @@
+         # task now appears in completed tasks list
+         self.assertTrue(UserTask.objects.filter(task = self.task1, completed = True).exists())
+ 
+-    ## As a user, I can earn points from completing tasks
+-    def test_user_earns_points(self):
++    ## As a user, I can earn XP from completing tasks
++    def test_user_earns_xp(self):
+         # check user xp before completing task
+         user_xp_before = self.pet1.pet_exp
+         print(f"XP Before: {user_xp_before}")  # TODO: debug statement
+@@ -91,3 +91,31 @@
+         user_exp_after = self.pet1.pet_exp
+         print(f"XP After: {user_exp_after}")  # TODO: debug statement
+         self.assertTrue(user_xp_before < user_exp_after)
++
++    ## As a user, I can earn points from completing tasks
++    def test_user_earns_points(self):
++        # check user's points before completing task
++        user_points_before = self.user1.points
++        print(f"Points Before: {user_points_before}")  # TODO: debug statement
++
++        # add task to user list
++        user_tasks = UserTask.objects.create(user = self.user1, task = self.task3)
++
++        # check task is now in user's current tasks list
++        self.assertTrue(UserTask.objects.filter(user = self.user1).exists())
++        self.assertTrue(UserTask.objects.filter(task = self.task3, completed = False).exists())
++
++        # user marks task as "complete"
++        user_tasks.completed = True
++        user_tasks.save()
++
++        # task no longer appears in current tasks list
++        self.assertFalse(UserTask.objects.filter(task = self.task3, completed = False).exists())
++
++        # task now appears in completed tasks list
++        self.assertTrue(UserTask.objects.filter(task = self.task3, completed = True).exists())
++
++        # check points have been awarded
++        user_points_after = self.pet1.pet_exp
++        print(f"XP After: {user_points_before}")  # TODO: debug statement
++        self.assertTrue(user_points_before < user_points_after)
+\ No newline at end of file
+Index: ECM2434/Ecolution/tests/integration/test_integration_signup.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.test import TestCase\nfrom django.urls import reverse\nfrom Ecolution.models import CustomUser\n\nclass SignupIntegrationTests(TestCase):\n    def setUp(self):\n        self.signup_url = reverse('signup')\n        self.login_url = reverse('login')  # ensure you have the correct URL name for login\n        self.user_data = {\n            'username': 'testuser',\n            'email': 'testuser@example.com',\n            'password1': 'password123',\n            'password2': 'password123',\n        }\n\n    ## As a user, I can sign up for an account with a valid user and password\n    def test_signup_valid_creds(self):\n        response = self.client.post(self.signup_url, self.user_data)\n\n        # check if the user is redirected after successful signup\n        self.assertRedirects(response, '/ecolution/login/')\n\n        # checks that the user is created\n        user = CustomUser.objects.get(username = 'testuser')\n        self.assertIsNotNone(user)  # checks that the user exists in the database\n\n    ## As a user, I cannot sign up for an account with an invalid email and valid password\n    def test_signup_invalid_email(self):\n        response = self.client.post(self.signup_url, {\n            'username': self.user_data['username'],\n            'email': '',\n            'password1': self.user_data['password1'],\n            'password2': self.user_data['password2'],\n        })\n\n        # check if the user is redirected after successful signup\n        self.assertNotEqual(response, '/login/')  # TODO: adjust the redirect URL (e.g., home page or login page)\n\n        # check that the user is not created\n        with self.assertRaises(CustomUser.DoesNotExist):\n            CustomUser.objects.get(username='newuser')\n\n    ## As a user, I cannot sign up for an account with a valid email but invalid password\n    def test_signup_invalid_pwd(self):\n        # TODO: after validation implemented, update passwords to be invalid\n        response = self.client.post(self.signup_url, {\n            'username': self.user_data['username'],\n            'email': self.user_data['email'],\n            'password1': self.user_data['password1'],\n            'password2': '',\n        })\n\n        # check if the user is redirected after successful signup\n        self.assertNotEqual(response, '/')  # TODO: adjust the redirect URL (e.g., home page or login page)\n\n        # check that the user is not created\n        with self.assertRaises(CustomUser.DoesNotExist):\n            CustomUser.objects.get(username='newuser')\n\n    ## As a user, I can sign up for an account and then login to that account\n    def test_signup_redirect(self):\n        # user is successfully signed up\n        response = self.client.post(self.signup_url, self.user_data)\n        # check if the user is redirected after successful signup\n        self.assertRedirects(response, '/ecolution/login/')\n        self.assertTrue(CustomUser.objects.filter(username = 'testuser').exists())\n\n        # user is successfully logged in\n        login_data = {\n            'username': 'testuser',\n            'password': 'password123',\n        }\n\n        response = self.client.post(self.login_url, login_data)\n        # user should be redirected to homepage after login\n        self.assertRedirects(response, '/ecolution/home/')\n\n        # check that user has been authenticated\n        response = self.client.get(reverse('home'))\n        self.assertEqual(response.status_code, 200)\n\n    ## As a user, I cannot sign up for an account with the password fields not matching\n    def test_signup_different_passwords(self):\n        response = self.client.post(self.signup_url, {\n            'email': self.user_data['email'],\n            'username': self.user_data['username'],\n            'password1': '',  # password1 (it should match password2)\n            'password2': self.user_data['password2'],  # password2\n        })\n\n        # check if the user is redirected after successful signup\n        self.assertNotEqual(response, 'home')  # TODO: adjust the redirect URL (e.g., home page or login page)\n\n        # check that the user is not created\n        with self.assertRaises(CustomUser.DoesNotExist):\n            CustomUser.objects.get(username = 'newuser')\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ECM2434/Ecolution/tests/integration/test_integration_signup.py b/ECM2434/Ecolution/tests/integration/test_integration_signup.py
+--- a/ECM2434/Ecolution/tests/integration/test_integration_signup.py	(revision 0beaff7f387bef413a7e97ec9eae4206c898391e)
++++ b/ECM2434/Ecolution/tests/integration/test_integration_signup.py	(date 1740419190456)
+@@ -72,13 +72,10 @@
+         }
+ 
+         response = self.client.post(self.login_url, login_data)
++
+         # user should be redirected to homepage after login
+         self.assertRedirects(response, '/ecolution/home/')
+ 
+-        # check that user has been authenticated
+-        response = self.client.get(reverse('home'))
+-        self.assertEqual(response.status_code, 200)
+-
+     ## As a user, I cannot sign up for an account with the password fields not matching
+     def test_signup_different_passwords(self):
+         response = self.client.post(self.signup_url, {
+Index: ECM2434/Ecolution/tests/integration/test_integration_tasks.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.test import TestCase\nfrom django.urls import reverse\nfrom Ecolution.models import CustomUser, UserTask, Task\n\nclass TaskIntegrationTests(TestCase):\n    def setUp(self):\n        # create a test user\n        self.user1 = CustomUser.objects.create_user(username = 'testuser', password = 'password')\n        self.client.login(username = 'testuser', password='password')\n\n        # create a test task\n        self.task = Task.objects.create(task_name = \"Buy groceries\", description = \"Go to the store and buy food\")\n        self.task = Task.objects.create(task_name = \"Task 1\", description = \"Task description here\")\n\n    ## As a user, I can create my own tasks\n    def test_user_creates_tasks(self):\n        # login\n        self.client.login(username = 'testuser', password = 'password')\n\n        # new task data\n        task_data = {\n            'task_name': 'Go for a walk',\n            'description': 'Take a walk through campus today.'\n        }\n\n        # user request to create new task\n        response = self.client.post('/tasks/create/', task_data)  # TODO: ensure correct create task endpoint\n\n        # check task exists in the DB\n        self.assertIsNotNone(Task.objects.get(task_name = 'Go for a walk'))\n\n        # check task exists in user's list\n        self.assertEqual(UserTask.user, self.user1)  # TODO: fix reference\n        self.assertTrue(UserTask.objects.filter(creator = self.user1, task_name = 'Go for a walk').exists())  # TODO: fix reference\n\n    ## As a user, I can delete my user-created tasks\n    def test_user_deletes_tasks(self):\n        # login\n        self.client.login(username='testuser', password='password')\n\n        # new task data\n        task_data = {\n            'task_name': 'Go for a walk',\n            'description': 'Take a walk through campus today.'\n        }\n\n        # user request to create new task\n        response = self.client.post('/tasks/create/', task_data)  # TODO: ensure correct create task endpoint\n\n        # check task has been created\n        self.assertEqual(response.status_code, 201)  # TODO: ensure correct status code\n\n        # check task exists in the DB\n        task = Task.objects.get(task_name='Go for a walk')\n\n        # check task exists in user's list\n        user_task = UserTask.objects.get(user = self.user, task = task)\n        self.assertTrue(UserTask.objects.filter(user = self.user, task = task).exists())\n\n        # user deletes task\n        delete_url = f'/tasks/{task.id}/delete/'  # TODO: ensure correct delete URL format\n        response = self.client.post(delete_url)\n\n        # task no longer appears in the user's list\n        self.assertFalse(UserTask.objects.filter(user = self.user, task = task).exists())\n\n        # task no longer appears in the database\n        self.assertIsNone(Task.objects.get(task_name = 'Go for a walk'))\n\n        # check the response code for successful deletion\n        self.assertEqual(response.status_code, 200)  # TODO: ensure correct success status code for deletion\n\n    ## As a user, I cannot view other users' created tasks\n    def test_created_tasks_visibility(self):\n        # create a second user\n        self.user2 = CustomUser.objects.create_user(username = 'another_user', password = 'password')\n\n        # create tasks for both users\n        task1 = Task.objects.create(creator = self.user1, task_name = \"Buy groceries\", description = \"Go to the store and buy food\")\n        task2 = Task.objects.create(creator = self.user2, task_name = \"Complete homework\", description = \"Finish math problems\")\n\n        # first user can only view their own task (task1)\n        user1_tasks = Task.objects.filter(creator = self.user1)\n        self.assertIn(task1, user1_tasks)\n        self.assertNotIn(task2, user1_tasks)\n        self.client.logout()\n\n        # second user can only view their own task (task2)\n        self.client.login(username = 'another_user', password = 'password')\n        user2_tasks = Task.objects.filter(creator = self.user2)\n        self.assertIn(task2, user2_tasks)\n        self.assertNotIn(task1, user2_tasks)\n\n    ## As a user, I can view my completed tasks\n    def test_view_completed_tasks(self):\n        self.client.login(username = 'testuser', password = 'password')\n        response = self.client.get('/tasks/complete/')\n        self.assertEqual(response.status_code, 200)\n\n    ## As a user, I can view my current tasks on the tasks page\n    def test_view_current_tasks(self):\n        response = self.client.get('/tasks/current/')\n        self.assertEqual(response.status_code, 200)
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ECM2434/Ecolution/tests/integration/test_integration_tasks.py b/ECM2434/Ecolution/tests/integration/test_integration_tasks.py
+--- a/ECM2434/Ecolution/tests/integration/test_integration_tasks.py	(revision 0beaff7f387bef413a7e97ec9eae4206c898391e)
++++ b/ECM2434/Ecolution/tests/integration/test_integration_tasks.py	(date 1741626847080)
+@@ -45,10 +45,10 @@
+         }
+ 
+         # user request to create new task
+-        response = self.client.post('/tasks/create/', task_data)  # TODO: ensure correct create task endpoint
++        response = self.client.post('/tasks/create/', task_data)
+ 
+         # check task has been created
+-        self.assertEqual(response.status_code, 201)  # TODO: ensure correct status code
++        self.assertEqual(response.status_code, 200)
+ 
+         # check task exists in the DB
+         task = Task.objects.get(task_name='Go for a walk')
+@@ -58,7 +58,7 @@
+         self.assertTrue(UserTask.objects.filter(user = self.user, task = task).exists())
+ 
+         # user deletes task
+-        delete_url = f'/tasks/{task.id}/delete/'  # TODO: ensure correct delete URL format
++        delete_url = f'/tasks/{task.id}/delete/'
+         response = self.client.post(delete_url)
+ 
+         # task no longer appears in the user's list
