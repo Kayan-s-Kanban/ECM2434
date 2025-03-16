@@ -449,3 +449,23 @@ def validate_qr(request, token):
     
     # Return a JSON response with the validation message
     return JsonResponse({'message': message})
+
+@login_required
+def leaderboard_view(request):
+    # Get the top 5 users that have a displayed pet, ordered by their pet's level (descending)
+    top_users = list(CustomUser.objects.filter(displayed_pet__isnull=False)
+                     .order_by('-displayed_pet__pet_level')[:5])
+    
+    context = {}
+    if len(top_users) > 0:
+        context['top_pet'] = top_users[0]  # 1st place
+    if len(top_users) > 1:
+        context['second_pet'] = top_users[1]  # 2nd place
+    if len(top_users) > 2:
+        context['third_pet'] = top_users[2]  # 3rd place
+    # Remaining entries (positions 4 and 5)
+    context['leaderboard_entries'] = top_users[3:] if len(top_users) > 3 else []
+    
+    # Include user's points if needed by base.html
+    context['points'] = request.user.points
+    return render(request, "leaderboard.html", context)
