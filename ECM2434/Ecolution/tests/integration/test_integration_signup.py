@@ -18,10 +18,10 @@ class SignupIntegrationTests(TestCase):
         response = self.client.post(self.signup_url, self.user_data)
 
         # check if the user is redirected after successful signup
-        self.assertRedirects(response, '/home/')  # TODO: adjust the redirect URL (e.g., home page or login page)
+        self.assertRedirects(response, '/ecolution/login/')
 
         # checks that the user is created
-        user = CustomUser.objects.get(username = 'newuser')
+        user = CustomUser.objects.get(username = 'testuser')
         self.assertIsNotNone(user)  # checks that the user exists in the database
 
     ## As a user, I cannot sign up for an account with an invalid email and valid password
@@ -36,9 +36,9 @@ class SignupIntegrationTests(TestCase):
         # check if the user is redirected after successful signup
         self.assertNotEqual(response, '/login/')  # TODO: adjust the redirect URL (e.g., home page or login page)
 
-        # ensure the user is NOT created
-        user = CustomUser.objects.get(username='newuser')
-        self.assertIsNone(user)  # check that the user does not exist in the database
+        # check that the user is not created
+        with self.assertRaises(CustomUser.DoesNotExist):
+            CustomUser.objects.get(username='newuser')
 
     ## As a user, I cannot sign up for an account with a valid email but invalid password
     def test_signup_invalid_pwd(self):
@@ -53,15 +53,16 @@ class SignupIntegrationTests(TestCase):
         # check if the user is redirected after successful signup
         self.assertNotEqual(response, '/')  # TODO: adjust the redirect URL (e.g., home page or login page)
 
-        # ensure the user is NOT created
-        user = CustomUser.objects.get(username = 'newuser')
-        self.assertIsNone(user)  # TODO:(?) check that the user does not exist in the database
+        # check that the user is not created
+        with self.assertRaises(CustomUser.DoesNotExist):
+            CustomUser.objects.get(username='newuser')
 
     ## As a user, I can sign up for an account and then login to that account
     def test_signup_redirect(self):
         # user is successfully signed up
         response = self.client.post(self.signup_url, self.user_data)
-        self.assertEqual(response.status_code, 302)  # expect redirect after sign-up
+        # check if the user is redirected after successful signup
+        self.assertRedirects(response, '/ecolution/login/')
         self.assertTrue(CustomUser.objects.filter(username = 'testuser').exists())
 
         # user is successfully logged in
@@ -71,12 +72,9 @@ class SignupIntegrationTests(TestCase):
         }
 
         response = self.client.post(self.login_url, login_data)
-        self.assertEqual(response.status_code, 200)  # expect redirect after login
 
-        # check that user has been authenticated
-        response = self.client.get(reverse('home'))  # TODO: replace 'home' with a logged-in page URL name
-        self.assertEqual(response.status_code, 200)
-        # self.assertContains(response, 'testuser')  # TODO: if applicable, verify username is shown on the page
+        # user should be redirected to homepage after login
+        self.assertRedirects(response, '/ecolution/home/')
 
     ## As a user, I cannot sign up for an account with the password fields not matching
     def test_signup_different_passwords(self):
@@ -88,8 +86,8 @@ class SignupIntegrationTests(TestCase):
         })
 
         # check if the user is redirected after successful signup
-        self.assertNotEqual(response, '/')  # TODO: adjust the redirect URL (e.g., home page or login page)
+        self.assertNotEqual(response, 'home')  # TODO: adjust the redirect URL (e.g., home page or login page)
 
-        # ensure the user is NOT created
-        user = CustomUser.objects.get(username = 'newuser')
-        self.assertIsNone(user)  # check that the user does not exist in the database
+        # check that the user is not created
+        with self.assertRaises(CustomUser.DoesNotExist):
+            CustomUser.objects.get(username = 'newuser')

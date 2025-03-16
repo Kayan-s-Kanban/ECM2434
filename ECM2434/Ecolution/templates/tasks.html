@@ -43,48 +43,6 @@
             font-weight: bold;
         }
 
-        .task {
-            background: white;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .task-header {
-            font-weight: bold;
-        }
-
-        .task-description {
-            font-size: 14px;
-            color: gray;
-        }
-
-        .task-actions {
-            display: flex;
-            align-items: center;
-        }
-
-        .task {
-            position: relative;
-        }
-
-        .task-date {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            font-size: 12px;
-            color: gray;
-        }
-
-        .delete-icon, .complete-icon {
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
         .popup-bg {
             display: none;
             position: fixed;
@@ -138,22 +96,7 @@
         <div id="current-tasks">
             {% for user_task in user_tasks %}
                 {% if not user_task.completed %}
-                <div class="task">
-                    <div>
-                        <span class="task-header">{{ user_task.task.task_name }}</span>
-                        <p class="task-description">{{ user_task.task.description }}</p>
-                    </div>
-                    <div class="task-info">
-                        <span class="task-date">{{ user_task.date|date:"M d, Y" }}</span>
-                        <span class="task-points">Points: {{ user_task.task.points_given }} ⚪</span>
-                    </div>
-                    <div class="task-actions">
-                        {% if not user_task.completed %}
-                            <span class="complete-icon" onclick="completeTask(this, {{ user_task.task.task_id }})">✔️</span>
-                        {% endif %}
-                        <span class="delete-icon" onclick="deleteTask(this, {{ user_task.id }})">🗑️</span>
-                    </div>
-                </div>
+                    {% include 'partials/task_card.html' with user_task=user_task %}
                 {% endif %}
             {% empty %}
                 <p>No current tasks available.</p>
@@ -163,19 +106,7 @@
         <div id="completed-tasks" style="display: none;">
             {% for user_task in user_tasks %}
                 {% if user_task.completed %}
-                <div class="task">
-                    <div>
-                        <span class="task-header">{{ user_task.task.task_name }}</span>
-                        <p class="task-description">{{ user_task.task.description }}</p>
-                    </div>
-                    <div class="task-info">
-                        <span class="task-date">{{ user_task.date|date:"M d, Y" }}</span>
-                        <span class="task-points-completed">Points: {{ user_task.task.points_given }} 🟢</span>
-                    </div>
-                    <div class="task-actions">
-                        <span class="delete-icon" onclick="deleteTask(this, {{ user_task.id }})">🗑️</span
-                    </div>
-                </div>
+                    {% include 'partials/task_card.html' with user_task=user_task %}
                 {% endif %}
             {% empty %}
                 <p>No completed tasks available.</p>
@@ -184,12 +115,12 @@
 
     </div>
 
-    <!-- Task Popup to add predefined tasks -->
+    <!-- Task Popup to add tasks -->
     <div class="popup-bg" id="popupBg"></div>
     <div class="popup" id="popup">
         <h3>Add Task</h3>
 
-        <h4>Select a Task</h4>
+        <h4>Predefined Tasks</h4>
         <ul id="predefined-tasks">
             {% for task in predefined_tasks %}
                 <li>
@@ -201,7 +132,19 @@
                 <p>No predefined tasks available.</p>
             {% endfor %}
         </ul>
-        
+
+        <h4>Your Custom Tasks</h4>
+        <ul id="custom-tasks">
+            {% for task in custom_tasks %}
+                <li>
+                    <button onclick="addTask({{ task.task_id }}, '{{ task.task_name }}', '{{ task.description }}')">
+                        {{ task.task_name }}
+                    </button>
+                </li>
+            {% empty %}
+                <p>You haven't created any custom tasks yet.</p>
+            {% endfor %}
+        </ul>
 
         <button onclick="showCustomTaskForm()">Create Custom Task</button>
 
@@ -213,9 +156,11 @@
 
         <button onclick="closePopup()">Cancel</button>
     </div>
+
 {% endblock %}
 
 {% block additional %}
+    {{ block.super }}
     <script>
         function openPopup() {
             document.getElementById("popup").style.display = "block";
@@ -268,48 +213,6 @@
             }).then(response => response.json())
             .then(data => location.reload());
         }
-
-        function completeTask(element, taskId) {
-            fetch(`/ecolution/tasks/complete/${taskId}/`, {
-                method: 'POST',
-                headers: { 'X-CSRFToken': getCSRFToken() }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "success") {
-                    const taskElement = element.closest(".task");
-
-                    const completeIcon = taskElement.querySelector(".complete-icon");
-                    if (completeIcon) {
-                        completeIcon.remove();
-                    }
-
-                    let pointsSpan = taskElement.querySelector(".task-points");
-                    if (pointsSpan) {
-                        pointsSpan.className = "task-points-completed";
-                        pointsSpan.innerHTML = pointsSpan.innerHTML.replace("⚪", "🟢");
-                    }
-
-                    const completedTasksContainer = document.getElementById("completed-tasks");
-                    completedTasksContainer.appendChild(taskElement);
-                }
-            })
-            .catch(error => console.error('Error completing task:', error));
-        }
-
-
-        function deleteTask(element, userTaskId) {
-            fetch(`/ecolution/tasks/delete/${userTaskId}/`, {
-                method: 'POST',
-                headers: { 'X-CSRFToken': getCSRFToken() }
-            }).then(response => response.json())
-            .then(data => {
-                if (data.status === "success") {
-                    element.closest(".task").remove();
-                }
-            });
-        }
-
 
         function showTasks(tab) {
             const currentTasks = document.getElementById("current-tasks");

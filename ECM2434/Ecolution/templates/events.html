@@ -3,8 +3,394 @@
 
 {% block title %}
     <title>Events - Ecolution</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+    
+    <style>
+        .heading{
+            align-items: center;
+        }
+
+        .event_list_container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 0.8em;
+            margin: 5px;
+            opacity: 0.9;
+        }
+
+        .event {
+            margin: 5px;
+            padding: 15px;
+        }
+
+        .event_details_container {
+            display: flex;
+            justify-content: center;
+            position: fixed;
+        }
+
+        .event_details {
+            display: none;
+            background-color: white;
+            width: 400px;
+            height: 70vh;
+            border-radius: 15px 15px;
+            padding: 20px 20px;
+        }
+
+        .event_details_content {
+            overflow-y: auto;
+            max-height:  calc(70vh - 115px);
+        }
+
+        .event_details_content::-webkit-scrollbar {
+            display: none; /* Hides the scrollbar */
+        }
+
+        .exit_button_container {
+            display: flex;
+            justify-content: end;
+        }
+
+        .exit_button {
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .join_button{
+            font-size: 16px;
+            align-self: center;
+        }
+
+        .button_container {
+            display: flex;
+            position: sticky;
+            padding: 20px;
+            
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .datetime {
+            display: flex;
+            justify-content: flex-start;
+            gap: 10px;
+            color: #3a8d84;
+        }
+
+        .taskcard {
+            background-color: #3a8d84;
+            border-radius: 0.8em;
+            padding: 7px 10px;
+            margin-block: 0.4em;
+            opacity: 1;
+        }
+
+        #map { 
+            height: 200px; 
+        }
+
+        .points{
+            display: flex;
+            justify-content: flex-start;
+            font-weight: bold;
+        }
+
+        .qr-container{
+            display: none;
+            background-color: white;
+            z-index: 1;
+            border-radius: 15px 15px;
+            padding: 20px 20px;
+            
+        }
+    </style>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 {% endblock %}
 
 {% block main %}
     <!-- Main Content -->
+
+    <body>
+        <div class="qr-container" id="qr-container">
+            <div class="flex_h heading">
+                <button class="button exit_button text_light" onclick="closeQrScanner()"> ← </button>
+                <h4>Scan the QR code to complete the task</h4>
+            </div>
+            <div id="reader" width="600px"></div>
+        </div>
+        
+
+        <h1 class="text_light">Events</h1>
+    
+        <div class="event_list_container">
+            <h2 class="text_dark ">My Events</h2>
+            <div>
+                {% if user_events %}
+                    {% for user_event in user_events%}
+                        <div class="card box_shadow text_light event" 
+                        data-id="{{ user_event.event_id }}"
+                        data-name="{{ user_event.event_name }}"
+                        data-description="{{ user_event.description }}"
+                        data-location="{{ user_event.location }}"
+                        data-date="{{ user_event.date }}"
+                        data-time="{{ user_event.time }}"
+                        data-points="{{ user_event.total_points}}"
+                        onclick="openEventDetails(this, 'user')">
+                            <p>{{user_event.date}}</p>
+                            <h3>{{user_event.event_name}}</h3>
+                            <p>📍{{user_event.location}}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text_dark">There are no current events ongoing</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="event_list_container">
+            <h2 class="text_dark">Join Events</h2>
+            <div>
+                {% if events %}
+                    {% for event in events%}
+                        <div class="card box_shadow text_light event" 
+                        data-id="{{ event.event_id }}"
+                        data-name="{{ event.event_name }}"
+                        data-description="{{ event.description }}"
+                        data-location="{{ event.location }}"
+                        data-date="{{ event.date }}"
+                        data-time="{{ event.time }}"
+                        data-points="{{ event.total_points}}"
+                        onclick="openEventDetails(this, 'general')">
+                            <p>{{event.date}}</p>
+                            <h3>{{event.event_name}}</h3>
+                            <p>📍{{event.location}}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text_dark">You have already joined all ongoing events</p>
+                {% endif %}
+            </div>
+        </div>
+        
+
+        <!-- Events popup, showing a specific event -->
+        <div class="event_details_container">
+            <div class="event_details margin_std box_shadow" id="event_details">
+                <div class="flex_h heading">
+                    <h1 id="name", class="text_dark"></h1>
+                    <button class="button exit_button text_light" onclick="closeEventDetails()"> x </button>
+                </div>
+
+                <div class="event_details_content" >
+                    <div class="datetime">
+                        <p id="time"></p>
+                        <p id="date"></p>
+                    </div>
+
+                    <div class="points">
+                        <p id="points"></p>
+                        <p> XP</p>
+                    </div>
+            
+                    
+                    <div id="map" style="width: 100%; height: 200px;"></div>
+                    
+                    <h4>Event Tasks:</h4>
+                    <div id="tasks"></div>
+        
+                    <h4>About Event:</h4>
+                    <p id="description"></p>
+                </div>
+    
+                <div class="flex_center button_container">
+                    <button class="button text_light join_button" id="button"></button>
+                </div>
+        </div>
+
+        
+        </div>
+    </body>
+    
+    
+    <script>
+        let map = null;
+
+        //creates the map which is displayed within the event popup
+        function createMap(lat, lon, zoom = 18) {
+            map = L.map('map').setView([lat, lon], zoom);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            L.marker([lat, lon]).addTo(map);
+        }
+
+        //opens an event's details popup
+        function openEventDetails(element, eventType) {
+            let eventDetails = document.getElementById("event_details");
+            eventDetails.style.display = "block";
+            eventDetails.setAttribute("event-id", element.dataset.id);
+
+            const eventAttributes = ["name", "description", "date", "time", "points"];
+            eventAttributes.forEach(field =>
+                eventDetails.querySelector(`#${field}`).textContent = element.dataset[field]
+            );
+
+            let button =  eventDetails.querySelector("#button");
+            button.setAttribute("event-id", element.dataset.id);
+            if (eventType === "user"){
+                button.onclick = openQrScanner;
+                button.textContent = "Complete Event";
+            } else if (eventType === "general") {
+                button.onclick = joinEvent;
+                button.textContent = "Join Event";
+            }
+
+            let tasksContainer = eventDetails.querySelector("#tasks");
+            tasksContainer.innerHTML = ""; 
+
+            //gets all the tasks within a specific event
+            getEventTask(element.dataset.id)
+                .then(data => {
+                    if (data.tasks.length === 0) {
+                        tasksContainer.innerHTML = "<p>No tasks available</p>";
+                    } else {
+                        data.tasks.forEach(task => {
+                            let taskDiv = document.createElement("div");
+                            taskDiv.classList.add("box_shadow", "text_light", "taskcard");
+                            taskDiv.innerHTML = `<p>${task.task_name}</p>`;
+                            tasksContainer.appendChild(taskDiv);
+                        });
+                    }
+                });
+
+            //map coodinates hardcoded for now
+            createMap(50.734967, -3.533750);
+
+            eventDetails.style.display = "block";
+        }
+
+        //closes the event detail pop up
+        function closeEventDetails() {
+            document.getElementById("event_details").style.display = "none";
+
+            if (map) {
+                map.remove();
+                map = null;
+            }
+        }
+
+        //updates the database that the user wants to join an event
+        function joinEvent() {
+            let eventId = document.getElementById("button").getAttribute("event-id");
+
+            fetch("{% url 'join_event' %}", {
+                method: "POST",
+                headers:{"X-CSRFToken": getCSRFToken() },
+                body: new URLSearchParams({ event_id: eventId })
+            }).then(response => response.json())  
+            .then(data => console.log("Success:", data)) 
+            .then(data => {
+                location.reload();
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        //updates the database that the user no longer wanted to be part of an event
+        function leaveEvent() {
+            let eventId = document.getElementById("button").getAttribute("event-id");
+
+            fetch("{% url 'leave_event' %}", {
+                method: "POST",
+                headers:{"X-CSRFToken": getCSRFToken() },
+                body: new URLSearchParams({ event_id: eventId })
+            }).then(response => response.json()) 
+            .then(data => console.log("Success:", data))  
+            .then(data => {
+                location.reload();
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+ 
+        //updates the database when an event is completed
+        function completeEvent() {
+            let eventId = document.getElementById("button").getAttribute("event-id");
+
+            fetch("{% url 'complete_event' %}", {
+                method: "POST",
+                headers:{"X-CSRFToken": getCSRFToken() },
+                body: new URLSearchParams({ event_id: eventId })
+            }).then(response => response.json())  
+            .then(data => console.log("Success:", data))  
+            .then(data => {
+                location.reload();
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function openQrScanner(){
+            let qrScanner = document.getElementById("qr-container");
+            qrScanner.style.display = "block";
+            html5QrcodeScanner.render(onScanSuccess, onScanError);
+        }
+
+        function closeQrScanner(){
+            html5QrcodeScanner.clear();
+            let qrScanner = document.getElementById("qr-container");
+            qrScanner.style.display = "none";
+        }
+
+        //gets all the tasks for an event
+        function getEventTask(eventId) {
+            return fetch(`/ecolution/events/gettasks/${eventId}/`)
+                .then(response => response.json())  
+                .catch(error => {
+                    console.error("Error:", error)
+                });
+        }
+
+        function getCSRFToken() {
+            return document.cookie.match(/csrftoken=([^;]+)/)[1];
+        }
+
+
+        function onScanSuccess(decodedText, decodedResult) {
+            console.log("QR Code detected");
+
+            if (decodedText === eventQR) {
+                completeEvent();
+            }
+        }
+
+        function onScanError(errorMessage) {
+            // Handle errors (optional)
+            console.warn("QR scan error:");
+        }
+
+
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader",
+            { fps: 10, qrbox: {width: 250, height: 250} },
+            false
+        );
+
+        let cameraStream;
+
+        
+      
+    </script>
 {% endblock %}
+

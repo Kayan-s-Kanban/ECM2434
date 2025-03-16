@@ -11,18 +11,50 @@
 
 {% block main %}
     <section class="spacer_big"></section>
-    <section class="signup card flex_v flex_center box_shadow ">
+    <section class="signup card flex_v flex_center box_shadow">
         <h2 class="text_dark margin_std_bot">Create an Account</h2>
         <form class="flex_v flex_v_fill" method="POST">
             {% csrf_token %}
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password1" placeholder="Password" required>
+            <input type="email" name="email" placeholder="Email" required> <!-- takes the email address check there is an @ sign -->
+            <input type="text" name="username" placeholder="Username" required> <!-- comment -->
+            <input type="password" name="password1" placeholder="Password" required> <!-- has a password and a confirm password to esure the user entered the correct password -->
             <input type="password" name="password2" placeholder="Confirm Password" required>
+
+            <!-- Pet Selection -->
+            <section class="pet_selection flex_h flex_center">
+                <label class="pet_option">
+                    <input type="radio" name="pet_type" value="mushroom" required>
+                    <div class="image_wrapper">
+                        <img src="{% static 'images/pets/mushroom/mushroom_small.gif' %}" alt="Mushroom Pet">
+                    </div>
+                </label>
+                <label class="pet_option">
+                    <input type="radio" name="pet_type" value="plant" required>
+                    <div class="image_wrapper">
+                        <img src="{% static 'images/pets/plant/plant_small.gif' %}" alt="Plant Pet">
+                    </div>
+                </label>
+                <label class="pet_option">
+                    <input type="radio" name="pet_type" value="acorn" required>
+                    <div class="image_wrapper">
+                        <img src="{% static 'images/pets/acorn/acorn_small.gif' %}" alt="Acorn Pet">
+                    </div>
+                </label>
+            </section>
+
+            <!-- Pet Name Input (Hidden by Default) -->
+            <input type="text" name="pet_name" id="pet_name_input" placeholder="Pet Name" style="display: none;">
+            
+            <label class="terms_checkbox">
+                <input type="checkbox" name="agree_terms" required>
+                <span>I have read and agree to the <a href="{% url 'term_of_use' %}" target="_blank">Terms and Conditions</a></span> <!-- link to the terms and conditions page along with a necessary checkbox to agree to the T's and C's -->
+            </label>            
+            
             <button class="button box_shadow" type="submit">Sign Up</button>
         </form>
-        <p class="text_dark font_small margin_std_top">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+        <p class="text_dark font_small margin_std_top">Already have an account? <a href="{% url 'login' %}">Login here</a></p> 
     </section>
+
     {% if messages %}
     <ul class="error-messages">
         {% for message in messages %}
@@ -30,4 +62,34 @@
         {% endfor %}
     </ul>
     {% endif %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let petOptions = document.querySelectorAll("input[name='pet_type']");
+            let petNameInput = document.getElementById("pet_name_input");
+    
+            function togglePetNameInput() {
+                let selectedPet = document.querySelector("input[name='pet_type']:checked");
+                if (selectedPet) {
+                    petNameInput.style.display = "block";
+                    petNameInput.required = true;
+                } else {
+                    petNameInput.style.display = "none";
+                    petNameInput.required = false;
+                }
+            }
+    
+            // Run function when selection changes
+            petOptions.forEach(option => {
+                option.addEventListener("change", togglePetNameInput);
+            });
+    
+            // Run function on page load to check pre-selected option
+            togglePetNameInput();
+        });
+    </script>
+    
+    
+    
+
 {% endblock %}
