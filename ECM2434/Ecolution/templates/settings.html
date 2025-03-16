@@ -108,7 +108,27 @@
                         <option value=16 {% if user.preferred_font_size == 16 %}selected{% endif %}>Medium</option>
                         <option value=19 {% if user.preferred_font_size == 19 %}selected{% endif %}>Large</option>
                     </select>
-                </div>                
+                </div>
+                <button class="button button_menu box_shadow" type="button" id="change-username-btn">Change username</button>       <!-- code to change the username for your account -->
+                <div id="username-form">
+                    <form id="change-username-form" method="POST" action="{% url 'change_username' %}"> <!-- form to change button is hidden until button press -->
+                        {% csrf_token %}
+                        <div class="form-group-horizontal">
+                            <label for="current_username">Current username:</label>
+                            <input type="username" id="current_username" name="current_username" required>
+                        </div>
+                        <div class="form-group-horizontal">
+                            <label for="new_username1">New username:</label>
+                            <input type="username" id="new_username1" name="new_username1" required>
+                        </div>
+                        <div class="form-group-horizontal">
+                            <label for="new_username2">Confirm New username:</label>
+                            <input type="username" id="new_username2" name="new_username2" required>
+                        </div>
+                        <button type="submit">Update username</button>
+                    </form>
+                </div>
+
                 <button class="button button_menu box_shadow" type="button" id="change-password-btn">Change Password</button>       <!-- code to change the password for your account -->
                 <div id="password-form">
                     <form id="change-password-form" method="POST" action="{% url 'change_password' %}"> <!-- form to change button is hidden until button press -->
@@ -165,6 +185,18 @@
                 passwordForm.style.display = "none";
             }
         });
+
+        document.getElementById("change-username-btn").addEventListener("click", function () {
+            const usernameForm = document.getElementById("username-form");
+            // Get the computed display value
+            const computedDisplay = window.getComputedStyle(usernameForm).display;
+            console.log("Computed display:", computedDisplay);
+            // Toggle based on computed value
+            if (computedDisplay === "none") {
+                usernameForm.style.display = "block";
+            } else {
+                usernameForm.style.display = "none";
+            }
 
         fontSizeSelect.addEventListener("change", function () {
             console.log("Dropdown changed, new value:", this.value);

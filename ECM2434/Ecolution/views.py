@@ -339,6 +339,33 @@ def change_password(request):
     return redirect("settings")
 
 @login_required
+def change_username(request):
+    if request.method == "POST":
+        current_username = request.POST["current_username"]
+        new_username1 = request.POST["new_username1"]
+        new_username2 = request.POST["new_username2"]
+        
+        if new_username1 != new_username2:
+            messages.error(request, "New usernames do not match!")
+            return redirect("settings")
+
+        user = request.user
+        if not user.check_username(current_username):
+            messages.error(request, "Current username is incorrect!")
+            return redirect("settings")
+
+        user.set_username(new_username1)
+        user.save()
+
+        # Keep the user logged in after username change
+        update_session_auth_hash(request, user)
+
+        messages.success(request, "username updated successfully!")
+        return redirect("settings")
+
+    return redirect("settings")
+
+@login_required
 def update_fontsize(request):
     if request.method == "POST":
         try:

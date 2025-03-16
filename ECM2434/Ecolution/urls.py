@@ -2,7 +2,7 @@ from django.urls import path
 from django.contrib import admin
 from . import views
 from django.contrib.auth.views import LogoutView
-from .views import login_view, signup_view, delete_account, change_password, update_fontsize, get_fontsize, validate_qr
+from .views import login_view, signup_view, delete_account, change_password, change_username, update_fontsize, get_fontsize, leaderboard_view, validate_qr
 
 
 urlpatterns = [
@@ -23,6 +23,7 @@ urlpatterns = [
     path("events/gettasks/<int:event_id>/", views.get_event_tasks, name="get_event_tasks"),
     path('delete-account/', delete_account, name='delete_account'),
     path("change_password/", change_password, name="change_password"),
+    path("change_username/", change_username, name="change_username"),
     path("update-fontsize/", update_fontsize, name="update_fontsize"),
     path("get-fontsize/", get_fontsize, name="get_fontsize"),
     path("term_of_use/",views.terms_view, name="term_of_use"),
@@ -30,4 +31,6 @@ urlpatterns = [
     path("shop/", views.shop_view, name="shop"),
     path("shop/buy/<int:item_id>/", views.buy_item, name="buy_item"),
     path('validate/<uuid:token>/', validate_qr, name='validate_qr'),
+    path("leaderboard/", leaderboard_view, name="leaderboard"),
+
 ]
