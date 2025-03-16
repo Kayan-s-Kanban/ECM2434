@@ -47,14 +47,20 @@ describe('Login and Navigate', () => {
         cy.url().should('include', '/ecolution/tasks/add/');
     });
 
-    it('should log in and navigate to Delete Task page', () => {
+    it('should log in and navigate to Shop page', () => {
         // login
         cy.login('testuser', 'password');
 
-        // TODO: user selects task to delete
+        // check user is on "Shop" page
+        cy.url().should('include', '/ecolution/shop/');
+    });
 
-        // check user is on "Delete Task" page
-        cy.url().should('include', '/ecolution/tasks/delete/{user_task_id}');
+    it('should log in and navigate to Leaderboard page', () => {
+        // login
+        cy.login('testuser', 'password');
+
+        // check user is on ""Leaderboard page
+        cy.url().should('include', '/ecolution/leaderboard');
     });
 
 });
