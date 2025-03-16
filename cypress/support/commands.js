@@ -36,3 +36,42 @@ Cypress.Commands.add('login', (username, password) => {
     // select submit button
     cy.get('button[type="submit"]').click();
 });
+
+Cypress.Commands.add(
+  'signup',
+  (username, email, password, agreeToTerms = false, petOption = null) => {
+    cy.visit('/ecolution/signup/');
+
+    // fill in the signup form
+    cy.get('input[name="username"]').type(username);
+    cy.get('input[name="email"]').type(email);
+    cy.get('input[name="password"]').type(password);
+    cy.get('input[name="confirm_password"]').type(password);
+
+    // conditionally check the terms checkbox
+    if (agreeToTerms) {
+      cy.get('input[name="terms"]').check();
+    }
+
+    // conditionally select a pet option
+    if (petOption) {
+      cy.get(`input[name="pet"][value="${petOption}"]`).check();
+    }
+
+    // submit form
+    cy.get('button[type="submit"]').click();
+  }
+);
+
+Cypress.Commands.add('deleteAccount', (username) => {
+  cy.visit('/account/settings/delete_account');
+
+  // click "delete account" button
+  cy.get('button.delete').click();
+
+  // check confirmation message (?)
+  cy.contains('Account successfully deleted').should('be.visible');
+});
+
+
+
