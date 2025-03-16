@@ -46,6 +46,12 @@ def signup_view(request):
         user.displayed_pet = pet
         user.save()
 
+        try:
+            shop_item = ShopItem.objects.get(name__iexact=pet_type)
+            UserItem.objects.create(user=user, shopitem=shop_item)
+        except ShopItem.DoesNotExist:
+            pass
+
         messages.success(request, "Account created! You can now log in.")
         return redirect("login")
 

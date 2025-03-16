@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
     <title>Shop | Ecolution</title>
@@ -11,21 +12,24 @@
         {% if shop_items %}
             <ul class="shop-list">
                 {% for item in shop_items %}
-                    <li class="shop-item card margin_std">
-                        <img src="{{ item.image_url }}" alt="{{ item.name }}" class="shop-item-image" style="width:100%; height:auto;">
-                        <h3 class="shop-item-title margin_sml">{{ item.name }}</h3>
-                        <p class="shop-item-description margin_sml">{{ item.description }}</p>
-                        <p class="shop-item-price margin_sml">Price: {{ item.price }}</p>
-                        {% if item.id in purchased_item_ids %}
-                            <div class="sold-out-banner">Sold Out</div>
-                            <button class="button margin_std" disabled>Sold Out</button>
-                        {% elif item.price > user.points %}
-                            <div class="insufficient-banner">Not Enough Points</div>
-                            <button class="button margin_std" disabled>Buy</button>
-                        {% else %}
-                            <button class="button margin_std" onclick="buyItem('{{ item.id }}')">Buy</button>
-                        {% endif %}
-                    </li>
+                <li class="shop-item card margin_std">
+                  <div class="image_wrapper">
+                    <img src="{% static item.image_path %}" alt="{{ item.name }}" class="shop-item-image">
+                  </div>
+                  <div class="shop-item-content">
+                    <h3 class="shop-item-title margin_sml">{{ item.name }}</h3>
+                    <p class="shop-item-price margin_sml">Price: {{ item.price }}</p>
+                    {% if item.id in purchased_item_ids %}
+                      <div class="sold-out-banner">Sold Out</div>
+                      <button class="button margin_std" disabled>Sold Out</button>
+                    {% elif item.price > user.points %}
+                      <div class="insufficient-banner">Not Enough Points</div>
+                      <button class="button margin_std" disabled>Buy</button>
+                    {% else %}
+                      <button class="button margin_std" onclick="buyItem('{{ item.id }}')">Buy</button>
+                    {% endif %}
+                  </div>
+                </li>
                 {% endfor %}
             </ul>
         {% else %}
