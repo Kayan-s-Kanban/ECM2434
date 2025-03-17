@@ -219,3 +219,9 @@ class UserItem(models.Model):
 
     def __str__(self):
         return f'{self.user.username} - {self.shopitem.name}'
+    
+class GameKeeper(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ✅ Dynamic reference
+
+    def __str__(self):
+        return f'{self.user.username} - GameKeeper'
