@@ -13,8 +13,8 @@ class TestLeaderboard(TestCase):
 
         # create pets for users
         self.pet1 = Pet.objects.create(user=self.user1, pet_name='Test Pet', pet_exp = 11)
-        self.pet2 = Pet.objects.create(user=self.user1, pet_name='Test Pet', pet_exp=17)
-        self.pet3 = Pet.objects.create(user=self.user1, pet_name='Test Pet', pet_exp=13)
+        self.pet2 = Pet.objects.create(user=self.user2, pet_name='Test Pet', pet_exp=17)
+        self.pet3 = Pet.objects.create(user=self.user3, pet_name='Test Pet', pet_exp=13)
 
     # As a user, I can access the Leaderboard page
     def test_view_leaderboard(self):
@@ -31,7 +31,7 @@ class TestLeaderboard(TestCase):
 
     # As a user, I can see the level of my pet on the card
     def test_leaderboard_view_pet_level(self):
-        response = self.client.get(reverse('leaderboard')
+        response = self.client.get(reverse('leaderboard'))
 
         # check pet level appears
         self.assertContains(response, self.pet1.pet_exp)
