@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9996bd9d-24eb-4b54-b987-c86cc8434eab" name="Changes" comment="Added initial tests for Leaderboard page">
+    <list default="true" id="9996bd9d-24eb-4b54-b987-c86cc8434eab" name="Changes" comment="Minor fixes to Leaderboard tests">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/Ecolution/tests/unit/test_gdpr_privpol.py" beforeDir="false" afterPath="$PROJECT_DIR$/ECM2434/Ecolution/tests/unit/test_gdpr_privpol.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ECM2434/Ecolution/tests/unit/test_leaderboard.py" beforeDir="false" afterPath="$PROJECT_DIR$/ECM2434/Ecolution/tests/unit/test_leaderboard.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -58,63 +59,66 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Django Server.ECM2434.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_admin.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_earn_points_from_event.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_updating_user_points.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_events.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_homepage.HomepageIntegrationTests.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_homepage.HomepageIntegrationTests.test_homepage_points_increase.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_homepage.HomepageTestCase.test_homepage_current_tasks.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_homepage.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_login.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_logout.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_map.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_settings.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_shop.ShopIntegrationTest.test_shop_user_points_decrease.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_shop.ShopIntegrationTest.test_user_points_increment.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_shop.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_signup.SignupIntegrationTests.test_signup_different_passwords.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_signup.SignupIntegrationTests.test_signup_redirect.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_signup.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_tasks.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.unit.test_events.EventsTestCase.test_events_menu.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.unit.test_events.EventsTestCase.test_view_events.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.unit.test_events.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.unit.test_gdpr_privpol.GDPRPPTestCase.test_download_gdpr_agree.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.unit.test_gdpr_privpol.GDPRPPTestCase.test_view_gdpr.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.unit.test_gdpr_privpol.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.unit.test_homepage.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.unit.test_leaderboard.TestLeaderboard.test_view_leaderboard.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.unit.test_logout.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.unit.test_settings.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.unit.test_shop.ShopTest.test_cannot_buy_item_again.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.unit.test_shop.ShopTest.test_view_item_name.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.unit.test_shop.ShopTest.test_view_item_price.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.unit.test_shop.TestShop.test_view_shop.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.unit.test_shop.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.unit.test_tasks.TasksUnitTests.test_user_earns_points.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: Ecolution.tests.unit.test_tasks.executor&quot;: &quot;Run&quot;,
-    &quot;Node.js.cypress.config.js.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests for test_integration_tasks.TaskIntegrationTests.executor&quot;: &quot;Debug&quot;,
-    &quot;Python tests.Python tests in test_integration_tasks.py.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;testing&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Django Server.ECM2434.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_admin.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_earn_points_from_event.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_updating_user_points.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_events.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_homepage.HomepageIntegrationTests.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_homepage.HomepageIntegrationTests.test_homepage_points_increase.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_homepage.HomepageTestCase.test_homepage_current_tasks.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_homepage.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_login.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_logout.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_map.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_settings.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_shop.ShopIntegrationTest.test_shop_user_points_decrease.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_shop.ShopIntegrationTest.test_user_points_increment.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_shop.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_signup.SignupIntegrationTests.test_signup_different_passwords.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_signup.SignupIntegrationTests.test_signup_redirect.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_signup.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_tasks.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_events.EventsTestCase.test_events_menu.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_events.EventsTestCase.test_view_events.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_events.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_gdpr_privpol.GDPRPPTestCase.test_download_gdpr_agree.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_gdpr_privpol.GDPRPPTestCase.test_view_gdpr.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_gdpr_privpol.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_homepage.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_leaderboard.TestLeaderboard.test_leaderboard_view_pet_level.executor": "Debug",
+    "Django tests.Test: Ecolution.tests.unit.test_leaderboard.TestLeaderboard.test_view_leaderboard.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_leaderboard.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_logout.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_qrcode.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_settings.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_shop.ShopTest.test_cannot_buy_item_again.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_shop.ShopTest.test_view_item_name.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_shop.ShopTest.test_view_item_price.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_shop.TestShop.test_view_shop.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_shop.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_tasks.TasksUnitTests.test_user_earns_points.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_tasks.executor": "Run",
+    "Node.js.cypress.config.js.executor": "Run",
+    "Python tests.Python tests for test_integration_tasks.TaskIntegrationTests.executor": "Debug",
+    "Python tests.Python tests in test_integration_tasks.py.executor": "Run",
+    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "django.template.preview.state": "SHOW_EDITOR",
+    "git-widget-placeholder": "testing",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/ECM2434/Ecolution/tests/unit" />
@@ -164,6 +168,27 @@
       <option name="OPTIONS" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="Test: Ecolution.tests.unit.test_leaderboard.TestLeaderboard.test_leaderboard_view_pet_level" type="DjangoTestsConfigurationType" temporary="true">
+      <module name="ECM2434" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="TARGET" value="Ecolution.tests.unit.test_leaderboard.TestLeaderboard.test_leaderboard_view_pet_level" />
+      <option name="SETTINGS_FILE" value="" />
+      <option name="CUSTOM_SETTINGS" value="false" />
+      <option name="USE_OPTIONS" value="false" />
+      <option name="OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="Test: Ecolution.tests.unit.test_leaderboard.TestLeaderboard.test_view_leaderboard" type="DjangoTestsConfigurationType" temporary="true">
       <module name="ECM2434" />
       <option name="ENV_FILES" value="" />
@@ -179,27 +204,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="TARGET" value="Ecolution.tests.unit.test_leaderboard.TestLeaderboard.test_view_leaderboard" />
-      <option name="SETTINGS_FILE" value="" />
-      <option name="CUSTOM_SETTINGS" value="false" />
-      <option name="USE_OPTIONS" value="false" />
-      <option name="OPTIONS" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Test: Ecolution.tests.unit.test_shop.ShopTest.test_view_item_price" type="DjangoTestsConfigurationType" temporary="true">
-      <module name="ECM2434" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="TARGET" value="Ecolution.tests.unit.test_shop.ShopTest.test_view_item_price" />
       <option name="SETTINGS_FILE" value="" />
       <option name="CUSTOM_SETTINGS" value="false" />
       <option name="USE_OPTIONS" value="false" />
@@ -254,19 +258,19 @@
     </configuration>
     <list>
       <item itemvalue="Django Server.ECM2434" />
+      <item itemvalue="Django tests.Test: Ecolution.tests.unit.test_leaderboard.TestLeaderboard.test_leaderboard_view_pet_level" />
       <item itemvalue="Django tests.Test: Ecolution.tests.integration.test_integration_shop.ShopIntegrationTest.test_shop_user_points_decrease" />
       <item itemvalue="Django tests.Test: Ecolution.tests.integration.test_integration_shop.ShopIntegrationTest.test_user_points_increment" />
       <item itemvalue="Django tests.Test: Ecolution.tests.unit.test_leaderboard.TestLeaderboard.test_view_leaderboard" />
-      <item itemvalue="Django tests.Test: Ecolution.tests.unit.test_shop.ShopTest.test_view_item_price" />
       <item itemvalue="Django tests.Test: Ecolution.tests.unit.test_shop.TestShop.test_view_shop" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Django tests.Test: Ecolution.tests.unit.test_leaderboard.TestLeaderboard.test_leaderboard_view_pet_level" />
         <item itemvalue="Django tests.Test: Ecolution.tests.unit.test_leaderboard.TestLeaderboard.test_view_leaderboard" />
         <item itemvalue="Django tests.Test: Ecolution.tests.integration.test_integration_shop.ShopIntegrationTest.test_shop_user_points_decrease" />
         <item itemvalue="Django tests.Test: Ecolution.tests.integration.test_integration_shop.ShopIntegrationTest.test_user_points_increment" />
         <item itemvalue="Django tests.Test: Ecolution.tests.unit.test_shop.TestShop.test_view_shop" />
-        <item itemvalue="Django tests.Test: Ecolution.tests.unit.test_shop.ShopTest.test_view_item_price" />
       </list>
     </recent_temporary>
   </component>
@@ -416,7 +420,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742082565512</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Minor fixes to Leaderboard tests">
+      <option name="closed" value="true" />
+      <created>1742254042981</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1742254042981</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -456,7 +468,8 @@
     <MESSAGE value="Updated tests" />
     <MESSAGE value="Updated tests + added tests for Shop, Leaderboard, GDPR + PP" />
     <MESSAGE value="Added initial tests for Leaderboard page" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added initial tests for Leaderboard page" />
+    <MESSAGE value="Minor fixes to Leaderboard tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="Minor fixes to Leaderboard tests" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_events_EventsTestCase_test_events_menu.coverage" NAME="Test: Ecolution.tests.unit.test_events.EventsTestCase.test_events_menu Coverage Results" MODIFIED="1740400847176" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
@@ -474,8 +487,9 @@
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_admin.coverage" NAME="Test: Ecolution.tests.integration.test_integration_admin Coverage Results" MODIFIED="1740417806773" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_signup_SignupIntegrationTests_test_signup_redirect.coverage" NAME="Test: Ecolution.tests.integration.test_integration_signup.SignupIntegrationTests.test_signup_redirect Coverage Results" MODIFIED="1740331788314" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_gdpr_privpol_GDPRPPTestCase_test_view_gdpr.coverage" NAME="Test: Ecolution.tests.unit.test_gdpr_privpol.GDPRPPTestCase.test_view_gdpr Coverage Results" MODIFIED="1741873249195" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_gdpr_privpol.coverage" NAME="Test: Ecolution.tests.unit.test_gdpr_privpol Coverage Results" MODIFIED="1741885707482" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_gdpr_privpol.coverage" NAME="Test: Ecolution.tests.unit.test_gdpr_privpol Coverage Results" MODIFIED="1742255320577" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_shop_ShopTest_test_view_item_name.coverage" NAME="Test: Ecolution.tests.unit.test_shop.ShopTest.test_view_item_name Coverage Results" MODIFIED="1742047387650" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_qrcode.coverage" NAME="Test: Ecolution.tests.unit.test_qrcode Coverage Results" MODIFIED="1742254712892" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_events_EventsTestCase_test_earn_points_from_event.coverage" NAME="Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_earn_points_from_event Coverage Results" MODIFIED="1742047661216" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_map.coverage" NAME="Test: Ecolution.tests.integration.test_integration_map Coverage Results" MODIFIED="1740399515851" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_signup.coverage" NAME="Test: Ecolution.tests.integration.test_integration_signup Coverage Results" MODIFIED="1740419193854" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
@@ -484,11 +498,13 @@
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_gdpr_privpol_GDPRPPTestCase_test_download_gdpr_agree.coverage" NAME="Test: Ecolution.tests.unit.test_gdpr_privpol.GDPRPPTestCase.test_download_gdpr_agree Coverage Results" MODIFIED="1741885676565" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_homepage.coverage" NAME="Test: Ecolution.tests.unit.test_homepage Coverage Results" MODIFIED="1740414533566" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_leaderboard_TestLeaderboard_test_view_leaderboard.coverage" NAME="Test: Ecolution.tests.unit.test_leaderboard.TestLeaderboard.test_view_leaderboard Coverage Results" MODIFIED="1742082124444" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_leaderboard.coverage" NAME="Test: Ecolution.tests.unit.test_leaderboard Coverage Results" MODIFIED="1742254468846" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_shop.coverage" NAME="Test: Ecolution.tests.unit.test_shop Coverage Results" MODIFIED="1742047411594" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_events_EventsTestCase_test_view_events.coverage" NAME="Test: Ecolution.tests.unit.test_events.EventsTestCase.test_view_events Coverage Results" MODIFIED="1740401420161" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_logout.coverage" NAME="Test: Ecolution.tests.integration.test_integration_logout Coverage Results" MODIFIED="1739979934935" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_tasks_TasksUnitTests_test_user_earns_points.coverage" NAME="Test: Ecolution.tests.unit.test_tasks.TasksUnitTests.test_user_earns_points Coverage Results" MODIFIED="1740414273595" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_homepage.coverage" NAME="Test: Ecolution.tests.integration.test_integration_homepage Coverage Results" MODIFIED="1740415453410" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_leaderboard_TestLeaderboard_test_leaderboard_view_pet_level.coverage" NAME="Test: Ecolution.tests.unit.test_leaderboard.TestLeaderboard.test_leaderboard_view_pet_level Coverage Results" MODIFIED="1742254065098" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_signup_SignupIntegrationTests_test_signup_different_passwords.coverage" NAME="Test: Ecolution.tests.integration.test_integration_signup.SignupIntegrationTests.test_signup_different_passwords Coverage Results" MODIFIED="1740413037923" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_logout.coverage" NAME="Test: Ecolution.tests.unit.test_logout Coverage Results" MODIFIED="1740412303376" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_shop_TestShop_test_view_shop.coverage" NAME="Test: Ecolution.tests.unit.test_shop.TestShop.test_view_shop Coverage Results" MODIFIED="1741887682401" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />

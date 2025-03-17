@@ -8,7 +8,7 @@ class GDPRPPTestCase(TestCase):
         self.user1 = CustomUser.objects.create_user(username = 'testuser', password = 'password')
 
     # As a user, I can view the Terms and Conditions page within the app
-    def test_view_gdpr(self):
+    def test_view_gdpr_pp(self):
         # login user
         self.client.login(username = 'testuser', password = 'password')
 
@@ -19,7 +19,7 @@ class GDPRPPTestCase(TestCase):
         self.client.get(reverse('term_of_use'))
 
     # As a user, I can view the Terms and Conditions page on signup
-    def test_view_gdpr_signup(self):
+    def test_view_gdpr_pp_signup(self):
         # navigate to signup page
         self.client.get(reverse('signup'))
 
@@ -38,3 +38,4 @@ class GDPRPPTestCase(TestCase):
 
         # assert that the response says terms were agreed to
         self.assertNotContains(response, "You must agree to the terms and conditions")
+
