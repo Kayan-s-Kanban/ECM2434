@@ -100,17 +100,37 @@
             justify-content: flex-start;
             font-weight: bold;
         }
+
+        .qr-container{
+            display: none;
+            background-color: white;
+            z-index: 1;
+            border-radius: 15px 15px;
+            padding: 20px 20px;
+            
+        }
     </style>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""></script>
+
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 {% endblock %}
 
 {% block main %}
     <!-- Main Content -->
 
     <body>
+        <div class="qr-container" id="qr-container">
+            <div class="flex_h heading">
+                <button class="button exit_button text_light" onclick="closeQrScanner()"> ← </button>
+                <h4>Scan the QR code to complete the task</h4>
+            </div>
+            <div id="reader" width="600px"></div>
+        </div>
+        
+
         <h1 class="text_light">Events</h1>
     
         <div class="event_list_container">
@@ -231,7 +251,7 @@
             let button =  eventDetails.querySelector("#button");
             button.setAttribute("event-id", element.dataset.id);
             if (eventType === "user"){
-                button.onclick = completeEvent;
+                button.onclick = openQrScanner;
                 button.textContent = "Complete Event";
             } else if (eventType === "general") {
                 button.onclick = joinEvent;
@@ -321,6 +341,18 @@
             .catch(error => console.error("Error:", error));
         }
 
+        function openQrScanner(){
+            let qrScanner = document.getElementById("qr-container");
+            qrScanner.style.display = "block";
+            html5QrcodeScanner.render(onScanSuccess, onScanError);
+        }
+
+        function closeQrScanner(){
+            html5QrcodeScanner.clear();
+            let qrScanner = document.getElementById("qr-container");
+            qrScanner.style.display = "none";
+        }
+
         //gets all the tasks for an event
         function getEventTask(eventId) {
             return fetch(`/ecolution/events/gettasks/${eventId}/`)
@@ -333,6 +365,31 @@
         function getCSRFToken() {
             return document.cookie.match(/csrftoken=([^;]+)/)[1];
         }
+
+
+        function onScanSuccess(decodedText, decodedResult) {
+            console.log("QR Code detected");
+
+            if (decodedText === eventQR) {
+                completeEvent();
+            }
+        }
+
+        function onScanError(errorMessage) {
+            // Handle errors (optional)
+            console.warn("QR scan error:");
+        }
+
+
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader",
+            { fps: 10, qrbox: {width: 250, height: 250} },
+            false
+        );
+
+        let cameraStream;
+
+        
       
     </script>
 {% endblock %}
