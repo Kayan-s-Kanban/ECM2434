@@ -8,6 +8,8 @@ from django.conf import settings  # Best practice for referencing AUTH_USER_MODE
 from django.utils import timezone
 from django.core.files.base import ContentFile
 from django.urls import reverse
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class CustomUser(AbstractUser):  # Custom User model is the user class we use for base users and super users
     
@@ -120,38 +122,38 @@ class Event(models.Model):
     def __str__(self):
         return f'{self.event_name}'
     
-    def save(self, *args, **kwargs):
-        is_new = self.pk is None
-        # First, save the object to get a primary key if it’s new
-        super().save(*args, **kwargs)
+    # This signal will run after an Event is saved.
+@receiver(post_save, sender=Event)
+def generate_qr_code(sender, instance, created, **kwargs):
+    # If the Event is new or if for some reason the QR code hasn't been generated
+    if created or not instance.qr_code:
+        # Generate the relative URL using reverse()
+        relative_url = reverse('validate_qr', kwargs={'token': instance.unique_token})
+        full_url = f'http://127.0.0.1:8000/{relative_url}'
         
-        # Generate and save QR code if this is a new instance or if there is no QR code yet.
-        if is_new or not self.qr_code:
-            # Generate the relative URL using reverse()
-            relative_url = reverse('validate_qr', kwargs={'token': self.unique_token})
-            # Combine with the base URL
-            full_url = f'http://127.0.0.1:8000/{relative_url}'
-            
-            # Create the QR code image using the qrcode library.
-            qr = qrcode.QRCode(
-                version=1,
-                error_correction=qrcode.constants.ERROR_CORRECT_L,
-                box_size=10,
-                border=4,
-            )
-            qr.add_data(full_url)
-            qr.make(fit=True)
-            img = qr.make_image(fill_color="black", back_color="white")
-            
-            # Save the image to a bytes buffer.
-            buffer = io.BytesIO()
-            img.save(buffer, format='PNG')
-            
-            # Create a filename that might include the event's pk.
-            file_name = f'event_{self.pk}_qr.png'
-            self.qr_code.save(file_name, ContentFile(buffer.getvalue()), save=False)
-            self.url_qr_code = full_url
-            super().save(*args, **kwargs)
+        # Create the QR code image using the qrcode library.
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(full_url)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white")
+        
+        # Save the image to a bytes buffer.
+        buffer = io.BytesIO()
+        img.save(buffer, format='PNG')
+        
+        # Create a filename that includes the event's primary key.
+        file_name = f'event_{instance.pk}_qr.png'
+        # Save the generated image without calling save() on the model immediately
+        instance.qr_code.save(file_name, ContentFile(buffer.getvalue()), save=False)
+        instance.url_qr_code = full_url
+        
+        # Update only the QR code fields to avoid re-triggering the creation logic.
+        instance.save(update_fields=['qr_code', 'url_qr_code'])
     
 class Task(models.Model):
     task_id = models.AutoField(primary_key=True)
