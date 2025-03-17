@@ -237,6 +237,19 @@
     <script>
         let map = null;
 
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                let checkedValues = [];
+                checkboxes.forEach(box => {
+                    if (box.checked) {
+                        checkedValues.push(box.id);
+                    }
+                });
+                localStorage.setItem("checkboxValues", JSON.stringify(checkedValues));
+            });
+        });
+
         //creates the map which is displayed within the event popup
         function createMap(lat, lon, zoom = 18) {
             map = L.map('map').setView([lat, lon], zoom);
@@ -272,6 +285,7 @@
             let tasksContainer = eventDetails.querySelector("#tasks");
             tasksContainer.innerHTML = ""; 
 
+            const checkedTasks = JSON.parse(localStorage.getItem("checkboxValues")) || [];
             //gets all the tasks within a specific event
             getEventTask(element.dataset.id)
                 .then(data => {
@@ -281,11 +295,21 @@
                         data.tasks.forEach(task => {
                             let taskDiv = document.createElement("div");
                             taskDiv.classList.add("box_shadow", "text_light", "taskcard");
-                            taskDiv.innerHTML = `<p>${task.task_name}</p>`;
+
+                            const checkboxId = `${eventDetails.event_name}-${task.task_name}`;
+
+                            taskDiv.innerHTML = `<input type="checkbox" id="${checkboxId}">${task.task_name}`;
+                            
+                            if (checkedTasks.includes(checkboxId)) {
+                                taskDiv.querySelector("input").checked = true;
+                            }
                             tasksContainer.appendChild(taskDiv);
                         });
                     }
                 });
+
+            
+
 
             //map coodinates hardcoded for now
             createMap(50.734967, -3.533750);
