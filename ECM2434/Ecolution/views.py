@@ -203,7 +203,8 @@ def complete_task(request, task_id):
             request.user.save()
 
             # Add task xp to the pet's overall xp, currently this will just get the first pet in the list
-            pet = Pet.objects.filter(user=request.user).first()
+            user = request.user
+            pet = request.user.displayed_pet
             if pet:
                 pet.pet_exp += task.xp_given
                 if pet.pet_exp >= 100:
