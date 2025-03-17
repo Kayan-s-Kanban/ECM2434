@@ -203,7 +203,6 @@ def complete_task(request, task_id):
             request.user.save()
 
             # Add task xp to the pet's overall xp, currently this will just get the first pet in the list
-            user = request.user
             pet = request.user.displayed_pet
             if pet:
                 pet.pet_exp += task.xp_given
@@ -254,9 +253,23 @@ def complete_event(request):
         try:
             event_id = request.POST.get("event_id")
             event = get_object_or_404(Event, event_id=event_id)
+
+            # Give points to the user
             event_points = event.total_points
-            UserEvent.objects.filter(user=request.user, event=event).update(completed=True)
             CustomUser.objects.filter(id=request.user.id).update(points=request.user.points + event_points)
+
+            # Give xp to the user's displayed pet
+            event_xp = event.total_xp
+            pet = request.user.displayed_pet
+            if pet:
+                pet.pet_exp += event_xp
+                if pet.pet_exp >= 100:
+                    pet.pet_level += 1
+                    pet.pet_exp -= 100
+                pet.save()
+                
+            # Mark the event as completed for the user
+            UserEvent.objects.filter(user=request.user, event=event).update(completed=True)
 
             return JsonResponse({"success": True})
         except Exception as e:
