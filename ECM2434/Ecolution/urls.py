@@ -32,5 +32,5 @@ urlpatterns = [
     path("shop/buy/<int:item_id>/", views.buy_item, name="buy_item"),
     path('validate/<uuid:token>/', validate_qr, name='validate_qr'),
     path("leaderboard/", leaderboard_view, name="leaderboard"),
-
+    path("qr_scanner/", views.qr_scanner_view, name="qr_scanner"),
 ]

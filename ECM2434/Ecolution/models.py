@@ -122,7 +122,7 @@ class Event(models.Model):
     def __str__(self):
         return f'{self.event_name}'
     
-    # This signal will run after an Event is saved.
+# This signal will run after an Event is saved.
 @receiver(post_save, sender=Event)
 def generate_qr_code(sender, instance, created, **kwargs):
     # If the Event is new or if for some reason the QR code hasn't been generated
@@ -154,7 +154,7 @@ def generate_qr_code(sender, instance, created, **kwargs):
         
         # Update only the QR code fields to avoid re-triggering the creation logic.
         instance.save(update_fields=['qr_code', 'url_qr_code'])
-    
+        
 class Task(models.Model):
     task_id = models.AutoField(primary_key=True)
     task_name = models.CharField(max_length=100)

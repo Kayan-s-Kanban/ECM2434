@@ -248,17 +248,22 @@ def leave_event(request):
             return JsonResponse({"success": False, "message": str(e)})
     return JsonResponse({"success": False, "message": "Invalid request"})
 
+@login_required
 def complete_event(request):
     if request.method == "POST":
         try:
             event_id = request.POST.get("event_id")
             event = get_object_or_404(Event, event_id=event_id)
-
-            # Give points to the user
+            user_event = get_object_or_404(UserEvent, user=request.user, event=event)
+            
+            # Check if the event has been validated
+            if not user_event.validated:
+                return JsonResponse({"success": False, "message": "Event not validated."})
+            
+            # Award points and xp since the event is validated.
             event_points = event.total_points
             CustomUser.objects.filter(id=request.user.id).update(points=request.user.points + event_points)
-
-            # Give xp to the user's displayed pet
+            
             event_xp = event.total_xp
             pet = request.user.displayed_pet
             if pet:
@@ -267,9 +272,10 @@ def complete_event(request):
                     pet.pet_level += 1
                     pet.pet_exp -= 100
                 pet.save()
-                
-            # Mark the event as completed for the user
-            UserEvent.objects.filter(user=request.user, event=event).update(completed=True)
+            
+            # Mark the event as completed for the user.
+            user_event.completed = True
+            user_event.save()
 
             return JsonResponse({"success": True})
         except Exception as e:
@@ -464,12 +470,9 @@ def validate_qr(request, token):
     if not user_event.validated:
         user_event.validated = True
         user_event.save()
-        message = "Attendance validated."
-    else:
-        message = "Attendance already validated."
     
     # Return a JSON response with the validation message
-    return JsonResponse({'message': message})
+    return redirect("events")
 
 @login_required
 def leaderboard_view(request):
@@ -498,3 +501,8 @@ def leaderboard_view(request):
     # Include user's points if needed by base.html
     context['points'] = request.user.points
     return render(request, "leaderboard.html", context)
+
+@login_required
+def qr_scanner_view(request):
+    return render(request, "qr_scanner.html")
+
