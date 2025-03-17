@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+  <title>QR Scanner - Ecolution</title>
+{% endblock %}
+
+{% block main %}
+  <div class="qr-scanner-container">
+    <h2>Scan QR Code</h2>
+    <div id="reader" style="width:600px;"></div>
+  </div>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <script>
+    function onScanSuccess(decodedText, decodedResult) {
+      // Redirect the user to the URL from the QR code.
+      window.location.href = decodedText;
+    }
+
+    function onScanError(errorMessage) {
+      console.warn(errorMessage);
+    }
+
+    let html5QrcodeScanner = new Html5QrcodeScanner(
+      "reader", { fps: 10, qrbox: {width: 250, height: 250} }, false
+    );
+    html5QrcodeScanner.render(onScanSuccess, onScanError);
+  </script>
+{% endblock %}

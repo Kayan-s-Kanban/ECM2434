@@ -10,6 +10,7 @@ from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.views.decorators.cache import never_cache
 from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent, ShopItem, UserItem
+from django.db.models import Max
 
 # Create your views here.
 def index(request):
@@ -45,6 +46,12 @@ def signup_view(request):
         ## Assigns the pet to the user and saves the user
         user.displayed_pet = pet
         user.save()
+
+        try:
+            shop_item = ShopItem.objects.get(name__iexact=pet_type)
+            UserItem.objects.create(user=user, shopitem=shop_item)
+        except ShopItem.DoesNotExist:
+            pass
 
         messages.success(request, "Account created! You can now log in.")
         return redirect("login")
@@ -196,7 +203,7 @@ def complete_task(request, task_id):
             request.user.save()
 
             # Add task xp to the pet's overall xp, currently this will just get the first pet in the list
-            pet = Pet.objects.filter(user=request.user).first()
+            pet = request.user.displayed_pet
             if pet:
                 pet.pet_exp += task.xp_given
                 if pet.pet_exp >= 100:
@@ -241,20 +248,64 @@ def leave_event(request):
             return JsonResponse({"success": False, "message": str(e)})
     return JsonResponse({"success": False, "message": "Invalid request"})
 
+@login_required
 def complete_event(request):
     if request.method == "POST":
         try:
             event_id = request.POST.get("event_id")
             event = get_object_or_404(Event, event_id=event_id)
+            user_event = get_object_or_404(UserEvent, user=request.user, event=event)
+            
+            # Check if the event has been validated
+            if not user_event.validated:
+                return JsonResponse({"success": False, "message": "Event not validated."})
+            
+            # Award points and xp since the event is validated.
             event_points = event.total_points
-            UserEvent.objects.filter(user=request.user, event=event).update(completed=True)
             CustomUser.objects.filter(id=request.user.id).update(points=request.user.points + event_points)
+            
+            event_xp = event.total_xp
+            pet = request.user.displayed_pet
+            if pet:
+                pet.pet_exp += event_xp
+                if pet.pet_exp >= 100:
+                    pet.pet_level += 1
+                    pet.pet_exp -= 100
+                pet.save()
+            
+            # Mark the event as completed for the user.
+            user_event.completed = True
+            user_event.save()
 
             return JsonResponse({"success": True})
         except Exception as e:
             return JsonResponse({"success": False, "message": str(e)})
     return JsonResponse({"success": False, "message": "Invalid request"})
 
+def create_event(request):
+    if request.method == "POST":
+        event_name = request.POST.get("event_name")
+        description = request.POST.get("description")
+        location = request.POST.get("location")
+        date = request.POST.get("date")
+        time = request.POST.get("time")
+
+        try:
+            event = Event.objects.create(
+                event_name=event_name,
+                description=description,
+                location=location,
+                date=date,
+                time=time,
+            )
+
+        except IntegrityError as e:
+            return JsonResponse({"status": "error", "message": "Database Integrity Error: " + str(e)}, status=400)
+    
+        return JsonResponse({"status": "success", "event_id": event.event_id})
+
+    return JsonResponse({"status": "error"}, status=400)
+    
 def get_event_tasks(request, event_id):
     try:    
         event = get_object_or_404(Event, event_id=event_id)
@@ -339,6 +390,33 @@ def change_password(request):
     return redirect("settings")
 
 @login_required
+def change_username(request):
+    if request.method == "POST":
+        current_username = request.POST["current_username"]
+        new_username1 = request.POST["new_username1"]
+        new_username2 = request.POST["new_username2"]
+        
+        if new_username1 != new_username2:
+            messages.error(request, "New usernames do not match!")
+            return redirect("settings")
+
+        user = request.user
+        if not user.check_username(current_username):
+            messages.error(request, "Current username is incorrect!")
+            return redirect("settings")
+
+        user.set_username(new_username1)
+        user.save()
+
+        # Keep the user logged in after username change
+        update_session_auth_hash(request, user)
+
+        messages.success(request, "username updated successfully!")
+        return redirect("settings")
+
+    return redirect("settings")
+
+@login_required
 def update_fontsize(request):
     if request.method == "POST":
         try:
@@ -416,9 +494,39 @@ def validate_qr(request, token):
     if not user_event.validated:
         user_event.validated = True
         user_event.save()
-        message = "Attendance validated."
-    else:
-        message = "Attendance already validated."
     
     # Return a JSON response with the validation message
-    return JsonResponse({'message': message})
+    return redirect("events")
+
+@login_required
+def leaderboard_view(request):
+    # Annotate each user with the maximum pet level among all their pets.
+    top_users = list(
+        CustomUser.objects.annotate(highest_pet_level_db=Max('pet__pet_level'))
+        .filter(highest_pet_level_db__isnull=False)
+        .order_by('-highest_pet_level_db')[:5]
+    )
+    
+    # For each user, replace displayed_pet with the pet that has the highest level.
+    for user in top_users:
+        highest_pet = user.pet_set.order_by('-pet_level').first()
+        user.displayed_pet = highest_pet
+
+    context = {}
+    if len(top_users) > 0:
+        context['top_pet'] = top_users[0]  # 1st place
+    if len(top_users) > 1:
+        context['second_pet'] = top_users[1]  # 2nd place
+    if len(top_users) > 2:
+        context['third_pet'] = top_users[2]  # 3rd place
+    # Remaining entries (positions 4 and 5)
+    context['leaderboard_entries'] = top_users[3:] if len(top_users) > 3 else []
+    
+    # Include user's points if needed by base.html
+    context['points'] = request.user.points
+    return render(request, "leaderboard.html", context)
+
+@login_required
+def qr_scanner_view(request):
+    return render(request, "qr_scanner.html")
+

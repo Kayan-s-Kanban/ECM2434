@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9996bd9d-24eb-4b54-b987-c86cc8434eab" name="Changes" comment="Added initial tests for Leaderboard page" />
+    <list default="true" id="9996bd9d-24eb-4b54-b987-c86cc8434eab" name="Changes" comment="Added initial tests for Leaderboard page">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -118,7 +121,7 @@
       <recent name="$PROJECT_DIR$/ECM2434/cypress/e2e/specs" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Django Server.ECM2434">
     <configuration name="Test: Ecolution.tests.integration.test_integration_shop.ShopIntegrationTest.test_shop_user_points_decrease" type="DjangoTestsConfigurationType" temporary="true">
       <module name="ECM2434" />
       <option name="ENV_FILES" value="" />
