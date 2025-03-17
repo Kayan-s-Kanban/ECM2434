@@ -122,6 +122,17 @@
     <!-- Main Content -->
 
     <body>
+        <form action="{% url 'create_event' %}" method="POST">
+            {% csrf_token %}
+            <input type="text" name="event_name" placeholder="Event Name" required>
+            <input type="text" name="description" placeholder="Description" required>
+            <input type="text" name="location" placeholder="Location" required>
+            <input type="date" name="date" required>
+            <input type="time" name="time" required>    
+            <button type="submit" class="button text_light">Create Event</button>
+        </form>
+
+
         <div class="qr-container" id="qr-container">
             <div class="flex_h heading">
                 <button class="button exit_button text_light" onclick="closeQrScanner()"> ← </button>

@@ -261,6 +261,30 @@ def complete_event(request):
             return JsonResponse({"success": False, "message": str(e)})
     return JsonResponse({"success": False, "message": "Invalid request"})
 
+def create_event(request):
+    if request.method == "POST":
+        event_name = request.POST.get("event_name")
+        description = request.POST.get("description")
+        location = request.POST.get("location")
+        date = request.POST.get("date")
+        time = request.POST.get("time")
+
+        try:
+            event = Event.objects.create(
+                event_name=event_name,
+                description=description,
+                location=location,
+                date=date,
+                time=time,
+            )
+
+        except IntegrityError as e:
+            return JsonResponse({"status": "error", "message": "Database Integrity Error: " + str(e)}, status=400)
+    
+        return JsonResponse({"status": "success", "event_id": event.event_id})
+
+    return JsonResponse({"status": "error"}, status=400)
+    
 def get_event_tasks(request, event_id):
     try:    
         event = get_object_or_404(Event, event_id=event_id)
