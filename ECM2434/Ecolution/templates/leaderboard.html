@@ -1,64 +1,45 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block content %}
-<div class="flex justify-center items-center min-h-screen bg-green-100">
-    <div class="w-full max-w-md p-4">
-        <!-- Leaderboard Card -->
-        <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-2xl font-bold text-center">Leaderboard</h2>
-
-            <!-- Top 3 Players -->
-            <div class="relative bg-green-300 rounded-xl p-4 mt-4 flex flex-col items-center">
-                <div class="flex justify-center gap-4">
-                    <!-- 2nd Place -->
-                    {% if second_pet %}
-                    <div class="text-center">
-                        <div class="bg-white p-3 rounded-full shadow-lg border-2 border-blue-500">
-                            <img src="{% static 'images/pets/'|add:second_pet.displayed_pet.pet_type|add:'.png' %}" alt="Pet" class="w-14 h-14">
-                        </div>
-                        <p class="text-blue-500 font-bold">2</p>
-                        <p class="text-gray-700">{{ second_pet.displayed_pet.pet_level }}</p>
-                    </div>
-                    {% endif %}
-
-                    <!-- 1st Place (Highest-Level Pet) -->
-                    {% if top_pet %}
-                    <div class="text-center">
-                        <div class="bg-white p-3 rounded-full shadow-lg border-2 border-yellow-500 relative">
-                            <img src="{% static 'images/pets/'|add:top_pet.displayed_pet.pet_type|add:'.png' %}" alt="Pet" class="w-16 h-16">
-                            <span class="absolute -top-4 left-1/2 transform -translate-x-1/2 text-yellow-500 text-2xl">👑</span>
-                        </div>
-                        <p class="text-yellow-500 font-bold">1</p>
-                        <p class="text-gray-700">{{ top_pet.displayed_pet.pet_level }}</p>
-                    </div>
-                    {% endif %}
-
-                    <!-- 3rd Place -->
-                    {% if third_pet %}
-                    <div class="text-center">
-                        <div class="bg-white p-3 rounded-full shadow-lg border-2 border-green-500">
-                            <img src="{% static 'images/pets/'|add:third_pet.displayed_pet.pet_type|add:'.png' %}" alt="Pet" class="w-14 h-14">
-                        </div>
-                        <p class="text-green-500 font-bold">3</p>
-                        <p class="text-gray-700">{{ third_pet.displayed_pet.pet_level }}</p>
-                    </div>
-                    {% endif %}
-                </div>
+{% block main %}
+<div class="margin_std">
+    <h2>Leaderboard</h2>
+    <div class="card box_shadow" style="padding: 1rem;">
+        <!-- Top 3 Players -->
+        <div class="flex_h" style="justify-content: space-around; margin-bottom: 1rem;">
+            <!-- 2nd Place -->
+            {% if second_pet %}
+            <div style="text-align: center;">
+                <img src="{{ second_pet.displayed_pet.computed_image_url }}" alt="{{ second_pet.displayed_pet.pet_type }} pet" style="width: 60px; height: 60px;">
+                <p>2 - Level {{ second_pet.displayed_pet.pet_level }}</p>
             </div>
-
-            <!-- Remaining Leaderboard Entries (positions 4 & 5) -->
-            <div class="bg-green-200 rounded-xl p-4 mt-4">
-                {% for entry in leaderboard_entries %}
-                <div class="flex justify-between items-center bg-white p-3 rounded-lg shadow my-2">
-                    <div class="flex items-center gap-3">
-                        <img src="{% static 'images/pets/'|add:entry.displayed_pet.pet_type|add:'.png' %}" alt="Pet" class="w-10 h-10">
-                        <p class="text-gray-800 font-semibold">@{{ entry.username }}</p>
-                    </div>
-                    <p class="text-gray-700 font-bold">{{ entry.displayed_pet.pet_level }}</p>
-                </div>
-                {% endfor %}
+            {% endif %}
+            <!-- 1st Place (Highest-Level Pet) -->
+            {% if top_pet %}
+            <div style="text-align: center;">
+                <img src="{{ top_pet.displayed_pet.computed_image_url }}" alt="{{ top_pet.displayed_pet.pet_type }} pet" style="width: 80px; height: 80px;">
+                <p>1 👑 - Level {{ top_pet.displayed_pet.pet_level }}</p>
             </div>
+            {% endif %}
+            <!-- 3rd Place -->
+            {% if third_pet %}
+            <div style="text-align: center;">
+                <img src="{{ third_pet.displayed_pet.computed_image_url }}" alt="{{ third_pet.displayed_pet.pet_type }} pet" style="width: 60px; height: 60px;">
+                <p>3 - Level {{ third_pet.displayed_pet.pet_level }}</p>
+            </div>
+            {% endif %}
+        </div>
+        <!-- Remaining Leaderboard Entries (positions 4 & 5) -->
+        <div>
+            {% for entry in leaderboard_entries %}
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #ccc;">
+                <div style="display: flex; align-items: center;">
+                    <img src="{{ entry.displayed_pet.computed_image_url }}" alt="{{ entry.displayed_pet.pet_type }} pet" style="width: 40px; height: 40px; margin-right: 0.5rem;">
+                    <span>@{{ entry.username }}</span>
+                </div>
+                <span>Level {{ entry.displayed_pet.pet_level }}</span>
+            </div>
+            {% endfor %}
         </div>
     </div>
 </div>

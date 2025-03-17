@@ -10,6 +10,7 @@ from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.views.decorators.cache import never_cache
 from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent, ShopItem, UserItem
+from django.db.models import Max
 
 # Create your views here.
 def index(request):
@@ -458,10 +459,18 @@ def validate_qr(request, token):
 
 @login_required
 def leaderboard_view(request):
-    # Get the top 5 users that have a displayed pet, ordered by their pet's level (descending)
-    top_users = list(CustomUser.objects.filter(displayed_pet__isnull=False)
-                     .order_by('-displayed_pet__pet_level')[:5])
+    # Annotate each user with the maximum pet level among all their pets.
+    top_users = list(
+        CustomUser.objects.annotate(highest_pet_level_db=Max('pet__pet_level'))
+        .filter(highest_pet_level_db__isnull=False)
+        .order_by('-highest_pet_level_db')[:5]
+    )
     
+    # For each user, replace displayed_pet with the pet that has the highest level.
+    for user in top_users:
+        highest_pet = user.pet_set.order_by('-pet_level').first()
+        user.displayed_pet = highest_pet
+
     context = {}
     if len(top_users) > 0:
         context['top_pet'] = top_users[0]  # 1st place

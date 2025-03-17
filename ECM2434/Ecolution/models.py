@@ -96,7 +96,7 @@ class Pet(models.Model): #weak entity pet that relies on user id to exist
     @property # generate image url for the pet
     def computed_image_url(self):
         return f"/static/images/pets/{self.pet_type}/{self.pet_type}_{self.size}.gif" # Might need to change this or the determine size so it updates on changes
-
+    
     def __str__(self):
         return f'{self.pet_name} - {self.user.username}'
 
