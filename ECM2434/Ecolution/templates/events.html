@@ -211,7 +211,7 @@
 
                     <div class="points">
                         <p id="points"></p>
-                        <p> XP</p>
+                        <p>  Points</p>
                     </div>
             
                     
@@ -275,7 +275,7 @@
             let button =  eventDetails.querySelector("#button");
             button.setAttribute("event-id", element.dataset.id);
             if (eventType === "user"){
-                button.onclick = openQrScanner;
+                button.onclick = completeEvent;
                 button.textContent = "Complete Event";
             } else if (eventType === "general") {
                 button.onclick = joinEvent;
@@ -366,26 +366,19 @@
 
             fetch("{% url 'complete_event' %}", {
                 method: "POST",
-                headers:{"X-CSRFToken": getCSRFToken() },
+                headers: { "X-CSRFToken": getCSRFToken() },
                 body: new URLSearchParams({ event_id: eventId })
-            }).then(response => response.json())  
-            .then(data => console.log("Success:", data))  
+            })
+            .then(response => response.json())
             .then(data => {
-                location.reload();
+                if (data.success) {
+                    location.reload();
+                } else {
+                    // Display the error message (e.g., "Event not validated.")
+                    alert(data.message);
+                }
             })
             .catch(error => console.error("Error:", error));
-        }
-
-        function openQrScanner(){
-            let qrScanner = document.getElementById("qr-container");
-            qrScanner.style.display = "block";
-            html5QrcodeScanner.render(onScanSuccess, onScanError);
-        }
-
-        function closeQrScanner(){
-            html5QrcodeScanner.clear();
-            let qrScanner = document.getElementById("qr-container");
-            qrScanner.style.display = "none";
         }
 
         //gets all the tasks for an event
@@ -397,35 +390,35 @@
                 });
         }
 
+        function showErrorPopup(message) {
+            // Create a new popup div
+            let popup = document.createElement("div");
+            popup.className = "error-popup";
+            popup.innerText = message;
+            
+            // Basic inline styling for the popup (you can move these to your CSS file)
+            popup.style.position = "fixed";
+            popup.style.top = "20px";
+            popup.style.right = "20px";
+            popup.style.padding = "10px 20px";
+            popup.style.backgroundColor = "#ff4d4d";  // Red background for error
+            popup.style.color = "#fff";
+            popup.style.borderRadius = "5px";
+            popup.style.boxShadow = "0px 2px 5px rgba(0, 0, 0, 0.3)";
+            popup.style.zIndex = "1000";
+            
+            // Append the popup to the body
+            document.body.appendChild(popup);
+            
+            // Automatically remove the popup after 3 seconds
+            setTimeout(() => {
+                popup.remove();
+            }, 3000);
+        }
+        
         function getCSRFToken() {
             return document.cookie.match(/csrftoken=([^;]+)/)[1];
         }
-
-
-        function onScanSuccess(decodedText, decodedResult) {
-            console.log("QR Code detected");
-
-            if (decodedText === eventQR) {
-                completeEvent();
-            }
-        }
-
-        function onScanError(errorMessage) {
-            // Handle errors (optional)
-            console.warn("QR scan error:");
-        }
-
-
-        let html5QrcodeScanner = new Html5QrcodeScanner(
-            "reader",
-            { fps: 10, qrbox: {width: 250, height: 250} },
-            false
-        );
-
-        let cameraStream;
-
-        
-      
     </script>
 {% endblock %}
 

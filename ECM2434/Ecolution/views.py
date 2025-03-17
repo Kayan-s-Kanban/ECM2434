@@ -10,6 +10,7 @@ from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.views.decorators.cache import never_cache
 from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent, ShopItem, UserItem
+from django.db.models import Max
 
 # Create your views here.
 def index(request):
@@ -202,7 +203,7 @@ def complete_task(request, task_id):
             request.user.save()
 
             # Add task xp to the pet's overall xp, currently this will just get the first pet in the list
-            pet = Pet.objects.filter(user=request.user).first()
+            pet = request.user.displayed_pet
             if pet:
                 pet.pet_exp += task.xp_given
                 if pet.pet_exp >= 100:
@@ -247,14 +248,34 @@ def leave_event(request):
             return JsonResponse({"success": False, "message": str(e)})
     return JsonResponse({"success": False, "message": "Invalid request"})
 
+@login_required
 def complete_event(request):
     if request.method == "POST":
         try:
             event_id = request.POST.get("event_id")
             event = get_object_or_404(Event, event_id=event_id)
+            user_event = get_object_or_404(UserEvent, user=request.user, event=event)
+            
+            # Check if the event has been validated
+            if not user_event.validated:
+                return JsonResponse({"success": False, "message": "Event not validated."})
+            
+            # Award points and xp since the event is validated.
             event_points = event.total_points
-            UserEvent.objects.filter(user=request.user, event=event).update(completed=True)
             CustomUser.objects.filter(id=request.user.id).update(points=request.user.points + event_points)
+            
+            event_xp = event.total_xp
+            pet = request.user.displayed_pet
+            if pet:
+                pet.pet_exp += event_xp
+                if pet.pet_exp >= 100:
+                    pet.pet_level += 1
+                    pet.pet_exp -= 100
+                pet.save()
+            
+            # Mark the event as completed for the user.
+            user_event.completed = True
+            user_event.save()
 
             return JsonResponse({"success": True})
         except Exception as e:
@@ -473,19 +494,24 @@ def validate_qr(request, token):
     if not user_event.validated:
         user_event.validated = True
         user_event.save()
-        message = "Attendance validated."
-    else:
-        message = "Attendance already validated."
     
     # Return a JSON response with the validation message
-    return JsonResponse({'message': message})
+    return redirect("events")
 
 @login_required
 def leaderboard_view(request):
-    # Get the top 5 users that have a displayed pet, ordered by their pet's level (descending)
-    top_users = list(CustomUser.objects.filter(displayed_pet__isnull=False)
-                     .order_by('-displayed_pet__pet_level')[:5])
+    # Annotate each user with the maximum pet level among all their pets.
+    top_users = list(
+        CustomUser.objects.annotate(highest_pet_level_db=Max('pet__pet_level'))
+        .filter(highest_pet_level_db__isnull=False)
+        .order_by('-highest_pet_level_db')[:5]
+    )
     
+    # For each user, replace displayed_pet with the pet that has the highest level.
+    for user in top_users:
+        highest_pet = user.pet_set.order_by('-pet_level').first()
+        user.displayed_pet = highest_pet
+
     context = {}
     if len(top_users) > 0:
         context['top_pet'] = top_users[0]  # 1st place
@@ -499,3 +525,8 @@ def leaderboard_view(request):
     # Include user's points if needed by base.html
     context['points'] = request.user.points
     return render(request, "leaderboard.html", context)
+
+@login_required
+def qr_scanner_view(request):
+    return render(request, "qr_scanner.html")
+

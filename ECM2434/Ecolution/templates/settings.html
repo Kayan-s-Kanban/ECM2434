@@ -81,7 +81,14 @@
             font-weight: bold;
         }
 
+        /* Hide the password form by default */
         #password-form {
+            display: none;
+            padding: 15px;
+        }
+
+        /* Hide the username form by default */
+        #username-form {
             display: none;
             padding: 15px;
         }
@@ -99,7 +106,7 @@
                 <img src="{% static 'images/person.svg' %}" alt="Profile Picture" class="profile_pic box_shadow">
                 <h3>{{name}}</h3>
             </div>
-            <section class="spacer"></section> <!-- section to change the font size of for the website -->
+            <section class="spacer"></section>
             <div class="menu_container flex_v flex_v_fill">
                 <div class="dropdown-container flex_h flex_start button button_menu box_shadow" style="justify-content: start; gap: 8px;">
                     <label for="font-size-select">Font Size:</label>
@@ -109,9 +116,9 @@
                         <option value=19 {% if user.preferred_font_size == 19 %}selected{% endif %}>Large</option>
                     </select>
                 </div>
-                <button class="button button_menu box_shadow" type="button" id="change-username-btn">Change username</button>       <!-- code to change the username for your account -->
+                <button class="button button_menu box_shadow" type="button" id="change-username-btn">Change username</button>
                 <div id="username-form">
-                    <form id="change-username-form" method="POST" action="{% url 'change_username' %}"> <!-- form to change button is hidden until button press -->
+                    <form id="change-username-form" method="POST" action="{% url 'change_username' %}">
                         {% csrf_token %}
                         <div class="form-group-horizontal">
                             <label for="current_username">Current username:</label>
@@ -129,9 +136,9 @@
                     </form>
                 </div>
 
-                <button class="button button_menu box_shadow" type="button" id="change-password-btn">Change Password</button>       <!-- code to change the password for your account -->
+                <button class="button button_menu box_shadow" type="button" id="change-password-btn">Change Password</button>
                 <div id="password-form">
-                    <form id="change-password-form" method="POST" action="{% url 'change_password' %}"> <!-- form to change button is hidden until button press -->
+                    <form id="change-password-form" method="POST" action="{% url 'change_password' %}">
                         {% csrf_token %}
                         <div class="form-group-horizontal">
                             <label for="current_password">Current Password:</label>
@@ -148,10 +155,9 @@
                         <button type="submit">Update Password</button>
                     </form>
                 </div>
-                <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'delete_account' %}'">Delete Account</button> <!-- links to the delete account page -->
-                <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'logout' %}'">Logout</button> <!-- links to the login page -->
-                <button class="button button_menu box_shadow" type="button" onclick="window.open('{% url 'term_of_use' %}', '_blank')">Terms and Conditions</button> <!-- opens a new tab with the terms and conditions page -->
-
+                <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'delete_account' %}'">Delete Account</button>
+                <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'logout' %}'">Logout</button>
+                <button class="button button_menu box_shadow" type="button" onclick="window.open('{% url 'term_of_use' %}', '_blank')">Terms and Conditions</button>
             </div>
         </section>
     </section>
@@ -175,28 +181,17 @@
         
         document.getElementById("change-password-btn").addEventListener("click", function () {
             const passwordForm = document.getElementById("password-form");
-            // Get the computed display value
             const computedDisplay = window.getComputedStyle(passwordForm).display;
             console.log("Computed display:", computedDisplay);
-            // Toggle based on computed value
-            if (computedDisplay === "none") {
-                passwordForm.style.display = "block";
-            } else {
-                passwordForm.style.display = "none";
-            }
+            passwordForm.style.display = computedDisplay === "none" ? "block" : "none";
         });
 
         document.getElementById("change-username-btn").addEventListener("click", function () {
             const usernameForm = document.getElementById("username-form");
-            // Get the computed display value
             const computedDisplay = window.getComputedStyle(usernameForm).display;
             console.log("Computed display:", computedDisplay);
-            // Toggle based on computed value
-            if (computedDisplay === "none") {
-                usernameForm.style.display = "block";
-            } else {
-                usernameForm.style.display = "none";
-            }
+            usernameForm.style.display = computedDisplay === "none" ? "block" : "none";
+        });
 
         fontSizeSelect.addEventListener("change", function () {
             console.log("Dropdown changed, new value:", this.value);

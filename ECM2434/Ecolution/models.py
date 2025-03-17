@@ -96,7 +96,7 @@ class Pet(models.Model): #weak entity pet that relies on user id to exist
     @property # generate image url for the pet
     def computed_image_url(self):
         return f"/static/images/pets/{self.pet_type}/{self.pet_type}_{self.size}.gif" # Might need to change this or the determine size so it updates on changes
-
+    
     def __str__(self):
         return f'{self.pet_name} - {self.user.username}'
 
@@ -122,7 +122,7 @@ class Event(models.Model):
     def __str__(self):
         return f'{self.event_name}'
     
-    # This signal will run after an Event is saved.
+# This signal will run after an Event is saved.
 @receiver(post_save, sender=Event)
 def generate_qr_code(sender, instance, created, **kwargs):
     # If the Event is new or if for some reason the QR code hasn't been generated
@@ -154,7 +154,7 @@ def generate_qr_code(sender, instance, created, **kwargs):
         
         # Update only the QR code fields to avoid re-triggering the creation logic.
         instance.save(update_fields=['qr_code', 'url_qr_code'])
-    
+        
 class Task(models.Model):
     task_id = models.AutoField(primary_key=True)
     task_name = models.CharField(max_length=100)
@@ -219,3 +219,9 @@ class UserItem(models.Model):
 
     def __str__(self):
         return f'{self.user.username} - {self.shopitem.name}'
+    
+class GameKeeper(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ✅ Dynamic reference
+
+    def __str__(self):
+        return f'{self.user.username} - GameKeeper'
