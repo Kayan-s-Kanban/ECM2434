@@ -27,3 +27,13 @@ class LogoutTestCase(TestCase):
         response = self.client.get(reverse('home'))
         self.assertNotEqual(response, self.client.get(reverse('home')))
         self.assertNotIn('_auth_user_id', self.client.session)
+
+    ## As a user, I am redirected to "Login"" page after logging out
+    def test_logout_redirects_to_login(self):
+        response = self.client.get(reverse("logout_view"))
+
+        # check if user is logged out
+        self.assertFalse("_auth_user_id" in self.client.session, "User should be logged out.")
+
+        # check user is redirected to login page
+        self.assertRedirects(response, reverse("login"))

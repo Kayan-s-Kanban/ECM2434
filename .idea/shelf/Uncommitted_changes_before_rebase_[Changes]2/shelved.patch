@@ -1,0 +1,84 @@
+Index: ECM2434/Ecolution/tests/unit/test_events.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from datetime import datetime\nfrom django.test import TestCase\nfrom django.urls import reverse\nfrom Ecolution.models import CustomUser, Event\n\nclass EventsTestCase(TestCase):\n    def setUp(self):\n        # create a test user\n        self.user1 = CustomUser.objects.create_user(username = 'testuser', password = 'password')\n        self.client.login(username = 'testuser', password = 'password')\n\n        # create a new event with a static date\n        static_start_time = datetime(2025, 3, 15, 18, 0, 0)\n        static_end_time = static_start_time + datetime.timedelta(hours = 2)  # Event lasts for 2 hours\n        self.event = Event.objects.create(\n            name = 'Test Event',\n            description = 'Test Event Description',\n            location = 'Test Event Location',\n            start = static_start_time,\n            end = static_end_time,\n        )\n\n    # As a user, I can view the Events page\n    def test_view_events(self):\n        response = self.client.get(reverse('events'))\n\n        # check response status code is 200\n        self.assertEqual(response.status_code, 200)\n\n        # check that the event is in the response content\n        self.assertContains(response, 'Test Event')\n        self.assertContains(response, 'Test Event Description')\n        self.assertContains(response, 'Test Event Location')\n\n    # As a user, I can join Events\n    def test_join_event(self):\n        response = self.client.post(reverse('join_event', args=[self.event.id]))  # Change this URL pattern to match your app\n\n        # user is redirected to the event detail page\n        self.assertRedirects(response, reverse('get_event_tasks', args=[self.event.id]))\n\n        # check user is now part of the event's attendees (assuming there's a ManyToMany relation with CustomUser)\n        self.assertIn(self.user1, self.event.attendees.all()) # TODO: fix reference\n\n    # As a user, I can leave Events\n    def test_leave_event(self):\n        # add user to event\n        self.event.attendees.add(self.user1) # TODO: fix reference\n\n        # user leaves event\n        response = self.client.post(reverse('leave_event', args=[self.event.id]))  # Change this URL pattern to match your app\n\n        # user is redirected to the event detail page\n        self.assertRedirects(response, reverse('get_event_tasks', args=[self.event.id]))\n\n        # check user is no longer an attendee of the event\n        self.assertNotIn(self.user1, self.event.attendees.all())\n\n    # As a user, I can see the location of the event\n    def test_event_location(self):\n        response = self.client.get(reverse('event_detail', args=[self.event.id]))  # Assuming 'event_detail' is the URL name\n\n        # check location appears on page\n        self.assertContains(response, 'Test Event Location')\n\n    # As a user, I can see the start time and date of event\n    def test_event_start_time(self):\n        response = self.client.get(reverse('event_detail', args=[self.event.id]))  # Assuming 'event_detail' is the URL name\n\n        # check the start time is in the response\n        self.assertContains(response, '2025-03-15 18:00:00')\n\n    # As a user, I can see the end time and date of event\n    def test_event_end_time(self):\n        response = self.client.get(reverse('event_detail', args=[self.event.id]))  # Assuming 'event_detail' is the URL name\n\n        # check the end time is in the response\n        self.assertContains(response, '2025-03-15 20:00:00')\n\n\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ECM2434/Ecolution/tests/unit/test_events.py b/ECM2434/Ecolution/tests/unit/test_events.py
+--- a/ECM2434/Ecolution/tests/unit/test_events.py	(revision 91165b7445449af9ef3f7d944c332c1d3fdb0639)
++++ b/ECM2434/Ecolution/tests/unit/test_events.py	(date 1741804356113)
+@@ -63,19 +63,8 @@
+         # check location appears on page
+         self.assertContains(response, 'Test Event Location')
+ 
+-    # As a user, I can see the start time and date of event
+-    def test_event_start_time(self):
+-        response = self.client.get(reverse('event_detail', args=[self.event.id]))  # Assuming 'event_detail' is the URL name
+-
+-        # check the start time is in the response
+-        self.assertContains(response, '2025-03-15 18:00:00')
++    # As a user, I can see the date of the event
+ 
+-    # As a user, I can see the end time and date of event
+-    def test_event_end_time(self):
+-        response = self.client.get(reverse('event_detail', args=[self.event.id]))  # Assuming 'event_detail' is the URL name
+-
+-        # check the end time is in the response
+-        self.assertContains(response, '2025-03-15 20:00:00')
+-
++    # As a user, I can see the start time of the event
+ 
+ 
+Index: ECM2434/Ecolution/tests/integration/test_integration_events.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.test import TestCase\nfrom django.urls import reverse\nfrom Ecolution.models import CustomUser, Event, Pet\n\nclass EventsTestCase(TestCase):\n    def setUp(self):\n        # create a test user\n        self.user1 = CustomUser.objects.create_user(username = 'testuser', password = 'password')\n        self.client.login(username = 'testuser', password = 'password')\n\n        # create a Pet related to the user\n        self.pet1 = Pet.objects.create(user = self.user1, pet_name ='Test Pet', pet_exp = 0)\n\n        # create a test event\n        self.event = Event.objects.create(\n            event_name = 'Test Event',\n            description = 'Test Event Description',\n            location = 'Test Event Location',\n            date = '2025-03-15',\n            event_id = 1\n        )\n\n    # As a user, I can earn points from completing events\n    def test_earn_points_from_event(self):\n        # check points at start\n        initial_points = self.user1.points\n\n        # user completes event\n        self.client.post(reverse('complete_event'))  # TODO: check URL\n\n        # reload user data after event completion\n        self.user1.refresh_from_db()\n\n        # check user points have increased\n        self.assertGreater(self.user1.points, initial_points)\n\n    # As a user, I can earn XP from completing events\n    def test_earn_xp_from_event(self):\n        # check xp at start\n        initial_xp = self.pet1.pet_exp\n\n        # user completes event\n        self.client.post(reverse('complete_event'))  # Adjust this to match your URL\n\n        # reload pet data after event completion\n        self.pet1.refresh_from_db()\n\n        # check pet's xp has increased\n        self.assertGreater(self.pet1.pet_exp, initial_xp)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ECM2434/Ecolution/tests/integration/test_integration_events.py b/ECM2434/Ecolution/tests/integration/test_integration_events.py
+--- a/ECM2434/Ecolution/tests/integration/test_integration_events.py	(revision 91165b7445449af9ef3f7d944c332c1d3fdb0639)
++++ b/ECM2434/Ecolution/tests/integration/test_integration_events.py	(date 1741704602441)
+@@ -32,7 +32,7 @@
+         self.user1.refresh_from_db()
+ 
+         # check user points have increased
+-        self.assertGreater(self.user1.points, initial_points)
++        self.assertTrue(self.user1.points > initial_points)
+ 
+     # As a user, I can earn XP from completing events
+     def test_earn_xp_from_event(self):
+@@ -40,10 +40,10 @@
+         initial_xp = self.pet1.pet_exp
+ 
+         # user completes event
+-        self.client.post(reverse('complete_event'))  # Adjust this to match your URL
++        self.client.post(reverse('complete_event'))  # TODO: check URL
+ 
+         # reload pet data after event completion
+         self.pet1.refresh_from_db()
+ 
+         # check pet's xp has increased
+-        self.assertGreater(self.pet1.pet_exp, initial_xp)
++        self.assertTrue(self.pet1.pet_exp > initial_xp)
+Index: ECM2434/Ecolution/tests/unit/test_gdpr_privpol.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ECM2434/Ecolution/tests/unit/test_gdpr_privpol.py b/ECM2434/Ecolution/tests/unit/test_gdpr_privpol.py
+new file mode 100644
+--- /dev/null	(date 1741804470762)
++++ b/ECM2434/Ecolution/tests/unit/test_gdpr_privpol.py	(date 1741804470762)
+@@ -0,0 +1,9 @@
++
++
++# As a user, I can view the Terms and Conditions page
++
++# As a user, I can view the Privacy Policy
++
++# As a user, I can agree to the Privacy Policy and Terms and Conditions
++
++# As a user, I can download both the PP and T&C
+\ No newline at end of file

@@ -1,8 +1,14 @@
 from django.test import TestCase
 from django.urls import reverse
-from Ecolution.models import CustomUser
+from Ecolution.models import CustomUser, UserItem
+from Ecolution.views import User
+
 
 class SignupIntegrationTests(TestCase):
+    def __init__(self, methodName: str = "runTest"):
+        super().__init__(methodName)
+        self.shop_item = None
+
     def setUp(self):
         self.signup_url = reverse('signup')
         self.login_url = reverse('login')  # ensure you have the correct URL name for login
@@ -91,3 +97,41 @@ class SignupIntegrationTests(TestCase):
         # check that the user is not created
         with self.assertRaises(CustomUser.DoesNotExist):
             CustomUser.objects.get(username = 'newuser')
+
+    ## As a user, I cannot sign up for an account with a username that already exists
+    def test_signup_existing_username(self):
+        response = self.client.post(reverse("signup_view"), {
+            "email": "newemail@example.com",
+            "username": "testuser",
+            "password1": "newpassword123",
+            "password2": "newpassword123",
+            "pet_type": "dog",
+            "pet_name": "Buddy"
+        })
+
+        # check the response renders the signup page again
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "signup.html")
+
+        # check the error message is in the response
+        self.assertContains(response, "Username already taken!")
+
+    def test_user_item_created_on_signup(self):
+        response = self.client.post(reverse("signup_view"), {
+            "email": "newuser@example.com",
+            "username": "newuser",
+            "password1": "securepassword",
+            "password2": "securepassword",
+            "pet_type": "dog",
+            "pet_name": "Rex"
+        })
+
+        # check if user was created
+        user = User.objects.get(username="newuser")
+
+        # check if a UserItem was created
+        user_item_exists = UserItem.objects.filter(user=user, shopitem=self.shop_item).exists()
+        self.assertTrue(user_item_exists, "UserItem should be created when a matching ShopItem exists.")
+
+        # check signup was successful
+        self.assertRedirects(response, reverse("login"))
