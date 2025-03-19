@@ -11,7 +11,6 @@ class HomepageTestCase(TestCase):
         self.client.login(username = 'testuser', password = 'password')
         response = self.client.get(reverse('home'))
 
-
     # As a user, I can view my XP
     def test_homepage_view_xp(self):
         response = self.client.get(reverse('home'))
@@ -31,4 +30,9 @@ class HomepageTestCase(TestCase):
 
         # user is redirected to task's page
         self.assertRedirects(response, reverse('tasks'))
+
+    ## As a user, I am redirected to "Home" page if I try accessing "Index"
+    def test_index_redirects_to_home(self):
+        response = self.client.get(reverse("index"))
+        self.assertRedirects(response, reverse("home"))
 

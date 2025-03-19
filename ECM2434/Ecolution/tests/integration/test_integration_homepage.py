@@ -4,34 +4,31 @@ from Ecolution.models import Task, CustomUser, UserTask, Pet
 
 class HomepageIntegrationTests(TestCase):
     def setUp(self):
-        # create a test user
-        self.user1 = CustomUser.objects.create_user(username = 'testuser', password = 'password')
+        # Create a test user
+        self.user1 = CustomUser.objects.create_user(username='testuser', password='password')
         self.user1.points = 10
-        self.client.login(username = 'testuser', password = 'password')
-
-        # create user's pet
         self.pet1 = Pet.objects.create(
             user=self.user1,
-            pet_name = "TestPet",
-            pet_level = 1,
-            pet_exp = 0,  # pet starts with 0 XP
-            pet_type = "mushroom"
+            pet_name='Gertrude',
+            pet_level=1,
+            pet_exp=0,
+            pet_type='mushroom'
         )
+        # Assign the pet to the user as their displayed pet
+        self.user1.displayed_pet = self.pet1
+        self.user1.save()
 
-        # log user in
-        self.client.login(username ='testuser', password = 'password')
-        response = self.client.get(reverse('home'))
+        self.client.login(username='testuser', password='password')
 
-        # create new task
-        self.task1 = Task.objects.create(task_name = "Buy groceries", description = "Go to the store and buy food")
+        # Create new task
+        self.task1 = Task.objects.create(task_name="Buy groceries", description="Go to the store and buy food")
         self.task1.points = 50
 
-    # As a user, I can view my pet name
     def test_homepage_view_pet_name(self):
         response = self.client.get(reverse('home'))
-
-        # check pet name appears
-        self.assertContains(response, 'TestPet')
+        # Assert that the pet name is displayed
+        self.assertContains(response, 'Pet Name:')
+        self.assertContains(response, self.pet1.pet_name)
 
     # As a user, I can view my current tasks
     def test_homepage_current_tasks(self):
