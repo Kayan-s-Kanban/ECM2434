@@ -452,7 +452,8 @@ def shop_view(request):
     purchased_item_ids = UserItem.objects.filter(user=request.user).values_list('shopitem__id', flat=True)
     return render(request, "shop.html", {
         "shop_items": shop_items,
-        "purchased_item_ids": list(purchased_item_ids)
+        "purchased_item_ids": list(purchased_item_ids),
+        "points": request.user.points
     })
 
 @login_required
