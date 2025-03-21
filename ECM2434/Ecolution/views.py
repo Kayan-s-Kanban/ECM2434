@@ -7,6 +7,9 @@ from django.contrib import messages
 from django.http import HttpResponse, JsonResponse, Http404
 from django.db import IntegrityError
 from django.contrib.auth import logout
+from django.contrib.auth.password_validation import validate_password
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 from django.shortcuts import redirect
 from django.views.decorators.cache import never_cache
 from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent, ShopItem, UserItem
@@ -24,11 +27,27 @@ def signup_view(request):
         username = request.POST["username"]
         password1 = request.POST["password1"]
         password2 = request.POST["password2"]
-        pet_type = request.POST.get("pet_type", "mushroom")  # Default to mushroom
+        pet_type = request.POST.get("pet_type", "mushroom")
         pet_name = request.POST.get("pet_name", "") if pet_type else None
 
         if password1 != password2:
             messages.error(request, "Passwords do not match!")
+            return render(request, "signup.html")
+
+        # Validate the password against Django's validators
+        try:
+            validate_password(password1)
+        except ValidationError as e:
+            # Display each error message from the validators
+            for error in e.messages:
+                messages.error(request, error)
+            return render(request, "signup.html")
+        
+         # Validate the email against Django's validators
+        try:
+            validate_email(email)
+        except ValidationError:
+            messages.error(request, "Please enter a valid email address.")
             return render(request, "signup.html")
 
         if User.objects.filter(username=username).exists():
@@ -43,7 +62,7 @@ def signup_view(request):
         pet = Pet.objects.create(user=user, pet_name=pet_name if pet_name else pet_type, pet_type=pet_type)
         pet.save()
 
-        ## Assigns the pet to the user and saves the user
+        # Assigns the pet to the user and saves the user
         user.displayed_pet = pet
         user.save()
 
@@ -53,6 +72,7 @@ def signup_view(request):
         except ShopItem.DoesNotExist:
             pass
 
+        
         messages.success(request, "Account created! You can now log in.")
         return redirect("login")
 
@@ -108,7 +128,7 @@ def tasks_view(request):
     """
     user_tasks = UserTask.objects.filter(user=request.user)
     # Predefined tasks are those created by a superuser (or another designated admin)
-    predefined_tasks = Task.objects.filter(creator__is_superuser=True)
+    predefined_tasks = Task.objects.filter(creator__gamekeeper__isnull=False)
     # Custom tasks are those created by the current user
     custom_tasks = Task.objects.filter(creator=request.user)
     return render(request, "tasks.html", {
@@ -177,7 +197,7 @@ def get_user_or_superuser_task(task_id, user):
 
     # If that fails, try to get a superuser-created task
     try:
-        return Task.objects.get(task_id=task_id, creator__is_superuser=True)
+        return Task.objects.get(task_id=task_id, creator__gamekeeper__isnull=False)
     except Task.DoesNotExist:
         raise Http404("Task not found or not accessible.")
 

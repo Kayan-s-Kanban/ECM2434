@@ -13,6 +13,8 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'styles.css' %}">
     <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     {% block style %}
         <!-- Style Content Here (Should be integrated into styles.css eventually) -->
     {% endblock %}
@@ -69,11 +71,38 @@
                 <!-- Main Content -->
             {% endblock %}
         </main>
+        {% if messages %}
+            <div id="django-messages" style="display: none;">
+                {% for message in messages %}
+                    <div class="message" data-tag="{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
     </section>
 
     {% block additional %}
         <!-- Any Additional Content (Scripts, etc.) -->
         <script src="{% static 'js/taskActions.js' %}"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const messagesContainer = document.getElementById('django-messages');
+                if (messagesContainer) {
+                    const messages = messagesContainer.querySelectorAll('.message');
+                    messages.forEach(function(messageElem) {
+                        const tag = messageElem.getAttribute('data-tag'); // e.g., error, success
+                        const text = messageElem.textContent;
+                        Swal.fire({
+                            icon: tag.includes('error') ? 'error' : 'success',
+                            title: tag.includes('error') ? 'Error' : 'Success',
+                            text: text,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            showConfirmButton: false,
+                        });
+                    });
+                }
+            });
+        </script>
     {% endblock %}
 
 </body>
