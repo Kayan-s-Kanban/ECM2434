@@ -442,7 +442,6 @@ def update_fontsize(request):
 def get_fontsize(request):
     return JsonResponse({"preferred_font_size": request.user.preferred_font_size})
 
-
 def terms_view(request):
     return render(request, "term.html")
 
@@ -530,3 +529,44 @@ def leaderboard_view(request):
 def qr_scanner_view(request):
     return render(request, "qr_scanner.html")
 
+def gamekeeper_task_veiw(request):
+    return render(request, "admin_tasks.html")
+
+@login_required
+def add_gamekeeper_task(request):
+    """
+    Allows GameKeepers to create tasks. Assumes the caller is already verified as a GameKeeper.
+    """
+    if request.method == "POST":
+        try:
+            # Get the into that will be added to the task
+            # sets the minimum rewards values to 20
+            data = json.loads(request.body)
+            task_name = data.get("task_name")
+            description = data.get("description")
+            points_given = data.get("points_given", 20)
+            xp_given = data.get("xp_given", 20)
+
+            # Create a new task with the GameKeeper as the creator
+            new_task = Task.objects.create(
+                task_name=task_name,
+                description=description,
+                points_given=points_given,
+                xp_given=xp_given,
+
+                # GameKeeper is automatically set as the creator
+                creator=request.user
+            )
+
+            return JsonResponse({
+                "status": "success",
+                "message": "Task created successfully.",
+                "task_id": new_task.task_id,
+                "task_name": new_task.task_name,
+                "description": new_task.description
+            }, status=201)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"status": "error", "message": "Invalid JSON data."}, status=400)
+
+    return JsonResponse({"status": "error", "message": "Invalid request method."}, status=405)

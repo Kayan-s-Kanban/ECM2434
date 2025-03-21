@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    <title>Admin Tasks - Ecolution</title>
+{% endblock %}
+
+<!-- Style Content Here (Should be integrated into styles.css eventually) -->
+{% block style %}
+    <style>
+
+        .task-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .popup-bg {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .popup button {
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .popup input, .popup textarea {
+            width: 90%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+    <div class="task-container">
+        <!-- Button that will open the pop up to allow the user to  -->
+        <div>
+            <button class="button" onclick="openPopup()">Create Task</button>
+        </div>
+
+    <!-- Area to show the tasks the gamekeeper has created -->
+        <div id="created-tasks">
+            {% for task in request.user.task_set.all %}
+                {% include 'partials/task_card.html' with task=task %}
+            {% empty %}
+                <p>You haven't created any tasks yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Task Popup to add tasks -->
+    <div class="popup-bg" id="popupBg"></div>
+    <div class="popup" id="popup">
+
+        <div>
+            <input type="text" id="taskName" placeholder="Task Title" required>
+            <textarea id="taskDescription" placeholder="Task Description" required></textarea>
+            <input type="number" id="taskPoints" placeholder="Point Reward" required>
+            <input type="number" id="taskEXP" placeholder="EXP Reward" required>
+
+            <button onclick="submitAdminTask()">Add Task</button>
+        </div>
+
+        <button onclick="closePopup()">Cancel</button>
+    </div>
+
+{% endblock %}
+
+{% block additional %}
+    {{ block.super }}
+    <script>
+        function openPopup() {
+            document.getElementById("popup").style.display = "block";
+            document.getElementById("popupBg").style.display = "block";
+        }
+
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+            document.getElementById("popupBg").style.display = "none";
+        }
+
+
+        function getCSRFToken() {
+            return document.cookie.match(/csrftoken=([^;]+)/)[1];
+        }
+
+            // This function
+        function submitAdminTask() {
+            let taskName = document.getElementById("taskName").value;
+            let taskDesc = document.getElementById("taskDescription").value;
+            let taskPoints = document.getElementById("taskPoints").value;
+            let taskEXP = document.getElementById("taskEXP").value;
+
+            fetch("/ecolution/tasks/add/", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": getCSRFToken(),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    task_name: taskName,
+                    description: taskDesc,
+                    points_given: taskPoints,
+                    xp_given: taskEXP
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Refresh page on success
+                        location.reload();
+                    } else {
+                        alert("Error: " + data.error);
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+
+            // closes the popup
+            closePopup()
+        }
+
+    </script>
+{% endblock %}
