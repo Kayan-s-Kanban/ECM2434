@@ -17,7 +17,10 @@
             {% csrf_token %}
             <input type="email" name="email" placeholder="Email" required> <!-- takes the email address check there is an @ sign -->
             <input type="text" name="username" placeholder="Username" required> <!-- comment -->
-            <input type="password" name="password1" placeholder="Password" required> <!-- has a password and a confirm password to esure the user entered the correct password -->
+            <input type="password" name="password1" 
+                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
+                title="Must contain at least one number, one uppercase and lowercase letter, and at least 8 characters" 
+                placeholder="Password" required> <!-- has a password and a confirm password to esure the user entered the correct password -->
             <input type="password" name="password2" placeholder="Confirm Password" required>
 
             <!-- Pet Selection -->
@@ -55,14 +58,6 @@
         <p class="text_dark font_small margin_std_top">Already have an account? <a href="{% url 'login' %}">Login here</a></p> 
     </section>
 
-    {% if messages %}
-    <ul class="error-messages">
-        {% for message in messages %}
-            <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             let petOptions = document.querySelectorAll("input[name='pet_type']");
@@ -88,8 +83,5 @@
             togglePetNameInput();
         });
     </script>
-    
-    
-    
 
 {% endblock %}

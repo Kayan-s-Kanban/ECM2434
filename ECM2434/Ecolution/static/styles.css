@@ -316,7 +316,6 @@ section.pet img.hat {
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 2;
     pointer-events: none; /* so clicks go through to the pet if needed */
 }
 
@@ -653,4 +652,28 @@ img.profile_pic {
 .button.buy:hover {
     border-color: #4d5353;
 }
-  
+
+/* ============================
+   QR Scanner Section
+============================= */
+section.qr-scanner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2rem auto;
+    max-width: 600px;
+    padding: 1rem;
+    background-color: var(--color_form_background);
+    border-radius: 8px;
+    box-shadow: var(--box_shadow);
+}
+
+section.qr-scanner-container h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+section.qr-scanner-container #reader {
+    width: 100%;
+    max-width: 600px;
+}
