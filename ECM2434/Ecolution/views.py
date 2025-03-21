@@ -474,6 +474,15 @@ def buy_item(request, item_id):
         request.user.points -= shop_item.price
         request.user.save()
         UserItem.objects.create(user=request.user, shopitem=shop_item)
+
+        #create a pet object if the user has bought a pet from the shop
+        if shop_item.name.lower() in ['mushroom', 'acorn', 'plant']:
+            pet = Pet.objects.create(
+                user=request.user,
+                pet_name=shop_item.name,
+                pet_type=shop_item.name.lower()
+            )
+
         return JsonResponse({
             "status": "success",
             "message": "Purchase successful!",
@@ -481,6 +490,20 @@ def buy_item(request, item_id):
             "remaining_points": request.user.points
         })
     return JsonResponse({"status": "error", "message": "Invalid request."}, status=400)
+
+@login_required
+def cycle_pet(request):
+    user = request.user
+    pets = list(user.pet_set.all())
+    if pets:
+        if user.displayed_pet in pets:
+            current_index = pets.index(user.displayed_pet)
+        else:
+            current_index = 0
+        next_index = (current_index + 1) % len(pets)
+        user.displayed_pet = pets[next_index]
+        user.save()
+    return redirect("home")
 
 @login_required
 def validate_qr(request, token):

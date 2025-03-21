@@ -10,16 +10,25 @@
         <div class="flex_v flex_center">
             <div class="image_wrapper">
                 {% if pet %}
-                    <img src="{{ pet.computed_image_url }}" alt="{{ pet.pet_type }} pet"> <!-- this displays the pet image -->
+                    <img src="{{ pet.computed_image_url }}" alt="{{ pet.pet_type }} pet">
                 {% else %}
-                    <img src="{% static 'images/pets/mushroom/mushroom_large.gif' %}" alt="Default Pet"> <!-- if no pet is found this defaults -->
+                    <img src="{% static 'images/pets/mushroom/mushroom_large.gif' %}" alt="Default Pet">
                 {% endif %}
             </div>
-            <p></p>
         </div>
     </section>
 
+    {% if request.user.pet_set.count > 1 %}
+    <section class="flex_h flex_center" style="margin-top: 5rem;">
+        <button class="button box_shadow text_light button_alt"
+                onclick="window.location.href='{% url 'cycle_pet' %}'">
+            Cycle Pet
+        </button>
+    </section>
+    {% else %}
     <section class="spacer_large"></section>
+    {% endif %}
+
     <section class="status_bar flex_h flex_center text_light">
         <div class="pet_status flex_v margin_sml flex_v_fill">
             <div class="pet_info_bar flex_h" style="justify-content: space-between;"> <!-- this displays the pets name and level -->

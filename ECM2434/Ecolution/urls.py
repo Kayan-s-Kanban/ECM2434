@@ -34,4 +34,5 @@ urlpatterns = [
     path('validate/<uuid:token>/', validate_qr, name='validate_qr'),
     path("leaderboard/", leaderboard_view, name="leaderboard"),
     path("qr_scanner/", views.qr_scanner_view, name="qr_scanner"),
+    path('cycle_pet/', views.cycle_pet, name='cycle_pet'),
 ]

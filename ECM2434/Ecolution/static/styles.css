@@ -95,6 +95,11 @@ p {
     transition: 330ms ease;
 }
 
+.button_alt {
+    background-color: var(--color_primary);
+}
+
+
 .button:hover {
     background-color: var(--color_button_hover);
 }
@@ -303,6 +308,10 @@ section.pet div.image_wrapper {
     width: 160px;
     height: 160px;
     /* overflow: hidden; */
+}
+
+.section.cycle_pet {
+    
 }
 
 .background {
@@ -576,12 +585,26 @@ img.profile_pic {
 }
 
 .sold-out-banner, .insufficient-banner {
-    background-color: rgba(255, 0, 0, 0.8);
+    background-color: rgba(109, 109, 109, 0.8);
     color: white;
     padding: 5px;
     text-align: center;
     font-weight: bold;
     border-radius: 5px;
     margin-bottom: 8px;
+}
+
+.shop-page {
+    text-align: center;
+    color: #fff;
+}
+
+.button.buy {
+    border: 2px solid #105c53;
+    transition: border-color 0.3s ease;
+}
+  
+.button.buy:hover {
+    border-color: #4d5353;
 }
   
