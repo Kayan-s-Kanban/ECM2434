@@ -307,7 +307,17 @@ img.img_leaf {
 section.pet div.image_wrapper {
     width: 160px;
     height: 160px;
+    position: relative;
     /* overflow: hidden; */
+}
+
+section.pet img.hat {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+    pointer-events: none; /* so clicks go through to the pet if needed */
 }
 
 .section.cycle_pet {

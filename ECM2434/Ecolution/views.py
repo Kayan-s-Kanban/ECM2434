@@ -83,6 +83,8 @@ def home_view(request):
     pet = request.user.displayed_pet # Get the pet displayed by the user
     # This retrieves the 5 most recent tasks by date to display on home page 
     user_tasks = UserTask.objects.filter(user=user, completed=False).order_by('date')[:5]
+
+    hat = pet.hat if pet and pet.hat else None  
     
     context = {
         "points": user.points,
@@ -92,6 +94,7 @@ def home_view(request):
         "pet_size": pet.determine_size() if pet else "small",  # Determine size
         "level": pet.pet_level if pet else 0,
         "pet": pet,
+        "hat": hat,
         "user_tasks":user_tasks
     }
 
