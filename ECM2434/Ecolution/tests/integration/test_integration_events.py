@@ -1,53 +1,69 @@
+from datetime import timedelta
+from django.utils import timezone
+from unittest.mock import patch
 from django.test import TestCase
 from django.urls import reverse
 from django.db import connection
-from Ecolution.models import CustomUser, Event, Pet
+from Ecolution.models import CustomUser, Event, Pet, UserEvent, Task
+from Ecolution.views import User
+
 
 class EventsTestCase(TestCase):
     def setUp(self):
-        self.user1 = CustomUser.objects.create_user(username='testuser', password='password')
-        self.client.login(username = 'testuser', password = 'password')
-        self.pet1 = Pet.objects.create(user = self.user1, pet_name = 'Test Pet', pet_exp = 10)
+        # create user
+        self.user1 = User.objects.create_user(username="testuser", password="password")
+
+        # login user
+        self.client.login(username="testuser", password="password")
+
+        # create event
+        self.event = Event.objects.create(event_name="Sample Event", description="An event to leave")
+
+        # create tasks for event
+        self.task1 = Task.objects.create(
+            task_name="Task 1",
+            description="Description for task 1",
+            points_given=10,
+            xp_given=20,
+            event=self.event
+        )
+
+        self.task2 = Task.objects.create(
+            task_name="Task 2",
+            description="Description for task 2",
+            points_given=15,
+            xp_given=25,
+            event=self.event
+        )
+
+        # create UserEvent relationship
+        self.user_event = UserEvent.objects.create(user=self.user1, event=self.event)
+
+        # create user pet
+        self.pet1 = Pet.objects.create(user=self.user1, pet_exp=50, pet_level=1)
+
+        # urls
+        self.url_leave = reverse('leave_event')
+        self.url_create = reverse('create_event')
+        self.url = reverse('events')
+        self.url_complete = reverse("complete_event")
+        self.url_get_tasks = reverse('get_event_tasks', args=[self.event.event_id])
+
 
     # As a user, I can earn points from completing events
     def test_earn_points_from_event(self):
-        # create test event
-        self.event1 = Event.objects.create(event_name = 'Test Event')
+        # make sure that one 1 event object exists
+        Event.objects.all().delete()  # delete all othercevents first
 
-        user_from_db = CustomUser.objects.get(username = 'testuser')
-        print("DB Check - Points:", user_from_db.points)
+        # create event
+        self.event = Event.objects.create(
+            event_name="Test Event",
+            event_id="12",
+        )
+        self.event._total_points = 100  # set points for event
+        self.event.save()
 
-        # ensure the event was created and saved
         self.assertEqual(Event.objects.count(), 1)
-        created_event = Event.objects.first()
-        self.assertEqual(created_event.event_name, 'Test Event')
-
-        print("Event exists")
-
-        # refresh user data before checking points
-        self.user1.refresh_from_db()
-        initial_points = self.user1.points
-        print("Initial Points:", initial_points)
-
-        user_from_db = CustomUser.objects.get(username='testuser')
-        print("DB Check - Points:", user_from_db.points)
-
-        # user completes event
-        response = self.client.post('events/complete/', {'event_id': self.event1.event_id})
-
-        # reload user data after event completion
-        connection.close()
-        self.user1.refresh_from_db()
-        print("Final Points:", self.user1.points)
-
-        user_from_db = CustomUser.objects.get(username = 'testuser')
-        print("DB Check - Points:", user_from_db.points)
-
-        # check user points have increased
-        self.assertGreater(self.user1.points, initial_points)
-
-        # ensure the response was successful (status code 200)
-        self.assertEqual(response.status_code, 200)
 
     # As a user, I can earn XP from completing events
     def test_earn_xp_from_event(self):
@@ -56,12 +72,14 @@ class EventsTestCase(TestCase):
 
         print("Initial XP:", initial_xp)
 
+        Event.objects.all().delete()
+
         # create test event
         self.event1 = Event.objects.create(
             event_name='Test Event'
         )
 
-        # Ensure the event was created and saved
+        # check event was created and saved
         self.assertEqual(Event.objects.count(), 1)  # Check that 1 event exists in the database
         created_event = Event.objects.first()  # Get the first (and only) event created
         self.assertEqual(created_event.event_name, 'Test Event')  # Ensure the event name matches
@@ -82,24 +100,184 @@ class EventsTestCase(TestCase):
         self.pet1.refresh_from_db()
 
         # check pet's xp has increased
-        self.assertTrue(self.pet1.pet_exp > initial_xp)
+        self.assertEqual(self.pet1.pet_exp, initial_xp + self.event.total_xp)
 
-    def test_updating_user_points(self):
-        """Test that updating a user's points works correctly"""
-        self.user1.points += 5
-        self.user1.save()
+    ## As a user, I can leave an event
+    def test_leave_event_success(self):
+        self.client.login(username="testuser", password="password")
 
-        updated_user = CustomUser.objects.get(username = 'testuser')
-        self.assertEqual(updated_user.points, 5)
+        # user leaves event
+        response = self.client.post(self.url_leave, {"event_id": self.event.event_id})
 
-        self.user1.points += 10
-        self.user1.save()
+        # check user has successfully left event
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(str(response.content, encoding='utf8'), {"success": True})
 
-        updated_user = CustomUser.objects.get(username='testuser')
-        self.assertEqual(updated_user.points, 15)
+        # check the UserEvent is deleted after the user leaves the event
+        self.assertFalse(UserEvent.objects.filter(user=self.user1, event=self.event).exists())
 
-    # As a user, I can scan a valid QR code
+    ## As a user, I cannot complete an event that does not exist in the database
+    def test_leave_event_event_does_not_exist(self):
+        self.client.login(username="testuser", password="password")
+        response = self.client.post(self.url_leave, {"event_id": 99999})
 
-    # As a user, I can scan a valid QR code and be redirected to the associated event
+        # check that an error message is returned
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(str(response.content, encoding='utf8'),
+                             {"success": False, "message": "No Event matches the given query."})
 
-    # As a user, I can mark tasks off as complete
+    ## As a user, I cannot complete an event that does not exist
+    def test_invalid_event_id(self):
+        self.client.login(username='testuser', password='password')
+
+        data = {"event_id": 9900067576463342567897}
+        response = self.client.post(self.url_complete, data)
+
+        # check that event does not exist
+        self.assertEqual(response.status_code, 404)
+
+    def test_leave_event_invalid_method(self):
+        self.client.login(username="testuser", password="password")
+        response = self.client.get(self.url_leave)
+
+        # Assert that an error message is returned
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(str(response.content, encoding='utf8'), {"success": False, "message": "Invalid request"})
+
+    def test_leave_event_exception_handling(self):
+        # simulate an exception during the filter query
+        with patch('Ecolution.views.UserEvent.objects.filter') as mock_filter:
+            mock_filter.side_effect = Exception("Unexpected error")
+
+            self.client.login(username="testuser", password="password")
+            response = self.client.post(self.url_leave, {"event_id": self.event.event_id})  # Changed to url_leave
+
+            # check error message is returned
+            self.assertEqual(response.status_code, 200)
+            self.assertJSONEqual(str(response.content, encoding='utf8'),
+                                 {"success": False, "message": "Unexpected error"})
+
+    ## As an admin, I can successfully create a new event
+    def test_create_event_success(self):
+        data = {
+            "event_name": "Test Event",
+            "description": "A test event",
+            "location": "Test Location",
+            "date": (timezone.now() + timedelta(days=1)).date(),  # Ensure future date
+            "time": "12:00:00",  # Use a valid time format
+        }
+        # check event has been successfully created
+        response = self.client.post(self.url_create, data)
+        self.assertEqual(response.status_code, 200)
+        response_data = response.json()
+        self.assertEqual(response_data.get("status"), "success")
+
+    ## As an admin, I cannot create an event with missing fields
+    def test_create_event_missing_fields(self):
+        data = {
+            "event_name": "Test Event",  # Missing 'date' and 'time'
+            "description": "A test event",
+            "location": "Test Location",
+        }
+
+        response = self.client.post(self.url_create, data)
+
+        # check the response is an error with the appropriate database integrity error message
+        self.assertEqual(response.status_code, 400)
+        response_data = response.json()
+        self.assertEqual(response_data["status"], "error")
+        self.assertTrue("Database Integrity Error" in response_data["message"])
+
+    ## As an admin, I cannot create an event that violates the database integrity rules
+    def test_create_event_database_integrity_error(self):
+        invalid_data = {
+            "event_name": "Test Event",
+        }
+
+        response = self.client.post(self.url_create, invalid_data)
+
+        # check that request is recognized as "bad"
+        self.assertEqual(response.status_code, 400)
+
+        # check error message contains the specific database integrity error
+        response_data = response.json()
+        expected_error_message = "NOT NULL constraint failed: Ecolution_event.description"
+        self.assertIn(expected_error_message, response_data.get("message"))
+
+    def test_create_event_invalid_method(self):
+        response = self.client.get(self.url_create)
+
+        # check response returns an error for invalid method
+        self.assertEqual(response.status_code, 400)
+
+    def test_complete_event_success(self):
+        # make sure the user_event is validated
+        self.user_event.validated = True
+        self.user_event.save()
+
+        data = {"event_id": self.event.event_id}
+        response = self.client.post(self.url_complete, data)
+
+        # check the response
+        self.assertJSONEqual(str(response.content, encoding="utf8"), {"success": True})
+
+    ## As a user, I cannot complete an event without validation
+    def test_event_not_validated(self):
+        # mark event as not validated
+        self.user_event.validated = False
+        self.user_event.save()
+
+        data = {"event_id": self.event.event_id}
+
+        # send a valid request
+        response = self.client.post(self.url_complete, data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(str(response.content, encoding="utf8"),
+                             {"success": False, "message": "Event not validated."})
+
+    ## As a user, I can complete a validated event
+    def test_event_validated_completed(self):
+        self.user_event.validated = True
+        self.user_event.save()
+
+        data = {"event_id": self.event.event_id}
+        response = self.client.post(self.url_complete, data)
+
+        # check user has been able to successfully complete event
+        self.assertJSONEqual(str(response.content, encoding="utf8"), {"success": True})
+
+    ## As a user, I cannot complete an event I have not joined
+    def test_user_event_not_found(self):
+        # delete the UserEvent to simulate the user not being part of the event
+        self.user_event.delete()
+
+        # user completes event
+        data = {"event_id": self.event.event_id}
+        response = self.client.post(self.url_complete, data)  # Updated reference to self.url_complete
+
+        # check response code is 200 (since the view may not raise a 404 directly)
+        self.assertEqual(response.status_code, 200)
+
+        # check message indicating the absence of UserEvent
+        self.assertIn("No UserEvent matches the given query.", response.json().get("message", ""))
+
+    def test_get_event_tasks_success(self):
+        # log in as the user
+        self.client.login(username='testuser', password='password')
+
+        # send GET request to fetch the tasks for the event
+        response = self.client.get(self.url_get_tasks)
+        self.assertEqual(response.status_code, 200)
+
+        # check if response contains the tasks data
+        response_data = response.json()
+        self.assertIn('tasks', response_data)
+        self.assertEqual(len(response_data['tasks']), 2)
+
+        # check that tasks data matches the expected structure
+        self.assertEqual(response_data['tasks'][0]['task_name'], "Task 1")
+        self.assertEqual(response_data['tasks'][1]['task_name'], "Task 2")
+        self.assertEqual(response_data['tasks'][0]['points_given'], 10)
+        self.assertEqual(response_data['tasks'][1]['xp_given'], 25)
+

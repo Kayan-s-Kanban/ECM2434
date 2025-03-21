@@ -5,14 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9996bd9d-24eb-4b54-b987-c86cc8434eab" name="Changes" comment="Minor fixes to Leaderboard tests">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]1/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase__Changes_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]2/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase__Changes_2.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ECM2434/Ecolution/tests/integration/test_integration_homepage.py" beforeDir="false" afterPath="$PROJECT_DIR$/ECM2434/Ecolution/tests/integration/test_integration_homepage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ECM2434/Ecolution/tests/integration/test_integration_signup.py" beforeDir="false" afterPath="$PROJECT_DIR$/ECM2434/Ecolution/tests/integration/test_integration_signup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ECM2434/Ecolution/tests/integration/test_integration_tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/ECM2434/Ecolution/tests/integration/test_integration_tasks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ECM2434/Ecolution/tests/unit/test_homepage.py" beforeDir="false" afterPath="$PROJECT_DIR$/ECM2434/Ecolution/tests/unit/test_homepage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ECM2434/Ecolution/tests/unit/test_logout.py" beforeDir="false" afterPath="$PROJECT_DIR$/ECM2434/Ecolution/tests/unit/test_logout.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/Ecolution/tests/integration/test_integration_events.py" beforeDir="false" afterPath="$PROJECT_DIR$/ECM2434/Ecolution/tests/integration/test_integration_events.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/Ecolution/tests/integration/test_integration_settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/ECM2434/Ecolution/tests/integration/test_integration_settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/Ecolution/tests/unit/test_settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/ECM2434/Ecolution/tests/unit/test_settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,8 +72,22 @@
     "Django Server.ECM2434.executor": "Run",
     "Django tests.Test: Ecolution.tests.executor": "Coverage",
     "Django tests.Test: Ecolution.tests.integration.test_integration_admin.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_complete_event_success.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_create_event_database_integrity_error.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_create_event_invalid_data.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_create_event_invalid_method.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_create_event_missing_fields.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_create_event_success.executor": "Run",
     "Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_earn_points_from_event.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_earn_xp_from_event.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_event_not_validated.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_event_validated_completed.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_get_event_tasks_success.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_invalid_event_id.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_invalid_request_method.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_leave_event_event_does_not_exist.executor": "Run",
     "Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_updating_user_points.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_user_event_not_found.executor": "Run",
     "Django tests.Test: Ecolution.tests.integration.test_integration_events.executor": "Run",
     "Django tests.Test: Ecolution.tests.integration.test_integration_homepage.HomepageIntegrationTests.executor": "Run",
     "Django tests.Test: Ecolution.tests.integration.test_integration_homepage.HomepageIntegrationTests.test_homepage_points_increase.executor": "Run",
@@ -85,6 +97,16 @@
     "Django tests.Test: Ecolution.tests.integration.test_integration_login.executor": "Run",
     "Django tests.Test: Ecolution.tests.integration.test_integration_logout.executor": "Run",
     "Django tests.Test: Ecolution.tests.integration.test_integration_map.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_get_request_redirects.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_incorrect_current_username_error.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_invalid_request_method.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_password_not_changed_when_get_request.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_settings_change_pwd.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_settings_change_pwd_invalid_currentpwd.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_settings_delete_account.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_user_not_logged_in.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_username_changed_successfully.executor": "Run",
+    "Django tests.Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_username_mismatch_error.executor": "Run",
     "Django tests.Test: Ecolution.tests.integration.test_integration_settings.executor": "Run",
     "Django tests.Test: Ecolution.tests.integration.test_integration_shop.ShopIntegrationTest.test_shop_user_points_decrease.executor": "Run",
     "Django tests.Test: Ecolution.tests.integration.test_integration_shop.ShopIntegrationTest.test_user_points_increment.executor": "Run",
@@ -116,6 +138,12 @@
     "Django tests.Test: Ecolution.tests.unit.test_leaderboard.executor": "Run",
     "Django tests.Test: Ecolution.tests.unit.test_logout.executor": "Run",
     "Django tests.Test: Ecolution.tests.unit.test_qrcode.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_invalid_font_size.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_invalid_json_format.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_missing_font_size.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_non_post_request.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_server_error_during_processing.executor": "Run",
+    "Django tests.Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_valid_font_size_update.executor": "Run",
     "Django tests.Test: Ecolution.tests.unit.test_settings.executor": "Run",
     "Django tests.Test: Ecolution.tests.unit.test_shop.ShopTest.test_cannot_buy_item_again.executor": "Run",
     "Django tests.Test: Ecolution.tests.unit.test_shop.ShopTest.test_view_item_name.executor": "Run",
@@ -124,6 +152,7 @@
     "Django tests.Test: Ecolution.tests.unit.test_shop.executor": "Run",
     "Django tests.Test: Ecolution.tests.unit.test_tasks.TasksUnitTests.test_user_earns_points.executor": "Run",
     "Django tests.Test: Ecolution.tests.unit.test_tasks.executor": "Run",
+    "Node.js.coverage_html_cb_6fb7b396.js.executor": "Run",
     "Node.js.cypress.config.js.executor": "Run",
     "Python tests.Python tests for test_integration_tasks.TaskIntegrationTests.executor": "Debug",
     "Python tests.Python tests in test_integration_tasks.py.executor": "Run",
@@ -147,7 +176,7 @@
       <recent name="$PROJECT_DIR$/ECM2434/cypress/e2e/specs" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Django tests.Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_incorrect_current_username_error">
     <configuration name="Test: Ecolution.tests" type="DjangoTestsConfigurationType" temporary="true">
       <module name="Ecolution" />
       <option name="ENV_FILES" value="" />
@@ -169,7 +198,7 @@
       <option name="OPTIONS" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_invalid_method" type="DjangoTestsConfigurationType" temporary="true">
+    <configuration name="Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_incorrect_current_username_error" type="DjangoTestsConfigurationType" temporary="true">
       <module name="Ecolution" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -183,14 +212,14 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="TARGET" value="Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_invalid_method" />
+      <option name="TARGET" value="Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_incorrect_current_username_error" />
       <option name="SETTINGS_FILE" value="" />
       <option name="CUSTOM_SETTINGS" value="false" />
       <option name="USE_OPTIONS" value="false" />
       <option name="OPTIONS" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_not_assigned_to_user" type="DjangoTestsConfigurationType" temporary="true">
+    <configuration name="Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_invalid_json_format" type="DjangoTestsConfigurationType" temporary="true">
       <module name="Ecolution" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -204,14 +233,14 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="TARGET" value="Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_not_assigned_to_user" />
+      <option name="TARGET" value="Ecolution.tests.unit.test_settings.SettingsTestCase.test_invalid_json_format" />
       <option name="SETTINGS_FILE" value="" />
       <option name="CUSTOM_SETTINGS" value="false" />
       <option name="USE_OPTIONS" value="false" />
       <option name="OPTIONS" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_success" type="DjangoTestsConfigurationType" temporary="true">
+    <configuration name="Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_non_post_request" type="DjangoTestsConfigurationType" temporary="true">
       <module name="Ecolution" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -225,14 +254,14 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="TARGET" value="Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_success" />
+      <option name="TARGET" value="Ecolution.tests.unit.test_settings.SettingsTestCase.test_non_post_request" />
       <option name="SETTINGS_FILE" value="" />
       <option name="CUSTOM_SETTINGS" value="false" />
       <option name="USE_OPTIONS" value="false" />
       <option name="OPTIONS" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_pet_level_up_on_task_completion" type="DjangoTestsConfigurationType" temporary="true">
+    <configuration name="Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_server_error_during_processing" type="DjangoTestsConfigurationType" temporary="true">
       <module name="Ecolution" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -246,11 +275,55 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="TARGET" value="Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_pet_level_up_on_task_completion" />
+      <option name="TARGET" value="Ecolution.tests.unit.test_settings.SettingsTestCase.test_server_error_during_processing" />
       <option name="SETTINGS_FILE" value="" />
       <option name="CUSTOM_SETTINGS" value="false" />
       <option name="USE_OPTIONS" value="false" />
       <option name="OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="DjangoTestsConfigurationType">
+      <module name="ECM2434" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="TARGET" value="" />
+      <option name="SETTINGS_FILE" value="" />
+      <option name="CUSTOM_SETTINGS" value="false" />
+      <option name="USE_OPTIONS" value="false" />
+      <option name="OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="ECM2434" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
     <configuration name="ECM2434" type="Python.DjangoServer" factoryName="Django server">
@@ -279,21 +352,82 @@
       <option name="customRunCommand" value="" />
       <method v="2" />
     </configuration>
+    <configuration default="true" type="Python.FlaskServer">
+      <module name="ECM2434" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="Tox" factoryName="Tox">
+      <module name="ECM2434" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="docs" factoryName="Docutils task">
+      <module name="ECM2434" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="docutils_input_file" value="" />
+      <option name="docutils_output_file" value="" />
+      <option name="docutils_params" value="" />
+      <option name="docutils_task" value="" />
+      <option name="docutils_open_in_browser" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="docs" factoryName="Sphinx task">
+      <module name="ECM2434" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="docutils_input_file" value="" />
+      <option name="docutils_output_file" value="" />
+      <option name="docutils_params" value="" />
+      <option name="docutils_task" value="" />
+      <option name="docutils_open_in_browser" value="false" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Django Server.ECM2434" />
       <item itemvalue="Django tests.Test: Ecolution.tests" />
-      <item itemvalue="Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_invalid_method" />
-      <item itemvalue="Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_not_assigned_to_user" />
-      <item itemvalue="Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_success" />
-      <item itemvalue="Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_pet_level_up_on_task_completion" />
+      <item itemvalue="Django tests.Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_incorrect_current_username_error" />
+      <item itemvalue="Django tests.Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_invalid_json_format" />
+      <item itemvalue="Django tests.Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_non_post_request" />
+      <item itemvalue="Django tests.Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_server_error_during_processing" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_pet_level_up_on_task_completion" />
+        <item itemvalue="Django tests.Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_incorrect_current_username_error" />
         <item itemvalue="Django tests.Test: Ecolution.tests" />
-        <item itemvalue="Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_success" />
-        <item itemvalue="Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_not_assigned_to_user" />
-        <item itemvalue="Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_invalid_method" />
+        <item itemvalue="Django tests.Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_server_error_during_processing" />
+        <item itemvalue="Django tests.Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_non_post_request" />
+        <item itemvalue="Django tests.Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_invalid_json_format" />
       </list>
     </recent_temporary>
   </component>
@@ -323,6 +457,7 @@
       <workItem from="1741704059261" duration="8841000" />
       <workItem from="1741871452057" duration="12869000" />
       <workItem from="1742394884654" duration="6269000" />
+      <workItem from="1742570745366" duration="8621000" />
     </task>
     <task id="LOCAL-00001" summary="Implemented tests for Homepage, adjusted setUp() for test files">
       <option name="closed" value="true" />
@@ -499,53 +634,83 @@
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_homepage_HomepageTestCase_test_homepage_current_tasks.coverage" NAME="Test: Ecolution.tests.integration.test_integration_homepage.HomepageTestCase.test_homepage_current_tasks Coverage Results" MODIFIED="1739899697715" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_homepage_HomepageIntegrationTests.coverage" NAME="Test: Ecolution.tests.integration.test_integration_homepage.HomepageIntegrationTests Coverage Results" MODIFIED="1740416260658" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_tasks_TaskIntegrationTests_test_view_current_tasks.coverage" NAME="Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_view_current_tasks Coverage Results" MODIFIED="1742396994704" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_events.coverage" NAME="Test: Ecolution.tests.integration.test_integration_events Coverage Results" MODIFIED="1742082586171" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_events.coverage" NAME="Test: Ecolution.tests.integration.test_integration_events Coverage Results" MODIFIED="1742585426805" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_tasks_TaskIntegrationTests_test_complete_task_already_completed.coverage" NAME="Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_already_completed Coverage Results" MODIFIED="1742399960149" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_settings.coverage" NAME="Test: Ecolution.tests.unit.test_settings Coverage Results" MODIFIED="1740330159738" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_settings.coverage" NAME="Test: Ecolution.tests.unit.test_settings Coverage Results" MODIFIED="1742584850756" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_homepage_HomepageIntegrationTests_test_homepage_points_increase.coverage" NAME="Test: Ecolution.tests.integration.test_integration_homepage.HomepageIntegrationTests.test_homepage_points_increase Coverage Results" MODIFIED="1740416195093" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_admin.coverage" NAME="Test: Ecolution.tests.integration.test_integration_admin Coverage Results" MODIFIED="1740417806773" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_events_EventsTestCase_test_invalid_event_id.coverage" NAME="Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_invalid_event_id Coverage Results" MODIFIED="1742578540313" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_gdpr_privpol_GDPRPPTestCase_test_view_gdpr.coverage" NAME="Test: Ecolution.tests.unit.test_gdpr_privpol.GDPRPPTestCase.test_view_gdpr Coverage Results" MODIFIED="1741873249195" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_settings_SettingsTestCase_test_invalid_request_method.coverage" NAME="Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_invalid_request_method Coverage Results" MODIFIED="1742579511640" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_qrcode.coverage" NAME="Test: Ecolution.tests.unit.test_qrcode Coverage Results" MODIFIED="1742254712892" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_tasks_TaskIntegrationTests_test_user_deletes_tasks.coverage" NAME="Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_user_deletes_tasks Coverage Results" MODIFIED="1742399106223" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_events_EventsTestCase_test_earn_points_from_event.coverage" NAME="Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_earn_points_from_event Coverage Results" MODIFIED="1742047661216" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_events_EventsTestCase_test_earn_points_from_event.coverage" NAME="Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_earn_points_from_event Coverage Results" MODIFIED="1742578326408" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_settings_SettingsTestCase_test_settings_delete_account.coverage" NAME="Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_settings_delete_account Coverage Results" MODIFIED="1742579525768" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_shop_ShopIntegrationTest_test_user_points_increment.coverage" NAME="Test: Ecolution.tests.integration.test_integration_shop.ShopIntegrationTest.test_user_points_increment Coverage Results" MODIFIED="1742047959349" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_settings_SettingsTestCase_test_username_changed_successfully.coverage" NAME="Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_username_changed_successfully Coverage Results" MODIFIED="1742582037397" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_tasks_TaskIntegrationTests_test_complete_task_invalid_method.coverage" NAME="Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_invalid_method Coverage Results" MODIFIED="1742400319192" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_gdpr_privpol_GDPRPPTestCase_test_download_gdpr_agree.coverage" NAME="Test: Ecolution.tests.unit.test_gdpr_privpol.GDPRPPTestCase.test_download_gdpr_agree Coverage Results" MODIFIED="1741885676565" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_homepage.coverage" NAME="Test: Ecolution.tests.unit.test_homepage Coverage Results" MODIFIED="1740414533566" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_settings_SettingsTestCase_test_non_post_request.coverage" NAME="Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_non_post_request Coverage Results" MODIFIED="1742584830884" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_tasks_TaskIntegrationTests_test_complete_task_success.coverage" NAME="Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_success Coverage Results" MODIFIED="1742400594036" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_leaderboard.coverage" NAME="Test: Ecolution.tests.unit.test_leaderboard Coverage Results" MODIFIED="1742254468846" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_tasks_TasksUnitTests_test_user_earns_points.coverage" NAME="Test: Ecolution.tests.unit.test_tasks.TasksUnitTests.test_user_earns_points Coverage Results" MODIFIED="1740414273595" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_homepage.coverage" NAME="Test: Ecolution.tests.integration.test_integration_homepage Coverage Results" MODIFIED="1740415453410" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_leaderboard_TestLeaderboard_test_leaderboard_view_pet_level.coverage" NAME="Test: Ecolution.tests.unit.test_leaderboard.TestLeaderboard.test_leaderboard_view_pet_level Coverage Results" MODIFIED="1742254065098" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_settings_SettingsTestCase_test_password_not_changed_when_get_request.coverage" NAME="Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_password_not_changed_when_get_request Coverage Results" MODIFIED="1742579272465" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_signup_SignupIntegrationTests_test_signup_different_passwords.coverage" NAME="Test: Ecolution.tests.integration.test_integration_signup.SignupIntegrationTests.test_signup_different_passwords Coverage Results" MODIFIED="1740413037923" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_settings_SettingsTestCase_test_invalid_json_format.coverage" NAME="Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_invalid_json_format Coverage Results" MODIFIED="1742584828391" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_logout.coverage" NAME="Test: Ecolution.tests.unit.test_logout Coverage Results" MODIFIED="1740412303376" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_settings_SettingsTestCase_test_server_error_during_processing.coverage" NAME="Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_server_error_during_processing Coverage Results" MODIFIED="1742584833549" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_shop_TestShop_test_view_shop.coverage" NAME="Test: Ecolution.tests.unit.test_shop.TestShop.test_view_shop Coverage Results" MODIFIED="1741887682401" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_settings_SettingsTestCase_test_valid_font_size_update.coverage" NAME="Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_valid_font_size_update Coverage Results" MODIFIED="1742584802859" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_events.coverage" NAME="Test: Ecolution.tests.unit.test_events Coverage Results" MODIFIED="1741871763659" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_events_EventsTestCase_test_create_event_invalid_method.coverage" NAME="Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_create_event_invalid_method Coverage Results" MODIFIED="1742572266695" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_events_EventsTestCase_test_user_event_not_found.coverage" NAME="Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_user_event_not_found Coverage Results" MODIFIED="1742577924593" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_events_EventsTestCase_test_create_event_database_integrity_error.coverage" NAME="Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_create_event_database_integrity_error Coverage Results" MODIFIED="1742576631819" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_events_EventsTestCase_test_earn_xp_from_event.coverage" NAME="Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_earn_xp_from_event Coverage Results" MODIFIED="1742578486149" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_tasks_TaskIntegrationTests_test_pet_level_up_on_task_completion.coverage" NAME="Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_pet_level_up_on_task_completion Coverage Results" MODIFIED="1742401073247" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_settings_SettingsTestCase_test_settings_change_pwd.coverage" NAME="Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_settings_change_pwd Coverage Results" MODIFIED="1742579157437" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_events_EventsTestCase_test_events_menu.coverage" NAME="Test: Ecolution.tests.unit.test_events.EventsTestCase.test_events_menu Coverage Results" MODIFIED="1740400847176" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_shop_ShopTest_test_cannot_buy_item_again.coverage" NAME="Test: Ecolution.tests.unit.test_shop.ShopTest.test_cannot_buy_item_again Coverage Results" MODIFIED="1742047542094" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_shop.coverage" NAME="Test: Ecolution.tests.integration.test_integration_shop Coverage Results" MODIFIED="1742047916489" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_shop_ShopTest_test_view_item_price.coverage" NAME="Test: Ecolution.tests.unit.test_shop.ShopTest.test_view_item_price Coverage Results" MODIFIED="1742047427825" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_tasks.coverage" NAME="Test: Ecolution.tests.integration.test_integration_tasks Coverage Results" MODIFIED="1742401135383" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_settings.coverage" NAME="Test: Ecolution.tests.integration.test_integration_settings Coverage Results" MODIFIED="1740412168029" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_events_EventsTestCase_test_event_not_validated.coverage" NAME="Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_event_not_validated Coverage Results" MODIFIED="1742578081499" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_settings.coverage" NAME="Test: Ecolution.tests.integration.test_integration_settings Coverage Results" MODIFIED="1742582729127" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_tasks_TaskIntegrationTests_test_completed_task_filtering.coverage" NAME="Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_completed_task_filtering Coverage Results" MODIFIED="1742397097674" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_events_EventsTestCase_test_create_event_success.coverage" NAME="Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_create_event_success Coverage Results" MODIFIED="1742576466221" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_settings_SettingsTestCase_test_user_not_logged_in.coverage" NAME="Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_user_not_logged_in Coverage Results" MODIFIED="1742582073920" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$.coverage" NAME=" Coverage Results" MODIFIED="1740331372048" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ECM2434/Ecolution/tests/integration" />
-    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests.coverage" NAME="Test: Ecolution.tests Coverage Results" MODIFIED="1742400688480" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_events_EventsTestCase_test_get_event_tasks_success.coverage" NAME="Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_get_event_tasks_success Coverage Results" MODIFIED="1742578687157" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_settings_SettingsTestCase_test_incorrect_current_username_error.coverage" NAME="Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_incorrect_current_username_error Coverage Results" MODIFIED="1742585068718" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_events_EventsTestCase_test_leave_event_event_does_not_exist.coverage" NAME="Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_leave_event_event_does_not_exist Coverage Results" MODIFIED="1742577353137" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests.coverage" NAME="Test: Ecolution.tests Coverage Results" MODIFIED="1742584887991" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_tasks_TaskIntegrationTests_test_view_completed_tasks.coverage" NAME="Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_view_completed_tasks Coverage Results" MODIFIED="1742397019500" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_signup_SignupIntegrationTests_test_signup_redirect.coverage" NAME="Test: Ecolution.tests.integration.test_integration_signup.SignupIntegrationTests.test_signup_redirect Coverage Results" MODIFIED="1740331788314" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_events_EventsTestCase_test_event_validated_completed.coverage" NAME="Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_event_validated_completed Coverage Results" MODIFIED="1742578158824" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_events_EventsTestCase_test_complete_event_success.coverage" NAME="Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_complete_event_success Coverage Results" MODIFIED="1742578041368" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_gdpr_privpol.coverage" NAME="Test: Ecolution.tests.unit.test_gdpr_privpol Coverage Results" MODIFIED="1742255320577" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_shop_ShopTest_test_view_item_name.coverage" NAME="Test: Ecolution.tests.unit.test_shop.ShopTest.test_view_item_name Coverage Results" MODIFIED="1742047387650" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_settings_SettingsTestCase_test_get_request_redirects.coverage" NAME="Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_get_request_redirects Coverage Results" MODIFIED="1742579207272" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_tasks_TaskIntegrationTests_test_current_task_filtering.coverage" NAME="Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_current_task_filtering Coverage Results" MODIFIED="1742397095383" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_signup.coverage" NAME="Test: Ecolution.tests.integration.test_integration_signup Coverage Results" MODIFIED="1740419193854" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_map.coverage" NAME="Test: Ecolution.tests.integration.test_integration_map Coverage Results" MODIFIED="1740399515851" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_shop_ShopIntegrationTest_test_shop_user_points_decrease.coverage" NAME="Test: Ecolution.tests.integration.test_integration_shop.ShopIntegrationTest.test_shop_user_points_decrease Coverage Results" MODIFIED="1742048224526" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_homepage_HomepageIntegrationTests_test_homepage_view_pet_name.coverage" NAME="Test: Ecolution.tests.integration.test_integration_homepage.HomepageIntegrationTests.test_homepage_view_pet_name Coverage Results" MODIFIED="1742398151747" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_events_EventsTestCase_test_create_event_invalid_data.coverage" NAME="Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_create_event_invalid_data Coverage Results" MODIFIED="1742576348848" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_events_EventsTestCase_test_invalid_request_method.coverage" NAME="Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_invalid_request_method Coverage Results" MODIFIED="1742577974982" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_leaderboard_TestLeaderboard_test_view_leaderboard.coverage" NAME="Test: Ecolution.tests.unit.test_leaderboard.TestLeaderboard.test_view_leaderboard Coverage Results" MODIFIED="1742082124444" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_settings_SettingsTestCase_test_missing_font_size.coverage" NAME="Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_missing_font_size Coverage Results" MODIFIED="1742584811522" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_shop.coverage" NAME="Test: Ecolution.tests.unit.test_shop Coverage Results" MODIFIED="1742047411594" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_events_EventsTestCase_test_view_events.coverage" NAME="Test: Ecolution.tests.unit.test_events.EventsTestCase.test_view_events Coverage Results" MODIFIED="1740401420161" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_logout.coverage" NAME="Test: Ecolution.tests.integration.test_integration_logout Coverage Results" MODIFIED="1739979934935" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_events_EventsTestCase_test_create_event_missing_fields.coverage" NAME="Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_create_event_missing_fields Coverage Results" MODIFIED="1742575966417" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_settings_SettingsTestCase_test_username_mismatch_error.coverage" NAME="Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_username_mismatch_error Coverage Results" MODIFIED="1742582719811" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_login.coverage" NAME="Test: Ecolution.tests.integration.test_integration_login Coverage Results" MODIFIED="1740398841294" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_events_EventsTestCase_test_updating_user_points.coverage" NAME="Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_updating_user_points Coverage Results" MODIFIED="1741886090797" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_settings_SettingsTestCase_test_invalid_font_size.coverage" NAME="Test: Ecolution.tests.unit.test_settings.SettingsTestCase.test_invalid_font_size Coverage Results" MODIFIED="1742584806343" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_settings_SettingsTestCase_test_settings_change_pwd_invalid_currentpwd.coverage" NAME="Test: Ecolution.tests.integration.test_integration_settings.SettingsTestCase.test_settings_change_pwd_invalid_currentpwd Coverage Results" MODIFIED="1742579183176" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_tasks_TaskIntegrationTests_test_delete_task_task_not_found.coverage" NAME="Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_delete_task_task_not_found Coverage Results" MODIFIED="1742398741529" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_unit_test_tasks.coverage" NAME="Test: Ecolution.tests.unit.test_tasks Coverage Results" MODIFIED="1740414343751" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_tasks_TaskIntegrationTests_test_complete_task_not_assigned_to_user.coverage" NAME="Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_not_assigned_to_user Coverage Results" MODIFIED="1742400344150" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
