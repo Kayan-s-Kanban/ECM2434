@@ -320,6 +320,42 @@ section.pet img.hat {
     pointer-events: none; /* so clicks go through to the pet if needed */
 }
 
+.hat.mushroom.small {
+    top: 10px;
+    left: 15px;
+}
+.hat.mushroom.medium{
+    top: 10px;
+    left: 15px;
+}
+.hat.mushroom.large {
+    top: 10px;
+    left: 15px;
+}
+.hat.acorn.small {
+    top: 5px;
+    left: 20px;
+}
+.hat.acorn.medium {
+    top: 5px;
+    left: 20px;
+}
+.hat.acorn.large {
+    top: 5px;
+    left: 20px;
+}
+.hat.plant.small {
+    top: 5px;
+    left: 20px;
+}
+.hat.plant.medium {
+    top: 5px;
+    left: 20px;
+}
+.hat.plant.large {
+    top: 5px;
+    left: 20px;
+}
 .section.cycle_pet {
     
 }
