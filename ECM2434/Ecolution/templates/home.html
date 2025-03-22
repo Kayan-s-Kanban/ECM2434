@@ -22,7 +22,7 @@
     </section>
 
     {% if request.user.pet_set.count > 1 %}
-    <section class="flex_h flex_center" style="margin-top: 5rem;">
+    <section class="cycle_pet_section flex_h flex_center">
         <button class="button box_shadow text_light button_alt"
                 onclick="window.location.href='{% url 'cycle_pet' %}'">
             Cycle Pet

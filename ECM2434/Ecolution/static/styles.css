@@ -320,43 +320,45 @@ section.pet img.hat {
 }
 
 .hat.mushroom.small {
-    top: 10px;
-    left: 15px;
+    top: 40px;
+    left: 110px;
 }
 .hat.mushroom.medium{
-    top: 10px;
-    left: 15px;
+    top: 25px;
+    left: 120px;
 }
 .hat.mushroom.large {
     top: 10px;
-    left: 15px;
+    left: 105px;
 }
 .hat.acorn.small {
-    top: 5px;
-    left: 20px;
+    top: 50px;
+    left: 118px;
 }
 .hat.acorn.medium {
-    top: 5px;
-    left: 20px;
+    top: 55px;
+    left: 120px;
 }
 .hat.acorn.large {
-    top: 5px;
-    left: 20px;
+    top: 30px;
+    left: 120px;
 }
 .hat.plant.small {
-    top: 5px;
-    left: 20px;
+    top: 60px;
+    left: 110px;
 }
 .hat.plant.medium {
-    top: 5px;
-    left: 20px;
+    top: 55px;
+    left: 120px;
 }
 .hat.plant.large {
-    top: 5px;
-    left: 20px;
+    top: -10px;
+    left: 110px;
 }
-.section.cycle_pet {
-    
+
+section.cycle_pet_section {
+    margin-top: 8rem;
+    z-index: 5;
 }
 
 .background {
@@ -623,7 +625,7 @@ img.profile_pic {
     margin-right: 0.5rem;
 }
   
-  .form-group-horizontal input {
+.form-group-horizontal input {
     flex: 1; /* take up remaining space */
     padding: 0.4rem;
     box-sizing: border-box;
