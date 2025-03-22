@@ -23,6 +23,7 @@ class CustomUser(AbstractUser):  # Custom User model is the user class we use fo
         (FONT_SIZE_LARGE, 'Large'),
     ]
     points = models.IntegerField(default=0)  # the points field
+    is_gamekeeper = models.BooleanField(default=False)  # true if the user is a gamekeeper
     preferred_font_size = models.PositiveSmallIntegerField( #stores the preferred font size also has a default so that the size of the text exists when a usr is not logged in 
         choices=FONT_SIZE_CHOICES,
         default=FONT_SIZE_MEDIUM,
@@ -159,11 +160,12 @@ def generate_qr_code(sender, instance, created, **kwargs):
 class Task(models.Model):
     task_id = models.AutoField(primary_key=True)
     task_name = models.CharField(max_length=100)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     points_given = models.IntegerField(default=500)
     xp_given = models.IntegerField(default=20)
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
-    event = models.ForeignKey(Event, on_delete=models.SET_NULL, default=None, null=True)
+    predefined = models.BooleanField(default=False)
+    event = models.ForeignKey(Event, on_delete=models.SET_NULL, default=None, null=True, blank=True)
 
     class Meta:
         constraints = [
@@ -221,9 +223,3 @@ class UserItem(models.Model):
 
     def __str__(self):
         return f'{self.user.username} - {self.shopitem.name}'
-    
-class GameKeeper(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ✅ Dynamic reference
-
-    def __str__(self):
-        return f'{self.user.username} - GameKeeper'

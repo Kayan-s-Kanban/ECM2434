@@ -66,8 +66,8 @@
 
     <!-- Area to show the tasks the gamekeeper has created -->
         <div id="created-tasks">
-            {% for task in request.user.task_set.all %}
-                {% include 'partials/task_card.html' with task=task %}
+            {% for task in tasks %}
+                {% include 'partials/gamekeeper_task_card.html' with task=task %}
             {% empty %}
                 <p>You haven't created any tasks yet.</p>
             {% endfor %}
@@ -84,7 +84,7 @@
             <input type="number" id="taskPoints" placeholder="Point Reward" required>
             <input type="number" id="taskEXP" placeholder="EXP Reward" required>
 
-            <button onclick="submitAdminTask()">Add Task</button>
+            <button onclick="submitGamekeeperTask()">Add Task</button>
         </div>
 
         <button onclick="closePopup()">Cancel</button>
@@ -111,13 +111,13 @@
         }
 
             // This function
-        function submitAdminTask() {
+        function submitGamekeeperTask() {
             let taskName = document.getElementById("taskName").value;
             let taskDesc = document.getElementById("taskDescription").value;
             let taskPoints = document.getElementById("taskPoints").value;
             let taskEXP = document.getElementById("taskEXP").value;
 
-            fetch("/ecolution/tasks/add/", {
+            fetch("/ecolution/gamekeeper_tasks/add/", {
                 method: "POST",
                 headers: {
                     "X-CSRFToken": getCSRFToken(),
@@ -145,5 +145,20 @@
             closePopup()
         }
 
+        function deleteGamekeeperTask(taskId) {
+            fetch("/ecolution/gamekeeper_tasks/delete/" + taskId + "/", {
+                method: "POST",
+                headers: { "X-CSRFToken": getCSRFToken() }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert("Error: " + data.message);
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
     </script>
 {% endblock %}

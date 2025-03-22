@@ -14,6 +14,7 @@ from django.shortcuts import redirect
 from django.views.decorators.cache import never_cache
 from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent, ShopItem, UserItem
 from django.db.models import Max
+from .decorators import gamekeeper_required
 
 # Create your views here.
 def index(request):
@@ -128,7 +129,7 @@ def tasks_view(request):
     """
     user_tasks = UserTask.objects.filter(user=request.user)
     # Predefined tasks are those created by a superuser (or another designated admin)
-    predefined_tasks = Task.objects.filter(creator__gamekeeper__isnull=False)
+    predefined_tasks = Task.objects.filter(predefined=True)
     # Custom tasks are those created by the current user
     custom_tasks = Task.objects.filter(creator=request.user)
     return render(request, "tasks.html", {
@@ -197,7 +198,7 @@ def get_user_or_superuser_task(task_id, user):
 
     # If that fails, try to get a superuser-created task
     try:
-        return Task.objects.get(task_id=task_id, creator__gamekeeper__isnull=False)
+        return Task.objects.get(task_id=task_id, predefined=True)
     except Task.DoesNotExist:
         raise Http404("Task not found or not accessible.")
 
@@ -576,9 +577,17 @@ def leaderboard_view(request):
 def qr_scanner_view(request):
     return render(request, "qr_scanner.html")
 
-def gamekeeper_task_veiw(request):
-    return render(request, "admin_tasks.html")
+@gamekeeper_required
+@login_required
+def gamekeeper_task_view(request):
+    tasks = Task.objects.filter(creator=request.user, predefined=True)
+    context = {
+        "tasks": tasks,
+        "points": request.user.points,
+    }
+    return render(request, "gamekeeper_tasks.html", context)
 
+@gamekeeper_required
 @login_required
 def add_gamekeeper_task(request):
     """
@@ -593,6 +602,7 @@ def add_gamekeeper_task(request):
             description = data.get("description")
             points_given = data.get("points_given", 20)
             xp_given = data.get("xp_given", 20)
+            predefined = True
 
             # Create a new task with the GameKeeper as the creator
             new_task = Task.objects.create(
@@ -600,13 +610,12 @@ def add_gamekeeper_task(request):
                 description=description,
                 points_given=points_given,
                 xp_given=xp_given,
-
-                # GameKeeper is automatically set as the creator
+                predefined=predefined,
                 creator=request.user
             )
 
             return JsonResponse({
-                "status": "success",
+                "success": True,
                 "message": "Task created successfully.",
                 "task_id": new_task.task_id,
                 "task_name": new_task.task_name,
@@ -617,3 +626,13 @@ def add_gamekeeper_task(request):
             return JsonResponse({"status": "error", "message": "Invalid JSON data."}, status=400)
 
     return JsonResponse({"status": "error", "message": "Invalid request method."}, status=405)
+
+@gamekeeper_required
+@login_required
+def delete_gamekeeper_task(request, task_id):
+    if request.method == "POST":
+        # Ensure the task belongs to the current user and is a gamekeeper (predefined) task.
+        task = get_object_or_404(Task, task_id=task_id, creator=request.user, predefined=True)
+        task.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'message': 'Invalid request method.'}, status=400)

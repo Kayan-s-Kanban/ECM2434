@@ -43,6 +43,9 @@
                         <section class="settings_menu" id="settingsMenu">  <!-- thiis the settings icon that lets you go to other pages -->
                             <a href="{% url 'home' %}">Home</a> <!-- this is so you can go back to the home page from other pages -->
                             <a href="{% url 'tasks' %}">Tasks</a> <!-- this is to go to the tasks page where you can create tasks -->
+                            {% if user.is_gamekeeper %}
+                                <a href="{% url 'gamekeeper_tasks' %}">Gamekeeper Tasks</a> <!-- this is to go to the gamekeeper tasks page where you can create predefined tasks -->
+                            {% endif %}
                             <a href="{% url 'events' %}">Events</a> <!-- this is to go to the events page where you can join events -->
                             <a href="{% url 'shop' %}">Shop</a> <!-- this is to go to the shop page where you can buy items -->
                             <a href="{% url 'leaderboard' %}">Leaderboard</a> 

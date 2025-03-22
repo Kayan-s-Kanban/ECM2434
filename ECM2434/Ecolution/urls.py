@@ -34,7 +34,8 @@ urlpatterns = [
     path('validate/<uuid:token>/', validate_qr, name='validate_qr'),
     path("leaderboard/", leaderboard_view, name="leaderboard"),
     path("qr_scanner/", views.qr_scanner_view, name="qr_scanner"),
-
-    path("gamekeeper_tasks", views.gamekeeper_task_veiw, name="gamekeeper_tasks")
+    path("gamekeeper_tasks", views.gamekeeper_task_view, name="gamekeeper_tasks"),
+    path("gamekeeper_tasks/add/", views.add_gamekeeper_task, name="add_gamekeeper_task"),
+    path("gamekeeper_tasks/delete/<int:task_id>/", views.delete_gamekeeper_task, name="delete_gamekeeper_task"),
     path('cycle_pet/', views.cycle_pet, name='cycle_pet'),
 ]
