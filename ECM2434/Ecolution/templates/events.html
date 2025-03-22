@@ -109,6 +109,16 @@
             padding: 20px 20px;
             
         }
+
+        .all-events-container {
+            overflow-y: auto;
+            max-height: 80vh;
+            border-radius: 20px 20px;
+        }
+
+        .all-events-container::-webkit-scrollbar {
+            display: none; /* Hides the scrollbar */
+        }
     </style>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -122,15 +132,7 @@
     <!-- Main Content -->
 
     <body>
-        <form action="{% url 'create_event' %}" method="POST">
-            {% csrf_token %}
-            <input type="text" name="event_name" placeholder="Event Name" required>
-            <input type="text" name="description" placeholder="Description" required>
-            <input type="text" name="location" placeholder="Location" required>
-            <input type="date" name="date" required>
-            <input type="time" name="time" required>    
-            <button type="submit" class="button text_light">Create Event</button>
-        </form>
+        
 
 
         <div class="qr-container" id="qr-container">
@@ -144,55 +146,58 @@
 
         <h1 class="text_light">Events</h1>
     
-        <div class="event_list_container">
-            <h2 class="text_dark ">My Events</h2>
-            <div>
-                {% if user_events %}
-                    {% for user_event in user_events%}
-                        <div class="card box_shadow text_light event" 
-                        data-id="{{ user_event.event_id }}"
-                        data-name="{{ user_event.event_name }}"
-                        data-description="{{ user_event.description }}"
-                        data-location="{{ user_event.location }}"
-                        data-date="{{ user_event.date }}"
-                        data-time="{{ user_event.time }}"
-                        data-points="{{ user_event.total_points}}"
-                        onclick="openEventDetails(this, 'user')">
-                            <p>{{user_event.date}}</p>
-                            <h3>{{user_event.event_name}}</h3>
-                            <p>📍{{user_event.location}}</p>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <p class="text_dark">There are no current events ongoing</p>
-                {% endif %}
+        <div class="all-events-container">
+            <div class="event_list_container">
+                <h2 class="text_dark ">My Events</h2>
+                <div>
+                    {% if user_events %}
+                        {% for user_event in user_events%}
+                            <div class="card box_shadow text_light event" 
+                            data-id="{{ user_event.event_id }}"
+                            data-name="{{ user_event.event_name }}"
+                            data-description="{{ user_event.description }}"
+                            data-location="{{ user_event.location }}"
+                            data-date="{{ user_event.date }}"
+                            data-time="{{ user_event.time }}"
+                            data-points="{{ user_event.total_points}}"
+                            onclick="openEventDetails(this, 'user')">
+                                <p>{{user_event.date}}</p>
+                                <h3>{{user_event.event_name}}</h3>
+                                <p>📍{{user_event.location}}</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text_dark">There are no current events ongoing</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="event_list_container">
+                <h2 class="text_dark">Join Events</h2>
+                <div>
+                    {% if events %}
+                        {% for event in events%}
+                            <div class="card box_shadow text_light event" 
+                            data-id="{{ event.event_id }}"
+                            data-name="{{ event.event_name }}"
+                            data-description="{{ event.description }}"
+                            data-location="{{ event.location }}"
+                            data-date="{{ event.date }}"
+                            data-time="{{ event.time }}"
+                            data-points="{{ event.total_points}}"
+                            onclick="openEventDetails(this, 'general')">
+                                <p>{{event.date}}</p>
+                                <h3>{{event.event_name}}</h3>
+                                <p>📍{{event.location}}</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text_dark">You have already joined all ongoing events</p>
+                    {% endif %}
+                </div>
             </div>
         </div>
         
-        <div class="event_list_container">
-            <h2 class="text_dark">Join Events</h2>
-            <div>
-                {% if events %}
-                    {% for event in events%}
-                        <div class="card box_shadow text_light event" 
-                        data-id="{{ event.event_id }}"
-                        data-name="{{ event.event_name }}"
-                        data-description="{{ event.description }}"
-                        data-location="{{ event.location }}"
-                        data-date="{{ event.date }}"
-                        data-time="{{ event.time }}"
-                        data-points="{{ event.total_points}}"
-                        onclick="openEventDetails(this, 'general')">
-                            <p>{{event.date}}</p>
-                            <h3>{{event.event_name}}</h3>
-                            <p>📍{{event.location}}</p>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <p class="text_dark">You have already joined all ongoing events</p>
-                {% endif %}
-            </div>
-        </div>
         
 
         <!-- Events popup, showing a specific event -->
@@ -236,19 +241,8 @@
     
     <script>
         let map = null;
-
-        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function () {
-                let checkedValues = [];
-                checkboxes.forEach(box => {
-                    if (box.checked) {
-                        checkedValues.push(box.id);
-                    }
-                });
-                localStorage.setItem("checkboxValues", JSON.stringify(checkedValues));
-            });
-        });
+        let checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        
 
         //creates the map which is displayed within the event popup
         function createMap(lat, lon, zoom = 18) {
@@ -295,26 +289,44 @@
                         data.tasks.forEach(task => {
                             let taskDiv = document.createElement("div");
                             taskDiv.classList.add("box_shadow", "text_light", "taskcard");
-
-                            const checkboxId = `${eventDetails.event_name}-${task.task_name}`;
-
-                            taskDiv.innerHTML = `<input type="checkbox" id="${checkboxId}">${task.task_name}`;
                             
-                            if (checkedTasks.includes(checkboxId)) {
-                                taskDiv.querySelector("input").checked = true;
+                            if (eventType === "user"){
+                                const checkboxId = `${eventDetails.event_name}-${task.task_name}`;
+                                taskDiv.innerHTML = `<input type="checkbox" id="${checkboxId}">${task.task_name}`;
+                                if (checkedTasks.includes(checkboxId)) {
+                                    taskDiv.querySelector("input").checked = true;
+                                }
+                            } 
+                            else {
+                                taskDiv.innerHTML = `<p>${task.task_name}</p>`;
                             }
+                            
                             tasksContainer.appendChild(taskDiv);
                         });
                     }
+
+                    setCheckBoxListener();
                 });
-
-            
-
 
             //map coodinates hardcoded for now
             createMap(50.734967, -3.533750);
 
             eventDetails.style.display = "block";
+        }
+
+        function setCheckBoxListener (){
+            checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function () {
+                    let checkedValues = [];
+                    checkboxes.forEach(box => {
+                        if (box.checked) {
+                            checkedValues.push(box.id);
+                        }
+                    });
+                    localStorage.setItem("checkboxValues", JSON.stringify(checkedValues));
+                });
+            });
         }
 
         //closes the event detail pop up
