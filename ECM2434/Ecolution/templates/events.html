@@ -122,15 +122,17 @@
     <!-- Main Content -->
 
     <body>
-        <form action="{% url 'create_event' %}" method="POST">
-            {% csrf_token %}
-            <input type="text" name="event_name" placeholder="Event Name" required>
-            <input type="text" name="description" placeholder="Description" required>
-            <input type="text" name="location" placeholder="Location" required>
-            <input type="date" name="date" required>
-            <input type="time" name="time" required>    
-            <button type="submit" class="button text_light">Create Event</button>
-        </form>
+        <div class="container">
+            <form action="{% url 'create_event' %}" method="POST">
+                {% csrf_token %}
+                <input type="text" name="event_name" placeholder="Event Name" required>
+                <input type="text" name="description" placeholder="Description" required>
+                <input type="text" name="location" placeholder="Location" required>
+                <input type="date" name="date" required>
+                <input type="time" name="time" required>    
+                <button type="submit" class="button text_light">Create Event</button>
+            </form>
+        </div>
 
 
         <div class="qr-container" id="qr-container">
@@ -144,7 +146,7 @@
 
         <h1 class="text_light">Events</h1>
     
-        <div class="event_list_container">
+        <div class="container">
             <h2 class="text_dark ">My Events</h2>
             <div>
                 {% if user_events %}
@@ -169,7 +171,7 @@
             </div>
         </div>
         
-        <div class="event_list_container">
+        <div class="container">
             <h2 class="text_dark">Join Events</h2>
             <div>
                 {% if events %}

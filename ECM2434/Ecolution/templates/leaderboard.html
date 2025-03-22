@@ -9,41 +9,41 @@
 <div class="margin_std">
     <!-- Leaderboard Title (no background color here) -->
     <h2 class="text_light" style="text-align: center;">Leaderboard</h2>
-    <div class="event_list_container" style="background-color: white; padding: 20px; border-radius: 0.8em; margin: 5px; opacity: 0.9;">
-        <!-- Top 3 Players on white background -->
+    <div class="container">
+        <!-- Top 3 Players -->
         <div class="flex_h" style="justify-content: space-around; margin-bottom: 1rem;">
             {% if second_pet %}
             <div style="text-align: center;">
-                <img src="{{ second_pet.displayed_pet.computed_image_url }}" alt="{{ second_pet.displayed_pet.pet_type }} pet" style="width: 60px; height: 60px;">
-                <p class="text_dark" style="font-weight: bold;">2 - Level {{ second_pet.displayed_pet.pet_level }}</p>
-                <p class="text_dark" style="font-weight: bold;">{{ second_pet.username }}</p>
+                <img src="{{ second_pet.displayed_pet.computed_image_url }}" alt="{{ second_pet.displayed_pet.pet_type }} pet" style="width: 60px; height: 60px; image-rendering: pixelated;">
+                <p class="text_dark font_bold">2 - Level {{ second_pet.displayed_pet.pet_level }}</p>
+                <p class="text_dark font_bold">{{ second_pet.username }}</p>
             </div>
             {% endif %}
             {% if top_pet %}
             <div style="text-align: center;">
-                <img src="{{ top_pet.displayed_pet.computed_image_url }}" alt="{{ top_pet.displayed_pet.pet_type }} pet" style="width: 80px; height: 80px;">
-                <p class="text_dark" style="font-weight: bold;">1 👑 - Level {{ top_pet.displayed_pet.pet_level }}</p>
-                <p class="text_dark" style="font-weight: bold;">{{ top_pet.username }}</p>
+                <img src="{{ top_pet.displayed_pet.computed_image_url }}" alt="{{ top_pet.displayed_pet.pet_type }} pet" style="width: 80px; height: 80px; image-rendering: pixelated;">
+                <p class="text_dark font_bold">1 👑 - Level {{ top_pet.displayed_pet.pet_level }}</p>
+                <p class="text_dark font_bold">{{ top_pet.username }}</p>
             </div>
             {% endif %}
             {% if third_pet %}
             <div style="text-align: center;">
-                <img src="{{ third_pet.displayed_pet.computed_image_url }}" alt="{{ third_pet.displayed_pet.pet_type }} pet" style="width: 60px; height: 60px;">
-                <p class="text_dark" style="font-weight: bold;">3 - Level {{ third_pet.displayed_pet.pet_level }}</p>
-                <p class="text_dark" style="font-weight: bold;">{{ third_pet.username }}</p>
+                <img src="{{ third_pet.displayed_pet.computed_image_url }}" alt="{{ third_pet.displayed_pet.pet_type }} pet" style="width: 60px; height: 60px; image-rendering: pixelated;">
+                <p class="text_dark font_bold">3 - Level {{ third_pet.displayed_pet.pet_level }}</p>
+                <p class="text_dark font_bold">{{ third_pet.username }}</p>
             </div>
             {% endif %}
         </div>
-        <!-- Remaining Leaderboard Entries (4th place onwards) in green -->
+        <!-- Remaining Leaderboard Entries (4th place onwards) -->
         <div>
             {% for entry in leaderboard_entries %}
-            <div class="card box_shadow" style="padding: 0.5rem; margin-bottom: 0.5rem; background-color: var(--color_background);">
+            <div class="card box_shadow" style="padding: 0.5rem; margin-bottom: 0.5rem;">
                 <div class="flex_h" style="justify-content: space-between; align-items: center;">
                     <div class="flex_h" style="align-items: center;">
-                        <img src="{{ entry.displayed_pet.computed_image_url }}" alt="{{ entry.displayed_pet.pet_type }} pet" style="width: 40px; height: 40px; margin-right: 0.5rem;">
-                        <p class="text_light" style="font-weight: bold;">{{ entry.username }}</p>
+                        <img src="{{ entry.displayed_pet.computed_image_url }}" alt="{{ entry.displayed_pet.pet_type }} pet" style="width: 40px; height: 40px; margin-right: 0.5rem; image-rendering: pixelated;">
+                        <p class="text_light font_bold">{{ entry.username }}</p>
                     </div>
-                    <p class="text_light" style="font-weight: bold;">Level {{ entry.displayed_pet.pet_level }}</p>
+                    <p class="text_light font_bold">Level {{ entry.displayed_pet.pet_level }}</p>
                 </div>
             </div>
             {% endfor %}

@@ -66,7 +66,13 @@
         {% for user_task in user_tasks %}
             {% include 'partials/task_card.html' with user_task=user_task %}
         {% empty %}
-            <p>No tasks available.</p>
+        <section class="card box_shadow text_light">
+            <div class="content flex_h flex_fill_h flex_center flex_gap_std margin_sml">
+                <p>All tasks completed!</p>
+            </div>
+        </section>
+        
+            
         {% endfor %}
     </section>
 {% endblock %}
