@@ -392,15 +392,24 @@ def change_password(request):
         current_password = request.POST["current_password"]
         new_password1 = request.POST["new_password1"]
         new_password2 = request.POST["new_password2"]
-        
-        if new_password1 != new_password2:
-            messages.error(request, "New passwords do not match!")
-            return redirect("settings")
 
         user = request.user
         if not user.check_password(current_password):
             messages.error(request, "Current password is incorrect!")
-            return redirect("settings")
+            return render(request, "settings.html")
+        
+        if new_password1 != new_password2:
+            messages.error(request, "Passwords do not match!")
+            return render(request, "settings.html")
+
+        # Validate the password against Django's validators
+        try:
+            validate_password(new_password1)
+        except ValidationError as e:
+            # Display each error message from the validators
+            for error in e.messages:
+                messages.error(request, error)
+            return render(request, "settings.html")
 
         user.set_password(new_password1)
         user.save()
@@ -409,7 +418,7 @@ def change_password(request):
         update_session_auth_hash(request, user)
 
         messages.success(request, "Password updated successfully!")
-        return redirect("settings")
+        return render(request, "settings.html")
 
     return redirect("settings")
 

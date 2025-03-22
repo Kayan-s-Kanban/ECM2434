@@ -105,8 +105,11 @@ class Pet(models.Model): #weak entity pet that relies on user id to exist
 class Event(models.Model): 
     event_id = models.AutoField(primary_key=True)
     event_name = models.CharField(max_length=100)
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     description = models.TextField()
     location = models.CharField(max_length=100, blank=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     date = models.DateField(default=timezone.now)
     time = models.TimeField(default=timezone.now)
     unique_token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
