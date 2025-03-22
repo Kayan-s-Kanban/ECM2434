@@ -3,7 +3,6 @@ from django.urls import reverse
 from Ecolution.models import CustomUser, UserTask, Task, Pet
 from Ecolution.views import User
 
-
 class TaskIntegrationTests(TestCase):
     def setUp(self):
         # create a test user
@@ -14,8 +13,17 @@ class TaskIntegrationTests(TestCase):
         self.other_user = CustomUser.objects.create_user(username='otheruser', password='password')
 
         # create a test task
-        self.task = Task.objects.create(task_name = "Buy groceries", description = "Go to the store and buy food")
-        self.task1 = Task.objects.create(task_name = "Task 1", description = "Task description here")
+        self.task = Task.objects.create(
+            task_name = "Buy groceries",
+            description = "Go to the store and buy food",
+            points_given = 100
+        )
+
+        self.task1 = Task.objects.create(
+            task_name = "Task 1",
+            description = "Task description here",
+            points_given = 100
+        )
 
         # create a UserTask assigned to the user
         self.user_task = UserTask.objects.create(user=self.user1, task=self.task)
@@ -83,16 +91,19 @@ class TaskIntegrationTests(TestCase):
         self.assertIn(task2, user2_tasks)
         self.assertNotIn(task1, user2_tasks)
 
-    ## As a user, I can view my completed tasks
+    ## As a user, I can view my completed tasks -- UPDATE TEST
     def test_view_completed_tasks(self):
         self.client.login(username = 'testuser', password = 'password')
-        response = self.client.get('/tasks/complete/')
+        response = self.client.get(reverse('tasks'))
         self.assertEqual(response.status_code, 200)
 
-    ## As a user, I can view my current tasks on the tasks page
+
+
+    ## As a user, I can view my current tasks on the tasks page -- UPDATE TEST
     def test_view_current_tasks(self):
-        response = self.client.get('/tasks/current/')
+        response = self.client.get(reverse('tasks'))
         self.assertEqual(response.status_code, 200)
+
 
     ## As a user, I cannot create a custom task with the same name as another
     def test_existing_task_creation_prevention(self):
@@ -221,6 +232,11 @@ class TaskIntegrationTests(TestCase):
         self.user_task.completed = True
         self.user_task.save()
 
+        # check user + pet initial points + xp
+        initial_points = self.user1.points
+        initial_xp = self.pet.pet_exp
+        initial_level = self.pet.pet_level
+
         self.client.post(reverse('complete_task', args=[self.user_task.id]))
 
         # check the task is still marked as completed
@@ -229,12 +245,12 @@ class TaskIntegrationTests(TestCase):
 
         # check the user's points remain the same
         self.user1.refresh_from_db()
-        self.assertEqual(self.user1.points, 0)
+        self.assertEqual(self.user1.points, initial_points)
 
         # check the pet's XP and level remain the same
         self.pet.refresh_from_db()
-        self.assertEqual(self.pet.pet_exp, 0)
-        self.assertEqual(self.pet.pet_level, 1)
+        self.assertEqual(self.pet.pet_exp, initial_xp)
+        self.assertEqual(self.pet.pet_level, initial_level)
 
     ## As a user, I cannot complete a task that hasn't been assigned to me
     def test_complete_task_not_assigned_to_user(self):
@@ -279,3 +295,53 @@ class TaskIntegrationTests(TestCase):
         # check the task is marked as completed
         self.user_task.refresh_from_db()
         self.assertTrue(self.user_task.completed)
+
+    ## As a user, I can view predefined and custom tasks
+    def test_view_predefined_and_custom_tasks(self):
+        self.client.login(username='testuser', password='password')
+
+        # create predefined and custom tasks
+        predefined_task = Task.objects.create(task_name="Predefined Task", description="Admin task", predefined=True,
+                                              creator=self.other_user)
+        custom_task = Task.objects.create(task_name="Custom Task", description="User task", predefined=False,
+                                          creator=self.user1)
+
+        # Assign tasks to UserTask
+        UserTask.objects.create(user=self.user1, task=predefined_task)
+        UserTask.objects.create(user=self.user1, task=custom_task)
+
+        response = self.client.get(reverse('tasks'))
+        self.assertEqual(response.status_code, 200)
+
+        # Ensure both tasks are visible to the user
+        self.assertContains(response, "Predefined Task")
+        self.assertContains(response, "Custom Task")
+
+        # Ensure that predefined tasks are shown, but custom tasks created by others are not.
+        self.assertNotContains(response, "Task 1")  # Task created by another user
+
+    ##
+    def test_view_task_points(self):
+        # Create a Task instance with points
+        task_with_points = Task.objects.create(
+            task_name="Task with points",
+            description="Test task",
+            points_given=50,
+            creator=self.user1
+        )
+
+        # Create a UserTask instance to associate the task with the user
+        UserTask.objects.create(user=self.user1, task=task_with_points)
+
+        # Log in the user (replace with the appropriate login mechanism)
+        self.client.login(username='testuser', password='password')
+
+        # Get the page where tasks are listed
+        response = self.client.get(reverse('tasks'))
+
+        # Assert that the response is successful (status code 200)
+        self.assertEqual(response.status_code, 200)
+
+        # Assert that the page contains the task points
+        self.assertContains(response, '<span class="points">50 points</span>')
+

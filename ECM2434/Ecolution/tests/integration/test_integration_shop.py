@@ -1,7 +1,8 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from Ecolution.models import CustomUser, Event, Pet, ShopItem
+from Ecolution.models import CustomUser, Event, Pet, ShopItem, UserItem
+from Ecolution.views import User
 
 
 class ShopIntegrationTest(TestCase):
@@ -40,3 +41,14 @@ class ShopIntegrationTest(TestCase):
 
         # check user now has 40 points
         self.assertEqual(self.user1.points, 40)
+
+## As a user, I cannot buy and assign a shop item that does not exist in the database
+    def test_no_shopitem_if_not_exists(self):
+        """Test that no ShopItem is assigned if it does not exist in the database."""
+        ShopItem.objects.filter(name="Dog").delete()  # Ensure no matching ShopItem exists
+
+        user = User.objects.get(username="testuser")
+
+        user_item = UserItem.objects.filter(user=user).exists()
+        self.assertFalse(user_item)  # No UserItem should be assigned if the ShopItem doesn't exist
+

@@ -4,7 +4,7 @@ from Ecolution.models import Task, CustomUser, UserTask, Pet
 
 class HomepageIntegrationTests(TestCase):
     def setUp(self):
-        # Create a test user
+        # create a user
         self.user1 = CustomUser.objects.create_user(username='testuser', password='password')
         self.user1.points = 10
         self.pet1 = Pet.objects.create(
@@ -14,6 +14,25 @@ class HomepageIntegrationTests(TestCase):
             pet_exp=0,
             pet_type='mushroom'
         )
+
+        # create a second pet
+        self.pet2 = Pet.objects.create(
+            user=self.user1,
+            pet_name='Ginny',
+            pet_level=5,
+            pet_exp=15,
+            pet_type='acorn'
+        )
+
+        # create a third pet
+        self.pet3 = Pet.objects.create(
+            user=self.user1,
+            pet_name='George',
+            pet_level=10,
+            pet_exp=25,
+            pet_type='pot'
+        )
+
         # Assign the pet to the user as their displayed pet
         self.user1.displayed_pet = self.pet1
         self.user1.save()
@@ -39,37 +58,32 @@ class HomepageIntegrationTests(TestCase):
         self.assertContains(response, "Buy groceries")
         self.assertContains(response, "Go to the store and buy food")
 
-    ## As a user, I can earn points from completing tasks
-    def test_homepage_points_increase(self):
-        # user is on homepage
-        response = self.client.get(reverse('home'))
+    ## As a user, I can change my pet on the homepage without any unexpected redirects
+    def test_cycle_pet_redirects_to_home(self):
+        response = self.client.get(reverse("cycle_pet"))
+        self.assertEqual(response.status_code, 302)  # Redirect expected
+        self.assertEqual(response.url, reverse("home"))
 
-        # make note of user's current points
-        user_points_current = self.user1.points
-        print(f"User Points Before Task: {user_points_current}")  # Debug: print user's points before task completion
+    ## As a user, I can switch pets to update the displayed pet
+    def test_cycle_pets_updates_displayed_pet(self):
+        self.client.get(reverse("cycle_pet"))  # Cycle once
+        self.user1.refresh_from_db()
+        self.assertEqual(self.user1.displayed_pet, self.pet2)
 
-        # user is on tasks page
-        response = self.client.get(reverse('tasks'))
+        self.client.get(reverse("cycle_pet"))  # Cycle again
+        self.user1.refresh_from_db()
+        self.assertEqual(self.user1.displayed_pet, self.pet3)
 
-        # user adds task to their list
-        user_tasks = UserTask.objects.create(user=self.user1, task=self.task1)
-        print(f"Task Added: {user_tasks}")  # Debug: print the task that was added
+        self.client.get(reverse("cycle_pet"))  # Cycle back to first pet
+        self.user1.refresh_from_db()
+        self.assertEqual(self.user1.displayed_pet, self.pet1)
 
-        # check task is now in user's list
-        self.assertTrue(UserTask.objects.filter(user=self.user1).exists())
-        self.assertTrue(Task.objects.filter(task_name="Buy groceries").exists())
+    ## As a user, I cannot switch pets if I only have one pet
+    def test_cycle_pet_with_one_pet(self):
+        Pet.objects.exclude(id=self.pet1.id).delete()  # Ensure only one pet remains
 
-        # simulate clicking "Complete" button
-        response = self.client.post('complete_task')  # POST request to mark task as completed
-        print(f"Task Marked Completed: {response.status_code}")  # debug: print status code after completing the task
+        initial_displayed_pet = self.user1.displayed_pet  # Save current displayed pet
+        self.client.get(reverse("cycle_pet"))  # Try cycling
 
-        # user returns to homepage
-        response = self.client.get(reverse('home'))
-
-        # check XP has now increased accordingly
-        user_points_new = self.user1.points
-        print(f"User Points After Task: {user_points_new}")  # Debug: print user's points after task completion
-
-        # assert points have increased
-        self.assertTrue(user_points_new > user_points_current,
-                        f"Expected points to be greater after completing the task. Before: {user_points_current}, After: {user_points_new}")
+        self.user1.refresh_from_db()
+        self.assertEqual(self.user1.displayed_pet, initial_displayed_pet)  # Should remain unchanged

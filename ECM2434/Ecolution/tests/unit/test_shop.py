@@ -1,9 +1,12 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.db import connection
-from Ecolution.models import CustomUser, Event, Pet, ShopItem
+from Ecolution.models import CustomUser, Event, Pet, ShopItem, UserItem
+from Ecolution.views import User
+
 
 class ShopTest(TestCase):
+
     def setUp(self):
         # create and login new user
         self.user1 = CustomUser.objects.create_user(username = 'testuser', password = 'password')
@@ -14,6 +17,10 @@ class ShopTest(TestCase):
             name = 'item1',
             price = 0
         )
+
+        # urls
+        self.url_sign_up = reverse('signup')
+        self.url_shop = reverse('shop')
 
     # As a user, I can access the Shop page
     def test_view_shop(self):
