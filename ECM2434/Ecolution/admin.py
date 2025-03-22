@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Pet, Task, UserTask, Event, UserEvent, ShopItem, UserItem, GameKeeper
+from .models import Pet, Task, UserTask, Event, UserEvent, ShopItem, UserItem
 from django.contrib.auth import get_user_model
 from .models import CustomUser
 from .forms import CustomUserChangeForm
@@ -11,10 +11,9 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserChangeForm
     form = CustomUserChangeForm    
     model = CustomUser
-    list_display = ('email', 'username', 'points', 'preferred_font_size', 'displayed_pet', 'highest_pet_level')
-
+    list_display = ('email', 'username', 'points', 'preferred_font_size', 'displayed_pet', 'highest_pet_level', 'is_gamekeeper')
     fieldsets = UserAdmin.fieldsets + (
-        ('Custom Fields', {'fields': ('points', 'preferred_font_size', 'displayed_pet')}),
+        ('Custom Fields', {'fields': ('points', 'preferred_font_size', 'displayed_pet', 'is_gamekeeper')}),
     )
 
     # This controls what fields appear when adding a NEW user:
@@ -38,4 +37,3 @@ admin.site.register(UserEvent)
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(ShopItem)
 admin.site.register(UserItem)
-admin.site.register(GameKeeper)
