@@ -36,4 +36,5 @@ urlpatterns = [
     path("qr_scanner/", views.qr_scanner_view, name="qr_scanner"),
 
     path("gamekeeper_tasks", views.gamekeeper_task_veiw, name="gamekeeper_tasks")
+    path('cycle_pet/', views.cycle_pet, name='cycle_pet'),
 ]

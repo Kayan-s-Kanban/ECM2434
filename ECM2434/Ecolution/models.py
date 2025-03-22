@@ -64,6 +64,7 @@ class Pet(models.Model): #weak entity pet that relies on user id to exist
     ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # since pets is a weak entity when the user is deleted the pet is also deleted thats what cascade does
+    hat = models.ForeignKey('ShopItem', on_delete=models.SET_NULL, null=True, blank=True)  # refernce to shopitem for clothing
     pet_name = models.CharField(max_length=50) #pet name used in the display on the home page
     pet_level = models.IntegerField(default=1) # pet level used to determine size and is displayed on the home page
     pet_exp = models.IntegerField(default=0) #pet exp used to determine when a pet should level up also displayed on the home page
@@ -162,7 +163,7 @@ class Task(models.Model):
     points_given = models.IntegerField(default=500)
     xp_given = models.IntegerField(default=20)
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, default=None, null=True)
+    event = models.ForeignKey(Event, on_delete=models.SET_NULL, default=None, null=True)
 
     class Meta:
         constraints = [
@@ -206,6 +207,7 @@ class ShopItem(models.Model):
     name = models.CharField(max_length=100)
     price = models.IntegerField(default=5000)
     image_path = models.CharField(max_length=255, default='') # haven't added a default image path yet
+    is_hat = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.name}'
