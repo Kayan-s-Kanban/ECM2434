@@ -1,0 +1,19 @@
+<section class="card_task card box_shadow text_light task">
+    <div class="content flex_h flex_fill_h flex_center flex_gap_std margin_sml">
+        <div class="task_icon flex_v flex_center">
+            <span>♻️</span>
+        </div>
+        <div class="flex_v flex_v_fill">
+            <h3>{{ task.task_name }}</h3>
+            <p>{{ task.description }}</p>
+            <span class="task-points-small">Points: {{ task.points_given }}</span>
+            <span class="task-points-small">XP: {{ task.xp_given }}</span>
+            {% if task.event %}
+                <span class="task-event">Event: {{ task.event.event_name }}</span>
+            {% endif %}
+        </div>
+        <div class="task-actions">
+            <span class="delete-icon" onclick="deleteGamekeeperTask({{ task.task_id }})">🗑️</span>
+        </div>
+    </div>
+</section>

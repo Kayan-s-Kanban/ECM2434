@@ -95,6 +95,11 @@ p {
     transition: 330ms ease;
 }
 
+.button_alt {
+    background-color: var(--color_primary);
+}
+
+
 .button:hover {
     background-color: var(--color_button_hover);
 }
@@ -302,7 +307,58 @@ img.img_leaf {
 section.pet div.image_wrapper {
     width: 160px;
     height: 160px;
+    position: relative;
     /* overflow: hidden; */
+}
+
+section.pet img.hat {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    pointer-events: none; /* so clicks go through to the pet if needed */
+}
+
+.hat.mushroom.small {
+    top: 40px;
+    left: 110px;
+}
+.hat.mushroom.medium{
+    top: 25px;
+    left: 120px;
+}
+.hat.mushroom.large {
+    top: 10px;
+    left: 105px;
+}
+.hat.acorn.small {
+    top: 50px;
+    left: 118px;
+}
+.hat.acorn.medium {
+    top: 55px;
+    left: 120px;
+}
+.hat.acorn.large {
+    top: 30px;
+    left: 120px;
+}
+.hat.plant.small {
+    top: 60px;
+    left: 110px;
+}
+.hat.plant.medium {
+    top: 55px;
+    left: 120px;
+}
+.hat.plant.large {
+    top: -10px;
+    left: 110px;
+}
+
+section.cycle_pet_section {
+    margin-top: 8rem;
+    z-index: 5;
 }
 
 .background {
@@ -569,14 +625,14 @@ img.profile_pic {
     margin-right: 0.5rem;
 }
   
-  .form-group-horizontal input {
+.form-group-horizontal input {
     flex: 1; /* take up remaining space */
     padding: 0.4rem;
     box-sizing: border-box;
 }
 
 .sold-out-banner, .insufficient-banner {
-    background-color: rgba(255, 0, 0, 0.8);
+    background-color: rgba(109, 109, 109, 0.8);
     color: white;
     padding: 5px;
     text-align: center;
@@ -584,4 +640,42 @@ img.profile_pic {
     border-radius: 5px;
     margin-bottom: 8px;
 }
+
+.shop-page {
+    text-align: center;
+    color: #fff;
+}
+
+.button.buy {
+    border: 2px solid #105c53;
+    transition: border-color 0.3s ease;
+}
   
+.button.buy:hover {
+    border-color: #4d5353;
+}
+
+/* ============================
+   QR Scanner Section
+============================= */
+section.qr-scanner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2rem auto;
+    max-width: 600px;
+    padding: 1rem;
+    background-color: var(--color_form_background);
+    border-radius: 8px;
+    box-shadow: var(--box_shadow);
+}
+
+section.qr-scanner-container h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+section.qr-scanner-container #reader {
+    width: 100%;
+    max-width: 600px;
+}

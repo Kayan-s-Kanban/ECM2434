@@ -1,43 +1,50 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block title %}
+    <title>Leaderboard - Ecolution</title>
+{% endblock %}
+
 {% block main %}
 <div class="margin_std">
-    <h2>Leaderboard</h2>
-    <div class="card box_shadow" style="padding: 1rem;">
-        <!-- Top 3 Players -->
+    <!-- Leaderboard Title (no background color here) -->
+    <h2 class="text_light" style="text-align: center;">Leaderboard</h2>
+    <div class="event_list_container" style="background-color: white; padding: 20px; border-radius: 0.8em; margin: 5px; opacity: 0.9;">
+        <!-- Top 3 Players on white background -->
         <div class="flex_h" style="justify-content: space-around; margin-bottom: 1rem;">
-            <!-- 2nd Place -->
             {% if second_pet %}
             <div style="text-align: center;">
                 <img src="{{ second_pet.displayed_pet.computed_image_url }}" alt="{{ second_pet.displayed_pet.pet_type }} pet" style="width: 60px; height: 60px;">
-                <p>2 - Level {{ second_pet.displayed_pet.pet_level }}</p>
+                <p class="text_dark" style="font-weight: bold;">2 - Level {{ second_pet.displayed_pet.pet_level }}</p>
+                <p class="text_dark" style="font-weight: bold;">{{ second_pet.username }}</p>
             </div>
             {% endif %}
-            <!-- 1st Place (Highest-Level Pet) -->
             {% if top_pet %}
             <div style="text-align: center;">
                 <img src="{{ top_pet.displayed_pet.computed_image_url }}" alt="{{ top_pet.displayed_pet.pet_type }} pet" style="width: 80px; height: 80px;">
-                <p>1 👑 - Level {{ top_pet.displayed_pet.pet_level }}</p>
+                <p class="text_dark" style="font-weight: bold;">1 👑 - Level {{ top_pet.displayed_pet.pet_level }}</p>
+                <p class="text_dark" style="font-weight: bold;">{{ top_pet.username }}</p>
             </div>
             {% endif %}
-            <!-- 3rd Place -->
             {% if third_pet %}
             <div style="text-align: center;">
                 <img src="{{ third_pet.displayed_pet.computed_image_url }}" alt="{{ third_pet.displayed_pet.pet_type }} pet" style="width: 60px; height: 60px;">
-                <p>3 - Level {{ third_pet.displayed_pet.pet_level }}</p>
+                <p class="text_dark" style="font-weight: bold;">3 - Level {{ third_pet.displayed_pet.pet_level }}</p>
+                <p class="text_dark" style="font-weight: bold;">{{ third_pet.username }}</p>
             </div>
             {% endif %}
         </div>
-        <!-- Remaining Leaderboard Entries (positions 4 & 5) -->
+        <!-- Remaining Leaderboard Entries (4th place onwards) in green -->
         <div>
             {% for entry in leaderboard_entries %}
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #ccc;">
-                <div style="display: flex; align-items: center;">
-                    <img src="{{ entry.displayed_pet.computed_image_url }}" alt="{{ entry.displayed_pet.pet_type }} pet" style="width: 40px; height: 40px; margin-right: 0.5rem;">
-                    <span>@{{ entry.username }}</span>
+            <div class="card box_shadow" style="padding: 0.5rem; margin-bottom: 0.5rem; background-color: var(--color_background);">
+                <div class="flex_h" style="justify-content: space-between; align-items: center;">
+                    <div class="flex_h" style="align-items: center;">
+                        <img src="{{ entry.displayed_pet.computed_image_url }}" alt="{{ entry.displayed_pet.pet_type }} pet" style="width: 40px; height: 40px; margin-right: 0.5rem;">
+                        <p class="text_light" style="font-weight: bold;">{{ entry.username }}</p>
+                    </div>
+                    <p class="text_light" style="font-weight: bold;">Level {{ entry.displayed_pet.pet_level }}</p>
                 </div>
-                <span>Level {{ entry.displayed_pet.pet_level }}</span>
             </div>
             {% endfor %}
         </div>

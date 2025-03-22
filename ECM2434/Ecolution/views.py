@@ -7,10 +7,14 @@ from django.contrib import messages
 from django.http import HttpResponse, JsonResponse, Http404
 from django.db import IntegrityError
 from django.contrib.auth import logout
+from django.contrib.auth.password_validation import validate_password
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 from django.shortcuts import redirect
 from django.views.decorators.cache import never_cache
 from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent, ShopItem, UserItem
 from django.db.models import Max
+from .decorators import gamekeeper_required
 
 # Create your views here.
 def index(request):
@@ -24,11 +28,27 @@ def signup_view(request):
         username = request.POST["username"]
         password1 = request.POST["password1"]
         password2 = request.POST["password2"]
-        pet_type = request.POST.get("pet_type", "mushroom")  # Default to mushroom
+        pet_type = request.POST.get("pet_type", "mushroom")
         pet_name = request.POST.get("pet_name", "") if pet_type else None
 
         if password1 != password2:
             messages.error(request, "Passwords do not match!")
+            return render(request, "signup.html")
+
+        # Validate the password against Django's validators
+        try:
+            validate_password(password1)
+        except ValidationError as e:
+            # Display each error message from the validators
+            for error in e.messages:
+                messages.error(request, error)
+            return render(request, "signup.html")
+        
+         # Validate the email against Django's validators
+        try:
+            validate_email(email)
+        except ValidationError:
+            messages.error(request, "Please enter a valid email address.")
             return render(request, "signup.html")
 
         if User.objects.filter(username=username).exists():
@@ -43,7 +63,7 @@ def signup_view(request):
         pet = Pet.objects.create(user=user, pet_name=pet_name if pet_name else pet_type, pet_type=pet_type)
         pet.save()
 
-        ## Assigns the pet to the user and saves the user
+        # Assigns the pet to the user and saves the user
         user.displayed_pet = pet
         user.save()
 
@@ -53,6 +73,7 @@ def signup_view(request):
         except ShopItem.DoesNotExist:
             pass
 
+        
         messages.success(request, "Account created! You can now log in.")
         return redirect("login")
 
@@ -83,6 +104,8 @@ def home_view(request):
     pet = request.user.displayed_pet # Get the pet displayed by the user
     # This retrieves the 5 most recent tasks by date to display on home page 
     user_tasks = UserTask.objects.filter(user=user, completed=False).order_by('date')[:5]
+
+    hat = pet.hat if pet and pet.hat else None  
     
     context = {
         "points": user.points,
@@ -92,6 +115,7 @@ def home_view(request):
         "pet_size": pet.determine_size() if pet else "small",  # Determine size
         "level": pet.pet_level if pet else 0,
         "pet": pet,
+        "hat": hat,
         "user_tasks":user_tasks
     }
 
@@ -105,7 +129,7 @@ def tasks_view(request):
     """
     user_tasks = UserTask.objects.filter(user=request.user)
     # Predefined tasks are those created by a superuser (or another designated admin)
-    predefined_tasks = Task.objects.filter(creator__is_superuser=True)
+    predefined_tasks = Task.objects.filter(predefined=True)
     # Custom tasks are those created by the current user
     custom_tasks = Task.objects.filter(creator=request.user)
     return render(request, "tasks.html", {
@@ -174,7 +198,7 @@ def get_user_or_superuser_task(task_id, user):
 
     # If that fails, try to get a superuser-created task
     try:
-        return Task.objects.get(task_id=task_id, creator__is_superuser=True)
+        return Task.objects.get(task_id=task_id, predefined=True)
     except Task.DoesNotExist:
         raise Http404("Task not found or not accessible.")
 
@@ -442,7 +466,6 @@ def update_fontsize(request):
 def get_fontsize(request):
     return JsonResponse({"preferred_font_size": request.user.preferred_font_size})
 
-
 def terms_view(request):
     return render(request, "term.html")
 
@@ -452,7 +475,8 @@ def shop_view(request):
     purchased_item_ids = UserItem.objects.filter(user=request.user).values_list('shopitem__id', flat=True)
     return render(request, "shop.html", {
         "shop_items": shop_items,
-        "purchased_item_ids": list(purchased_item_ids)
+        "purchased_item_ids": list(purchased_item_ids),
+        "points": request.user.points
     })
 
 @login_required
@@ -474,6 +498,15 @@ def buy_item(request, item_id):
         request.user.points -= shop_item.price
         request.user.save()
         UserItem.objects.create(user=request.user, shopitem=shop_item)
+
+        #create a pet object if the user has bought a pet from the shop
+        if shop_item.name.lower() in ['mushroom', 'acorn', 'plant']:
+            pet = Pet.objects.create(
+                user=request.user,
+                pet_name=shop_item.name,
+                pet_type=shop_item.name.lower()
+            )
+
         return JsonResponse({
             "status": "success",
             "message": "Purchase successful!",
@@ -481,6 +514,20 @@ def buy_item(request, item_id):
             "remaining_points": request.user.points
         })
     return JsonResponse({"status": "error", "message": "Invalid request."}, status=400)
+
+@login_required
+def cycle_pet(request):
+    user = request.user
+    pets = list(user.pet_set.all())
+    if pets:
+        if user.displayed_pet in pets:
+            current_index = pets.index(user.displayed_pet)
+        else:
+            current_index = 0
+        next_index = (current_index + 1) % len(pets)
+        user.displayed_pet = pets[next_index]
+        user.save()
+    return redirect("home")
 
 @login_required
 def validate_qr(request, token):
@@ -530,3 +577,62 @@ def leaderboard_view(request):
 def qr_scanner_view(request):
     return render(request, "qr_scanner.html")
 
+@gamekeeper_required
+@login_required
+def gamekeeper_task_view(request):
+    tasks = Task.objects.filter(creator=request.user, predefined=True)
+    context = {
+        "tasks": tasks,
+        "points": request.user.points,
+    }
+    return render(request, "gamekeeper_tasks.html", context)
+
+@gamekeeper_required
+@login_required
+def add_gamekeeper_task(request):
+    """
+    Allows GameKeepers to create tasks. Assumes the caller is already verified as a GameKeeper.
+    """
+    if request.method == "POST":
+        try:
+            # Get the into that will be added to the task
+            # sets the minimum rewards values to 20
+            data = json.loads(request.body)
+            task_name = data.get("task_name")
+            description = data.get("description")
+            points_given = data.get("points_given", 20)
+            xp_given = data.get("xp_given", 20)
+            predefined = True
+
+            # Create a new task with the GameKeeper as the creator
+            new_task = Task.objects.create(
+                task_name=task_name,
+                description=description,
+                points_given=points_given,
+                xp_given=xp_given,
+                predefined=predefined,
+                creator=request.user
+            )
+
+            return JsonResponse({
+                "success": True,
+                "message": "Task created successfully.",
+                "task_id": new_task.task_id,
+                "task_name": new_task.task_name,
+                "description": new_task.description
+            }, status=201)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"status": "error", "message": "Invalid JSON data."}, status=400)
+
+    return JsonResponse({"status": "error", "message": "Invalid request method."}, status=405)
+
+@gamekeeper_required
+@login_required
+def delete_gamekeeper_task(request, task_id):
+    if request.method == "POST":
+        # Ensure the task belongs to the current user and is a gamekeeper (predefined) task.
+        task = get_object_or_404(Task, task_id=task_id, creator=request.user, predefined=True)
+        task.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'message': 'Invalid request method.'}, status=400)
