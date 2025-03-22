@@ -308,6 +308,7 @@ section.pet div.image_wrapper {
     width: 160px;
     height: 160px;
     position: relative;
+    pointer-events: none;
     /* overflow: hidden; */
 }
 
@@ -358,7 +359,6 @@ section.pet img.hat {
 
 section.cycle_pet_section {
     margin-top: 8rem;
-    z-index: 5;
 }
 
 .background {
@@ -502,7 +502,7 @@ section.settings_menu {
     background-color: var(--color_form_background);
     border-radius: 0.8em;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1;
+    z-index: 10;
     padding: 1rem;
     width: 200px; /* Set a reasonable width for the dropdown */
 }

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Select Accessory</title>
+{% endblock %}
+
+{% block main %}
+<section class="margin_std text_light">
+    <h2>Select an Accessory for {{ pet.pet_name }}</h2>
+    <p>Choose a hat from your owned items:</p>
+    
+    <form method="POST">
+        {% csrf_token %}
+        <div class="hat_list flex_v flex_center">
+            {% for user_item in hat_items %}
+                <label style="margin: 1rem;">
+                    <img src="{% static user_item.shopitem.image_path %}" 
+                         alt="{{ user_item.shopitem.name }}" 
+                         style="width: 64px; height: 64px;">
+                    <br>
+                    <input type="radio" name="selected_item_id" value="{{ user_item.shopitem.id }}">
+                    {{ user_item.shopitem.name }}
+                </label>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="button box_shadow text_light button_alt" style="margin-top: 1rem;">
+            Equip Selected Hat
+        </button>
+    </form>
+</section>
+{% endblock %}

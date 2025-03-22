@@ -539,6 +539,33 @@ def cycle_pet(request):
     return redirect("home")
 
 @login_required
+def select_accessory(request):
+    user = request.user
+    pet = user.displayed_pet
+
+    user_hat_items = UserItem.objects.filter(user=user, shopitem__is_hat=True)
+
+    if request.method == 'POST':
+        selected_item_id = request.POST.get('selected_item_id')
+        if selected_item_id:
+            #assign the item to the currently displayed pet
+            try:
+                shop_item = ShopItem.objects.get(id=selected_item_id, is_hat=True)
+                pet.hat = shop_item
+                pet.save()
+            except ShopItem.DoesNotExist:
+                pass
+
+        return redirect('home')
+    
+    context = {
+        'pet': pet,
+        'hat_items': user_hat_items,
+        'points': user.points,
+    }
+    return render(request, 'select_accessory.html', context)
+
+@login_required
 def validate_qr(request, token):
     # Retrieve the event using the unique token
     event = get_object_or_404(Event, unique_token=token)

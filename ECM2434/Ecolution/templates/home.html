@@ -21,14 +21,22 @@
         </div>
     </section>
 
-    {% if request.user.pet_set.count > 1 %}
     <section class="cycle_pet_section flex_h flex_center">
+        {% if request.user.pet_set.count > 1 %}
         <button class="button box_shadow text_light button_alt"
+                style="margin-right: 1rem;"
                 onclick="window.location.href='{% url 'cycle_pet' %}'">
             Cycle Pet
         </button>
+        {% endif %}
+
+        <button class="button box_shadow text_light button_alt"
+                onclick="window.location.href='{% url 'select_accessory' %}'">
+            Select Accessories
+        </button>
     </section>
-    {% else %}
+
+    {% if request.user.pet_set.count <= 1 %}
     <section class="spacer_large"></section>
     {% endif %}
 
