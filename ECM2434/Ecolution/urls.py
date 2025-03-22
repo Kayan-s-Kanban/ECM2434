@@ -20,7 +20,6 @@ urlpatterns = [
     path("events/joinevent/", views.join_event, name="join_event"),
     path("events/leaveevent/", views.leave_event, name="leave_event"),
     path("events/completeevent/", views.complete_event, name="complete_event"),
-    path("events/createevent/", views.create_event, name="create_event"),
     path("events/gettasks/<int:event_id>/", views.get_event_tasks, name="get_event_tasks"),
     path('delete-account/', delete_account, name='delete_account'),
     path("change_password/", change_password, name="change_password"),
@@ -37,5 +36,7 @@ urlpatterns = [
     path("gamekeeper_tasks", views.gamekeeper_task_view, name="gamekeeper_tasks"),
     path("gamekeeper_tasks/add/", views.add_gamekeeper_task, name="add_gamekeeper_task"),
     path("gamekeeper_tasks/delete/<int:task_id>/", views.delete_gamekeeper_task, name="delete_gamekeeper_task"),
+    path("gamekeeper_events/", views.gamekeeper_events, name="gamekeeper_events"),
+    path("gamekeeper_events/createevent/", views.create_event, name="create_event"),
     path('cycle_pet/', views.cycle_pet, name='cycle_pet'),
 ]

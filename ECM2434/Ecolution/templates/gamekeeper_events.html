@@ -1,0 +1,375 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    <title>Events - Ecolution</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+    
+    <style>
+        .heading{
+            align-items: center;
+        }
+
+        .event_list_container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 0.8em;
+            margin: 5px;
+            opacity: 0.9;
+        }
+
+        .event {
+            margin: 5px;
+            padding: 15px;
+        }
+
+        .event_details_container {
+            display: flex;
+            justify-content: center;
+            position: fixed;
+        }
+
+        .event_details {
+            display: none;
+            background-color: white;
+            width: 400px;
+            height: 70vh;
+            border-radius: 15px 15px;
+            padding: 20px 20px;
+        }
+
+        .event_details_content {
+            overflow-y: auto;
+            max-height:  calc(70vh - 115px);
+        }
+
+        .event_details_content::-webkit-scrollbar {
+            display: none; /* Hides the scrollbar */
+        }
+
+        .exit_button_container {
+            display: flex;
+            justify-content: end;
+        }
+
+        .exit_button {
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .join_button{
+            font-size: 16px;
+            align-self: center;
+        }
+
+        .button_container {
+            display: flex;
+            position: sticky;
+            padding: 20px;
+            
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .datetime {
+            display: flex;
+            justify-content: flex-start;
+            gap: 10px;
+            color: #3a8d84;
+        }
+
+        .taskcard {
+            background-color: #3a8d84;
+            border-radius: 0.8em;
+            padding: 7px 10px;
+            margin-block: 0.4em;
+            opacity: 1;
+        }
+
+        #map { 
+            height: 200px; 
+        }
+
+        .points{
+            display: flex;
+            justify-content: flex-start;
+            font-weight: bold;
+        }
+
+        .qr-container{
+            display: none;
+            background-color: white;
+            z-index: 1;
+            border-radius: 15px 15px;
+            padding: 20px 20px;
+            
+        }
+
+        .create_event_form_container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+        }
+
+        .create-event-form {
+            display: none;
+            background-color: white;
+            width: 430px;
+            border-radius: 15px 15px;
+            padding: 20px 20px;
+        }
+
+        .xbutton {
+            width: auto;           
+            padding: 5px 10px;     
+            white-space: nowrap;   
+            display: inline-block;
+        }
+    </style>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+{% endblock %}
+
+{% block main %}
+    <!-- Main Content -->
+
+    <body>
+        <button class="button text_light" onclick="createEventPopUp()">
+            <h3>Create Event</h3>
+        </button>
+        
+
+
+        <h1 class="text_light">Your Events</h1>
+    
+        <div class="event_list_container">
+            <div>
+                {% if gamekeeper_events %}
+                    {% for event in gamekeeper_events%}
+                        <div class="card box_shadow text_light event" 
+                        data-id="{{ event.event_id }}"
+                        data-name="{{ event.event_name }}"
+                        data-description="{{ event.description }}"
+                        data-location="{{ event.location }}"
+                        data-date="{{ event.date }}"
+                        data-time="{{ event.time }}"
+                        data-points="{{ event.total_points}}"
+                        qr_code="{{ event.qr_code.url }}"
+                        onclick="openEventDetails(this)">
+                            <p>{{event.date}}</p>
+                            <h3>{{event.event_name}}</h3>
+                            <p>📍{{event.location}}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text_dark">You havnt created any ongoing events</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="create_event_form_container">
+            <div id="create_event_form" class="create-event-form">
+                <div class="flex_h heading">
+                    <h1 class="text_dark">Create A New Event</h1>
+                    <button class="button exit_button text_light" onclick="closeEventFormPopup()"> x </button>
+                </div>
+                <form action="{% url 'create_event' %}" method="POST" id="event-form" class="flex_v">
+                    {% csrf_token %}
+                    <input type="text" name="event_name" placeholder="Event Name" required>
+                    <input type="text" name="description" placeholder="Description" required>
+                    <input type="text" name="location" placeholder="Location" required>
+                    <div class="flex_h">
+                        <input type="date" name="date" required>
+                        <input type="time" name="time" required> 
+                    </div>
+                    <div class="flex_h">
+                        <h3>Event Tasks:</h3>
+                        <button type="button" onClick="addEventTask()" class="button text_light">+</button>  
+                    </div>
+                    <div id="task_container">
+                        <div class="flex_h margin_sml_bot">
+                            <input type="text" name="task_name" placeholder="Task Name" required>
+                            <input type="number" name="task_points" placeholder="Points" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="button text_light">Create Event</button>
+                </form>
+            </div>
+        </div>"
+        
+        
+
+
+        <div class="event_details_container">
+            <div class="event_details margin_std box_shadow" id="event_details">
+                <div class="flex_h heading">
+                    <h1 id="name", class="text_dark"></h1>
+                    <button class="button exit_button text_light" onclick="closeEventDetails()"> x </button>
+                </div>
+
+                <div class="event_details_content" >
+                    <div class="datetime">
+                        <p id="time"></p>
+                        <p id="date"></p>
+                    </div>
+
+                    <div class="points">
+                        <p id="points"></p>
+                        <p>  Points</p>
+                    </div>
+
+                    <div class="flex_h flex_center">
+                        <img id="qr_code" style="width: 70%; height: auto;">
+                    </div>
+                    
+                    <h4>Event Tasks:</h4>
+                    <div id="tasks"></div>
+        
+                    <h4>About Event:</h4>
+                    <p id="description"></p>
+
+                    <div id="map" style="width: 100%; height: 200px;"></div>
+                </div>
+        </div>
+
+    </body>
+    
+    
+    <script>
+        let map = null;
+        
+        function addEventTask(){
+            const taskContainer = document.getElementById("task_container");
+            let taskItem = document.createElement('div');
+            taskItem.classList.add('flex_h', 'margin_sml_bot');
+
+            taskItem.innerHTML = `
+                <input type="text" name="task_name" placeholder="Task Name" required>
+                <input type="number" name="task_points" placeholder="Points" required>
+            `;
+
+            taskContainer.appendChild(taskItem);
+        }
+
+        function createEventPopUp() {
+            const createForm = document.getElementById("create_event_form");
+            createForm.style.display = "block";
+        }
+
+
+        //creates the map which is displayed within the event popup
+        function createMap(lat, lon, zoom = 18) {
+            map = L.map('map').setView([lat, lon], zoom);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            L.marker([lat, lon]).addTo(map);
+        }
+
+        //opens an event's details popup
+        function openEventDetails(element) {
+            let eventDetails = document.getElementById("event_details");
+            eventDetails.style.display = "block";
+            eventDetails.setAttribute("event-id", element.dataset.id);
+
+            const eventAttributes = ["name", "description", "date", "time", "points"];
+            eventAttributes.forEach(field =>
+                eventDetails.querySelector(`#${field}`).textContent = element.dataset[field]
+            );
+
+            let tasksContainer = eventDetails.querySelector("#tasks");
+            tasksContainer.innerHTML = ""; 
+
+            //gets all the tasks within a specific event
+            getEventTask(element.dataset.id)
+                .then(data => {
+                    if (data.tasks.length === 0) {
+                        tasksContainer.innerHTML = "<p>No tasks available</p>";
+                    } else {
+                        data.tasks.forEach(task => {
+                            let taskDiv = document.createElement("div");
+                            taskDiv.classList.add("box_shadow", "text_light", "taskcard");
+
+                            taskDiv.innerHTML = `${task.task_name}`;
+                        
+                            tasksContainer.appendChild(taskDiv);
+                        });
+                    }
+                });
+
+            eventDetails.querySelector("#qr_code").src = element.getAttribute("qr_code");
+        
+            //map coodinates hardcoded for now
+            createMap(50.734967, -3.533750);
+
+            eventDetails.style.display = "block";
+        }
+
+        //closes the event detail pop up
+        function closeEventDetails() {
+            document.getElementById("event_details").style.display = "none";
+
+            if (map) {
+                map.remove();
+                map = null;
+            }
+        }
+
+        function closeEventFormPopup() {
+            const createForm = document.getElementById("create_event_form").style.display = "none";
+        }
+
+
+        //gets all the tasks for an event
+        function getEventTask(eventId) {
+            return fetch(`/ecolution/events/gettasks/${eventId}/`)
+                .then(response => response.json())  
+                .catch(error => {
+                    console.error("Error:", error)
+                });
+        }
+
+        function showErrorPopup(message) {
+            // Create a new popup div
+            let popup = document.createElement("div");
+            popup.className = "error-popup";
+            popup.innerText = message;
+            
+            // Basic inline styling for the popup (you can move these to your CSS file)
+            popup.style.position = "fixed";
+            popup.style.top = "20px";
+            popup.style.right = "20px";
+            popup.style.padding = "10px 20px";
+            popup.style.backgroundColor = "#ff4d4d";  // Red background for error
+            popup.style.color = "#fff";
+            popup.style.borderRadius = "5px";
+            popup.style.boxShadow = "0px 2px 5px rgba(0, 0, 0, 0.3)";
+            popup.style.zIndex = "1000";
+            
+            // Append the popup to the body
+            document.body.appendChild(popup);
+            
+            // Automatically remove the popup after 3 seconds
+            setTimeout(() => {
+                popup.remove();
+            }, 3000);
+        }
+        
+        function getCSRFToken() {
+            return document.cookie.match(/csrftoken=([^;]+)/)[1];
+        }
+    </script>
+{% endblock %}
+

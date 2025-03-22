@@ -15,6 +15,7 @@ from django.views.decorators.cache import never_cache
 from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent, ShopItem, UserItem
 from django.db.models import Max
 from .decorators import gamekeeper_required
+from django.utils import timezone
 
 # Create your views here.
 def index(request):
@@ -306,6 +307,8 @@ def complete_event(request):
             return JsonResponse({"success": False, "message": str(e)})
     return JsonResponse({"success": False, "message": "Invalid request"})
 
+@gamekeeper_required
+@login_required
 def create_event(request):
     if request.method == "POST":
         event_name = request.POST.get("event_name")
@@ -313,6 +316,8 @@ def create_event(request):
         location = request.POST.get("location")
         date = request.POST.get("date")
         time = request.POST.get("time")
+        task_names = request.POST.getlist("task_name")
+        task_points = request.POST.getlist("task_points")
 
         try:
             event = Event.objects.create(
@@ -323,10 +328,14 @@ def create_event(request):
                 time=time,
             )
 
+            for task_name, task_point in zip(task_names, task_points):
+                if task_name.strip(): 
+                    Task.objects.create(event=event, task_name=task_name, points_given=int(task_point), xp_given=int(task_point))
+
         except IntegrityError as e:
             return JsonResponse({"status": "error", "message": "Database Integrity Error: " + str(e)}, status=400)
     
-        return JsonResponse({"status": "success", "event_id": event.event_id})
+        return redirect("gamekeeper_events") 
 
     return JsonResponse({"status": "error"}, status=400)
     
@@ -350,7 +359,13 @@ def get_event_tasks(request, event_id):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
-
+@gamekeeper_required
+@login_required
+def gamekeeper_events(request):
+    gamekeeper_events = Event.objects.filter(date__gte=timezone.now())
+    #filter out past events
+    context = {"gamekeeper_events": gamekeeper_events}
+    return render(request, "gamekeeper_events.html", context)
 
 
 def settings_view(request):
