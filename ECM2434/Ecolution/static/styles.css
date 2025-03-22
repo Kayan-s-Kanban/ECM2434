@@ -83,6 +83,11 @@ p {
     text-shadow: var(--text_dark_shadow);
 }
 
+.particle {
+    image-rendering: pixelated;
+    position: absolute !important;
+    transition: 330ms ease-in-out;
+}
 
 
 /* [[[ 2.A) Buttons ]]] */
@@ -402,6 +407,11 @@ section.cycle_pet_section {
     image-rendering: pixelated;
     background: url('/static/images/bg_x6.png');
     background-position: 50% 2%;
+}
+
+.card_task {
+    position: relative;
+    z-index: 2;
 }
 
 .card {

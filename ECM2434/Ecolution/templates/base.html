@@ -1,3 +1,9 @@
+{% load static %}
+<!-- Used so pure JS files can access the static images folder -->
+<script>
+    const STATIC_IMAGES = "{% static 'images/' %}";
+</script>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -90,6 +96,7 @@
     {% block additional %}
         <!-- Any Additional Content (Scripts, etc.) -->
         <script src="{% static 'js/taskActions.js' %}"></script>
+        <script src="{% static 'js/spawnParticles.js' %}"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const messagesContainer = document.getElementById('django-messages');
