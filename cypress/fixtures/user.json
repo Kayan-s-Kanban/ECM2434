@@ -1,4 +1,5 @@
 {
   "username": "testuser",
-  "password": "password"
+  "password": "password",
+  "petName": "george"
 }

@@ -25,7 +25,7 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('login', (username, password) => {
-    cy.visit('http://127.0.0.1:8000/login/');
+    cy.visit('http://127.0.0.1:8000/ecolution/login/');
 
     // select and enter username
     cy.get('input[name="username"]').type(username);
@@ -39,23 +39,28 @@ Cypress.Commands.add('login', (username, password) => {
 
 Cypress.Commands.add(
   'signup',
-  (username, email, password, agreeToTerms = false, petOption = null) => {
-    cy.visit('/ecolution/signup/');
+  (username, email, password, petName, agreeToTerms = false, petOption = null) => {
+    cy.visit('http://127.0.0.1:8000/ecolution/signup/');
 
     // fill in the signup form
     cy.get('input[name="username"]').type(username);
     cy.get('input[name="email"]').type(email);
-    cy.get('input[name="password"]').type(password);
-    cy.get('input[name="confirm_password"]').type(password);
+    cy.get('input[name="password1"]').type(password);
+    cy.get('input[name="password2"]').type(password);
 
     // conditionally check the terms checkbox
     if (agreeToTerms) {
-      cy.get('input[name="terms"]').check();
+      cy.get('input[name="agree_terms"]').check();
     }
 
     // conditionally select a pet option
     if (petOption) {
-      cy.get(`input[name="pet"][value="${petOption}"]`).check();
+        cy.get(`input[name="pet_type"][value="${petOption}"]`).check();
+    }
+
+    // conditionally select a pet option
+    if (petName) {
+        cy.get('input[name="pet_name"]').type(petName)
     }
 
     // submit form

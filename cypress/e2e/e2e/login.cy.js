@@ -1,4 +1,7 @@
 describe('Login and Navigate', () => {
+    before(() => {
+        cy.signup('testuser', 'testuser@example.com', 'password', true, 'dog');
+    })
     it('should log in and navigate to Home', () => {
         // login
         cy.login('testuser', 'password');
