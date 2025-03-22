@@ -37,7 +37,7 @@
         <!-- Remaining Leaderboard Entries (4th place onwards) in green -->
         <div>
             {% for entry in leaderboard_entries %}
-            <div class="card box_shadow" style="padding: 0.5rem; margin-bottom: 0.5rem; background-color: var(--color_secondary); opacity: 0.9;">
+            <div class="card box_shadow" style="padding: 0.5rem; margin-bottom: 0.5rem; background-color: var(--color_background);">
                 <div class="flex_h" style="justify-content: space-between; align-items: center;">
                     <div class="flex_h" style="align-items: center;">
                         <img src="{{ entry.displayed_pet.computed_image_url }}" alt="{{ entry.displayed_pet.pet_type }} pet" style="width: 40px; height: 40px; margin-right: 0.5rem;">
