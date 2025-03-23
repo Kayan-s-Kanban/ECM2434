@@ -239,6 +239,7 @@ def complete_task(request, task_id):
         return JsonResponse({"status": "success", "points": request.user.points})
     return JsonResponse({"status": "error"}, status=400)
 
+@login_required
 def events_view(request):
     all_user_events = UserEvent.objects.filter(user=request.user)
     incomplete_user_events = UserEvent.objects.filter(user=request.user, completed = False)
@@ -249,6 +250,7 @@ def events_view(request):
     context = {"user_events": user_events, "events": all_events, "points": request.user.points}
     return render(request, "events.html", context)
 
+@login_required
 def join_event(request):
     if request.method == "POST":
         try:
@@ -261,6 +263,7 @@ def join_event(request):
             return JsonResponse({"success": False, "message": str(e)})
     return JsonResponse({"success": False, "message": "Invalid request"})
 
+@login_required
 def leave_event(request):
     if request.method == "POST":
         try:
@@ -314,6 +317,8 @@ def create_event(request):
         event_name = request.POST.get("event_name")
         description = request.POST.get("description")
         location = request.POST.get("location")
+        latitude = request.POST.get("latitude")
+        longitude = request.POST.get("longitude")
         date = request.POST.get("date")
         time = request.POST.get("time")
         task_names = request.POST.getlist("task_name")
@@ -324,6 +329,8 @@ def create_event(request):
                 event_name=event_name,
                 description=description,
                 location=location,
+                latitude=latitude,
+                longitude=longitude,
                 date=date,
                 time=time,
             )
@@ -339,6 +346,7 @@ def create_event(request):
 
     return JsonResponse({"status": "error"}, status=400)
     
+@login_required
 def get_event_tasks(request, event_id):
     try:    
         event = get_object_or_404(Event, event_id=event_id)

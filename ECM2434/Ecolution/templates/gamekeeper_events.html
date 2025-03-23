@@ -125,12 +125,25 @@
             padding: 20px 20px;
         }
 
-        .xbutton {
-            width: auto;           
-            padding: 5px 10px;     
-            white-space: nowrap;   
-            display: inline-block;
+        .form_column {
+            width: 100%;
         }
+
+        .all-events-container {
+            overflow-y: auto;
+            max-height: 70vh;
+            border-radius: 20px 20px;
+        }
+
+        .all-events-container::-webkit-scrollbar {
+            display: none; /* Hides the scrollbar */
+        }
+
+        .create_event_button {
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.534);
+        }
+
+
     </style>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -144,15 +157,13 @@
     <!-- Main Content -->
 
     <body>
-        <button class="button text_light" onclick="createEventPopUp()">
+        <button class="button text_light create_event_button" onclick="createEventPopUp()">
             <h3>Create Event</h3>
         </button>
-        
-
 
         <h1 class="text_light">Your Events</h1>
     
-        <div class="event_list_container">
+        <div class="event_list_container all-events-container">
             <div>
                 {% if gamekeeper_events %}
                     {% for event in gamekeeper_events%}
@@ -161,6 +172,8 @@
                         data-name="{{ event.event_name }}"
                         data-description="{{ event.description }}"
                         data-location="{{ event.location }}"
+                        data-latitude="{{ event.latitude }}"
+                        data-longitude="{{ event.longitude }}"
                         data-date="{{ event.date }}"
                         data-time="{{ event.time }}"
                         data-points="{{ event.total_points}}"
@@ -179,7 +192,7 @@
 
         <div class="create_event_form_container">
             <div id="create_event_form" class="create-event-form">
-                <div class="flex_h heading">
+                <div class="flex_h heading margin_sml_bot">
                     <h1 class="text_dark">Create A New Event</h1>
                     <button class="button exit_button text_light" onclick="closeEventFormPopup()"> x </button>
                 </div>
@@ -187,19 +200,24 @@
                     {% csrf_token %}
                     <input type="text" name="event_name" placeholder="Event Name" required>
                     <input type="text" name="description" placeholder="Description" required>
-                    <input type="text" name="location" placeholder="Location" required>
-                    <div class="flex_h">
+                    <div class="flex_h flex_center flex_gap_std">
                         <input type="date" name="date" required>
                         <input type="time" name="time" required> 
                     </div>
+                    <input type="text" name="location" placeholder="Location" required>
+                    <div class="flex_h flex_gap_std">
+                        <input type="number" name="latitude" class="flex_v_fill" placeholder="Latitude" step="0.000001" min="-90" max="90" required>
+                        <input type="number" name="longitude" class="flex_v_fill" placeholder="Longitude" step="0.000001" min="-180" max="180" required>
+                    </div>  
+                    
                     <div class="flex_h">
                         <h3>Event Tasks:</h3>
                         <button type="button" onClick="addEventTask()" class="button text_light">+</button>  
                     </div>
-                    <div id="task_container">
-                        <div class="flex_h margin_sml_bot">
-                            <input type="text" name="task_name" placeholder="Task Name" required>
-                            <input type="number" name="task_points" placeholder="Points" required>
+                    <div id="task_container ">
+                        <div class="flex_h margin_sml_bot flex_gap_std">
+                            <input type="text" name="task_name" placeholder="Task Name" class="flex_v_fill" required>
+                            <input type="number" name="task_points" placeholder="Points" class="flex_v_fill" required>
                         </div>
                     </div>
                     <button type="submit" class="button text_light">Create Event</button>
@@ -311,8 +329,7 @@
 
             eventDetails.querySelector("#qr_code").src = element.getAttribute("qr_code");
         
-            //map coodinates hardcoded for now
-            createMap(50.734967, -3.533750);
+            createMap(element.dataset.latitude, element.dataset.longitude);
 
             eventDetails.style.display = "block";
         }

@@ -157,6 +157,8 @@
                             data-name="{{ user_event.event_name }}"
                             data-description="{{ user_event.description }}"
                             data-location="{{ user_event.location }}"
+                            data-longitude = "{{ user_event.longitude }}"
+                            data-latitude = "{{ user_event.latitude }}"
                             data-date="{{ user_event.date }}"
                             data-time="{{ user_event.time }}"
                             data-points="{{ user_event.total_points}}"
@@ -182,6 +184,8 @@
                             data-name="{{ event.event_name }}"
                             data-description="{{ event.description }}"
                             data-location="{{ event.location }}"
+                            data-longitude="{{ event.longitude }}"
+                            data-latitude="{{ event.latitude }}"
                             data-date="{{ event.date }}"
                             data-time="{{ event.time }}"
                             data-points="{{ event.total_points}}"
@@ -218,8 +222,7 @@
                         <p id="points"></p>
                         <p>  Points</p>
                     </div>
-            
-                    
+ 
                     <div id="map" style="width: 100%; height: 200px;"></div>
                     
                     <h4>Event Tasks:</h4>
@@ -308,8 +311,9 @@
                     setCheckBoxListener();
                 });
 
-            //map coodinates hardcoded for now
-            createMap(50.734967, -3.533750);
+
+            createMap(element.dataset.latitude, element.dataset.longitude);
+            
 
             eventDetails.style.display = "block";
         }
