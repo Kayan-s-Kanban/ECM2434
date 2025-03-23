@@ -346,6 +346,18 @@ img.img_leaf {
     height: 100%;
 }
 
+.align_self_start {
+    align-self: start;
+}
+
+.align_self_center {
+    align-self: center;
+}
+
+.align_self_end {
+    align-self: end;
+}
+
 section.pet div.image_wrapper {
     width: 160px;
     height: 160px;
@@ -412,7 +424,6 @@ section.cycle_pet_section {
 
 .card_task {
     position: relative;
-    z-index: 2;
 }
 
 .card {
