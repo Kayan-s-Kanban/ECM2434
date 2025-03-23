@@ -8,14 +8,7 @@
 <!-- Style Content Here (Should be integrated into styles.css eventually) -->
 {% block style %}
     <style>
-        .add-task-button {
-            font-size: 24px;
-            cursor: pointer;
-            background: green;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
+        
 
         .task-container {
             background: rgba(255, 255, 255, 0.9);
@@ -68,13 +61,6 @@
             overflow-y: auto;
         }
 
-        .popup button {
-            margin: 5px;
-            padding: 10px;
-            border: none;
-            cursor: pointer;
-        }
-
         .popup input, .popup textarea {
             width: 90%;
             padding: 8px;
@@ -86,13 +72,20 @@
 {% endblock %}
 
 {% block main %}
-    <div class="task-container">
+    <div>
+        <div></div>
+    </div>
+
+
+    <div class="container">
         <div class="flex_h">
             <div class="tabs">
                 <div class="tab active" onclick="showTasks('current')">Current Tasks</div>
                 <div class="tab" onclick="showTasks('completed')">Completed Tasks</div>
             </div>
-            <div class="add-task-button" onclick="openPopup()">+</div>
+            <button class="button button_img" onclick="openPopup()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path fill="#ffffff" d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>
+            </button>
         </div>
 
         <div id="current-tasks">
@@ -123,10 +116,10 @@
         <h3>Add Task</h3>
 
         <h4>Predefined Tasks</h4>
-        <ul id="predefined-tasks">
+        <ul class="button_list" id="predefined-tasks">
             {% for task in predefined_tasks %}
                 <li>
-                    <button onclick="addTask({{ task.task_id }}, '{{ task.task_name }}', '{{ task.description }}')">
+                    <button class="button" onclick="addTask({{ task.task_id }}, '{{ task.task_name }}', '{{ task.description }}')">
                         {{ task.task_name }}
                     </button>
                 </li>
@@ -136,10 +129,10 @@
         </ul>
 
         <h4>Your Custom Tasks</h4>
-        <ul id="custom-tasks">
+        <ul class="button_list" id="custom-tasks">
             {% for task in custom_tasks %}
                 <li>
-                    <button onclick="addTask({{ task.task_id }}, '{{ task.task_name }}', '{{ task.description }}')">
+                    <button class="button" onclick="addTask({{ task.task_id }}, '{{ task.task_name }}', '{{ task.description }}')">
                         {{ task.task_name }}
                     </button>
                 </li>
@@ -148,15 +141,15 @@
             {% endfor %}
         </ul>
 
-        <button onclick="showCustomTaskForm()">Create Custom Task</button>
+        <button class="button_alt" onclick="showCustomTaskForm()">Create Custom Task</button>
 
         <div id="custom-task-form" style="display: none;">
             <input type="text" id="custom-task-name" placeholder="Task Title">
             <textarea id="custom-task-desc" placeholder="Task Description"></textarea>
-            <button onclick="submitCustomTask()">Add Custom Task</button>
+            <button class="button_alt" onclick="submitCustomTask()">Add Custom Task</button>
         </div>
 
-        <button onclick="closePopup()">Cancel</button>
+        <button class="button_alt" onclick="closePopup()">Cancel</button>
     </div>
 
 {% endblock %}

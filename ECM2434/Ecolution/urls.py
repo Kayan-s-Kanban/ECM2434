@@ -39,4 +39,5 @@ urlpatterns = [
     path("gamekeeper_events/", views.gamekeeper_events, name="gamekeeper_events"),
     path("gamekeeper_events/createevent/", views.create_event, name="create_event"),
     path('cycle_pet/', views.cycle_pet, name='cycle_pet'),
+    path('select_accessory/', views.select_accessory, name='select_accessory'),
 ]

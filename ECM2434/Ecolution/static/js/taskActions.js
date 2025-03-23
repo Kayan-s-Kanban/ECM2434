@@ -18,9 +18,14 @@
                 if (pointsEl) { 
                     pointsEl.innerText = data.points; 
                 }
+                // NOTE: For testing out animations, turn on spawn particle, swap the remove to be on a timer, and stop the redirect.
                 var taskElement = element.closest(".task");
                 if (taskElement) {
+                    // spawnParticles(taskElement, 60);
                     taskElement.remove();
+                    // setTimeout(() => {
+                    //     taskElement.remove();
+                    // }, 3000);
                 }
                 if (window.location.href.includes("tasks")) {
                     window.location.href = "/ecolution/tasks/";

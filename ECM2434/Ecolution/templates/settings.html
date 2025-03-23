@@ -164,6 +164,7 @@
 {% endblock %}
 
 {% block additional %}
+{{ block.super }}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const fontSizeSelect = document.getElementById("font-size-select");

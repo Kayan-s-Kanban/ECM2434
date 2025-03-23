@@ -21,16 +21,20 @@
         </div>
     </section>
 
-    {% if request.user.pet_set.count > 1 %}
-    <section class="flex_h flex_center" style="margin-top: 5rem;">
+    <section class="cycle_pet_section flex_h flex_center">
+        {% if request.user.pet_set.count > 1 %}
         <button class="button box_shadow text_light button_alt"
+                style="margin-right: 1rem;"
                 onclick="window.location.href='{% url 'cycle_pet' %}'">
             Cycle Pet
         </button>
+        {% endif %}
+
+        <button class="button box_shadow text_light button_alt"
+                onclick="window.location.href='{% url 'select_accessory' %}'">
+            Select Accessories
+        </button>
     </section>
-    {% else %}
-    <section class="spacer_large"></section>
-    {% endif %}
 
     <section class="status_bar flex_h flex_center text_light">
         <div class="pet_status flex_v margin_sml flex_v_fill">
@@ -58,7 +62,13 @@
         {% for user_task in user_tasks %}
             {% include 'partials/task_card.html' with user_task=user_task %}
         {% empty %}
-            <p>No tasks available.</p>
+        <section class="card box_shadow text_light">
+            <div class="content flex_h flex_fill_h flex_center flex_gap_std margin_sml">
+                <p>All tasks completed!</p>
+            </div>
+        </section>
+        
+            
         {% endfor %}
     </section>
 {% endblock %}
