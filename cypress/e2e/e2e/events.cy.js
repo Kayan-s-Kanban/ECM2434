@@ -29,10 +29,13 @@ describe('events spec', () => {
         cy.get('input[name="date"]').type('2025-05-20');
         cy.get('input[name="time"]').type('10:00');
         cy.get('button[type="submit"]').click();
-        cy.url().should('include', '/ecolution/createevent/');
+        cy.url().should('include', '/ecolution/events/createevent/');
     });
 
     it('should be able to delete a created event', () => {
+        // Ensure user is on events page
+        cy.should(url().should('include', '/ecolution/events/'));
+
         // Assuming the event is already created and visible on the page
         cy.get('.event').first().click(); // Click on the event
         cy.get('button#delete-event').click(); // Click on the delete button
@@ -42,6 +45,9 @@ describe('events spec', () => {
     });
 
     it('should be able to join an event and complete tasks', () => {
+        // Ensure user is on events page
+        cy.should(url().should('include', '/ecolution/events/'));
+
         // Join an event
         cy.get('.event').first().click(); // Click on an event
         cy.get('#button').click(); // Click on Join Event
@@ -57,6 +63,9 @@ describe('events spec', () => {
     });
 
     it('should be able to join an event, complete tasks, and complete event through QR validation', () => {
+        // Ensure user is on events page
+        cy.should(url().should('include', '/ecolution/events/'));
+
         cy.get('.event').first().click();
         cy.get('#button').click(); // Join the event
 
@@ -75,6 +84,9 @@ describe('events spec', () => {
     });
 
     it('should not be able to complete event without QR validation', () => {
+        // Ensure user is on events page
+        cy.should(url().should('include', '/ecolution/events/'));
+
         cy.get('.event').first().click();
         cy.get('#button').click(); // Join the event
 
@@ -86,15 +98,39 @@ describe('events spec', () => {
     });
 
     it('should navigate back to events page from event page', () => {
+        // Ensure user is on events page to begin
+        cy.should(url().should('include', '/ecolution/events/'));
+
+        // View an event
+        cy.get('.event').first().click();
+
         // Ensure the back navigation works
         cy.get('a[href="/ecolution/events/"]').click();
         cy.url().should('include', '/ecolution/events/');
     });
 
     it('should allow event completion if the correct QR code is validated', () => {
+        // Ensure user is on events page to begin
+        cy.should(url().should('include', '/ecolution/events/'));
+
+        // User joins event
+        cy.get('.event').first().click();
+        cy.get('#button').click(); // Join the event
+
+        // Navigate to QR code scanner
+        cy.get('button[onclick="toggleUseMenu()"]').click(); // Open the menu
+        cy.get('a[href="/ecolution/events/"]').click(); // Click on "Events"
+        cy.url().should('include', '/ecolution/qr_scanner/');
+
         // Simulate QR code scanning by entering a valid QR code
         cy.get('#qr-code-input').type('validQRCode1234'); // Replace with valid QR code value
         cy.get('#validate-button').click(); // Click the button to validate the QR code
+
+        // Navigate back to event
+        cy.get('button[onclick="toggleUseMenu()"]').click(); // Open the menu
+        cy.get('a[href="/ecolution/events/"]').click(); // Click on "Events"
+        cy.url().should('include', '/ecolution/events/');
+        cy.get('.event').first().click();
 
         // Check if the event completion button is enabled after QR code validation
         cy.get('#complete-event-button').should('not.be.disabled');

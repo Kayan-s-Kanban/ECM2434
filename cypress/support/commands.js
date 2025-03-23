@@ -74,7 +74,19 @@ Cypress.Commands.add(
   }
 );
 
+Cypress.Commands.add('navigateToPage', (pageUrl) => {
+    // Open the menu and verify it's visible
+    cy.get('button[onclick="toggleUseMenu()"]').should('be.visible').click();
 
+    // Wait for the menu to be visible
+    cy.get('#mainMenu').should('be.visible');
+
+    // Click on the first link corresponding to the pageUrl
+    cy.get(`a[href="${pageUrl}"]`).first().click();
+
+    // Wait for page load and verify that the URL is correct
+    cy.url().should('include', pageUrl);
+});
 
 
 
