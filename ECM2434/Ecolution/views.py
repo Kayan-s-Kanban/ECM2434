@@ -370,8 +370,7 @@ def get_event_tasks(request, event_id):
 @gamekeeper_required
 @login_required
 def gamekeeper_events(request):
-    gamekeeper_events = Event.objects.filter(date__gte=timezone.now())
-    #filter out past events
+    gamekeeper_events = Event.objects.filter(date__gte=timezone.now(), creator=request.user)
     context = {"gamekeeper_events": gamekeeper_events}
     return render(request, "gamekeeper_events.html", context)
 
