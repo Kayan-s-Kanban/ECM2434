@@ -39,34 +39,44 @@ Cypress.Commands.add('login', (username, password) => {
 
 Cypress.Commands.add(
   'signup',
-  (username, email, password, petName, agreeToTerms = false, petOption = null) => {
+  (email, password, petOption = 'mushroom', petName = '', agreeToTerms = false) => {
     cy.visit('http://127.0.0.1:8000/ecolution/signup/');
 
-    // fill in the signup form
+    const username = `user_${Date.now()}`;  // Generate a unique username
+
+    // Fill in the signup form
     cy.get('input[name="username"]').type(username);
-    cy.get('input[name="email"]').type(email);
+
+    if (email) {
+        cy.get('input[name="email"]').type(email);
+    }
     cy.get('input[name="password1"]').type(password);
     cy.get('input[name="password2"]').type(password);
 
-    // conditionally check the terms checkbox
+    // If pet type is provided (petOption is defaulted to mushroom)
+    if (petOption) {
+        cy.get(`input[name="pet_type"][value="${petOption}"]`).check({ force: true });
+        if (petName) {
+            cy.get('input[name="pet_name"]').should('be.visible').type(petName, { force: true });
+        }
+    }
+
+    // Check the terms checkbox if needed
     if (agreeToTerms) {
       cy.get('input[name="agree_terms"]').check();
     }
 
-    // conditionally select a pet option
-    if (petOption) {
-        cy.get(`input[name="pet_type"][value="${petOption}"]`).check();
-    }
-
-    // conditionally select a pet option
-    if (petName) {
-        cy.get('input[name="pet_name"]').type(petName)
-    }
-
-    // submit form
+    // Submit the form
     cy.get('button[type="submit"]').click();
+
+    // Wrap the username in a chainable and return it using `cy.wrap()`
+    cy.wrap(username).as('username');
   }
 );
+
+
+
+
 
 Cypress.Commands.add('deleteAccount', (username) => {
   cy.visit('/account/settings/delete_account');

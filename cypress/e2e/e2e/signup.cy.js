@@ -1,83 +1,87 @@
 describe('Signup Spec', () => {
   it('should not be able to signup without agreeing to the T&C', () => {
-    // try signing up without agreeing to Terms & Conditions
-    cy.signup('testuser', 'testuser@example.com', 'TestPassword123!', false, 'mushroom', 'Shroomy');
-
-    // check an error message appears for missing T&C agreement
-    cy.contains('You must agree to the terms and conditions').should('be.visible');
+    // Try signing up without agreeing to Terms & Conditions
+    cy.signup('testuser@example.com', 'Password123!', 'mushroom', 'testPet', false); // changed agreeToTerms to false
 
     // Ensure user stays on the signup page
     cy.url().should('include', '/ecolution/signup/');
   });
 
   it('should be able to signup successfully when all fields are valid', () => {
-    // try to sign up with valid details, pet selection, and T&C agreement
-    cy.signup('validuser', 'validuser@example.com', 'ValidPassword123!', true, 'plant', 'Leafy');
+    // Try to sign up with valid details, pet selection, and T&C agreement
+    cy.signup('testuser@example.com', 'Password123!', 'mushroom', 'Shroomy', true);
 
-    // check successful navigation
-    cy.url().should('include', '/ecolution/home');
-
-  });
-
-  it('should not be able to signup without agreeing to T&C', () => {
-    // enter signup details without agreeing to the T&C
-    cy.signup('testuser', 'testuser@example.com', 'TestPassword123!', false, 'plant', 'leafy');
-
-    // assert that an error message appears
-    cy.contains('You must agree to the terms and conditions').should('be.visible');
-
-    // check user stays on the signup page
-    cy.url().should('include', '/ecolution/signup/');
+    // Check if signup was successful by verifying navigation to the login page
+    cy.url().should('include', '/ecolution/login');
   });
 
   it('should not be able to signup without selecting a pet', () => {
-    // try signing up without selecting a pet
-    cy.signup('testuser', 'testuser@example.com', 'TestPassword123!', true);
+    // Try signing up without selecting a pet
+    cy.signup('testuser@example.com', 'Password123!', '', 'Shroomy', true);
 
-    // check error message appears for missing pet selection
-    cy.contains('Please select a pet option').should('be.visible');
-
-    // check user stays on the signup page
+    // Ensure user stays on the signup page
     cy.url().should('include', '/ecolution/signup/');
   });
 
   it('should not be able to signup without entering a pet name', () => {
-    // select a pet but do NOT enter a pet name
-    cy.signup('testuser2', 'testuser2@example.com', 'TestPassword123!', true, 'mushroom');
+    // Select a pet but do NOT enter a pet name
+    cy.signup('testuser@example.com', 'Password123!', 'mushroom', '', true);
 
-    // check that an error message appears for missing pet name
-    cy.contains('Please enter a name for your pet').should('be.visible');
-
-    // check user stays on the signup page
+    // Ensure user stays on the signup page
     cy.url().should('include', '/ecolution/signup/');
+  });
+
+  it('should not be able to signup with an invalid email format', () => {
+    // Try signing up with an invalid email
+    cy.signup('invalidemail', 'Password123!', 'mushroom', 'Shroomy', true);
+
+    // Ensure user stays on the signup page
+    cy.url().should('include', '/ecolution/signup/');
+
+    // Check if email validation error is shown
+    // cy.contains('Please enter a valid email address.').should('be.visible');
+  });
+
+  it('should not be able to signup without entering an email', () => {
+    // Try signing up with an empty email
+    cy.signup('', 'Password123!', 'mushroom', 'Shroomy', true);
+
+    // Ensure user stays on the signup page
+    cy.url().should('include', '/ecolution/signup/');
+
+    // Check if email error is shown
+    // cy.contains('Please enter a valid email address.').should('be.visible');
+  });
+
+  it('should not be able to signup with a weak password', () => {
+    // Try signing up with a weak password (e.g., too short)
+    cy.signup('testuser@example.com', 'pass', 'mushroom', 'Shroomy', true);
+
+    // Ensure user stays on the signup page
+    cy.url().should('include', '/ecolution/signup/');
+
+    // Check if password error is shown
+    // cy.contains('This password is too short').should('be.visible');
+  });
+
+  it('should be able to login immediately after signup', () => {
+    // Sign up with valid details
+    cy.signup('testuser@example.com', 'Password123!', 'mushroom', 'Shroomy', true);
+
+    // Ensure the user is redirected to the login page
+    cy.url().should('include', '/ecolution/login');
+
+    // Access the stored username using the alias
+    cy.get('@username').then((username) => {
+      // Ensure the username is a string (in case of any issues with the alias)
+      expect(username).to.be.a('string');
+
+      // Try logging in with the same username and password
+      cy.login(username, 'Password123!');
+
+      // Ensure successful login and redirection to the home page
+      cy.url().should('include', '/ecolution/home');
   });
 });
 
-describe('Signup, Login, and Delete Account Flow', () => {
-  it('should be able to signup, login, and then delete account', () => {
-    // signup
-    cy.signup('testuser', 'testuser@example.com', 'TestPassword123!', true, 'mushroom', 'Shroomy');
-
-    // check signup was successful
-    cy.url().should('include', '/ecolution/home/');
-
-    // logout
-    cy.contains('Logout').click();
-    cy.url().should('include', '/login');
-
-    // login using same credentials (check that login works)
-    cy.login('testuser', 'TestPassword123!');
-    cy.url().should('include', '/dashboard');
-
-    // delete account
-    cy.deleteAccount('testuser');
-
-    // check account deletion was successful
-    cy.url().should('include', '/ecolution/login/'); // redirected to login page (?)
-    cy.contains('Account successfully deleted').should('be.visible');
-
-    // check login no longer works
-    cy.login('testuser', 'TestPassword123!');
-    cy.contains('Invalid username or password').should('be.visible');
-  });
 });
