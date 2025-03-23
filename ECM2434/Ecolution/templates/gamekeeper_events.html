@@ -110,14 +110,26 @@
             
         }
 
-        .all-events-container {
-            overflow-y: auto;
-            max-height: 80vh;
-            border-radius: 20px 20px;
+        .create_event_form_container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
         }
 
-        .all-events-container::-webkit-scrollbar {
-            display: none; /* Hides the scrollbar */
+        .create-event-form {
+            display: none;
+            background-color: white;
+            width: 430px;
+            border-radius: 15px 15px;
+            padding: 20px 20px;
+        }
+
+        .xbutton {
+            width: auto;           
+            padding: 5px 10px;     
+            white-space: nowrap;   
+            display: inline-block;
         }
     </style>
 
@@ -132,75 +144,72 @@
     <!-- Main Content -->
 
     <body>
+        <button class="button text_light" onclick="createEventPopUp()">
+            <h3>Create Event</h3>
+        </button>
         
 
 
-        <div class="qr-container" id="qr-container">
-            <div class="flex_h heading">
-                <button class="button exit_button text_light" onclick="closeQrScanner()"> ← </button>
-                <h4>Scan the QR code to complete the task</h4>
-            </div>
-            <div id="reader" width="600px"></div>
-        </div>
-        
-
-        <h1 class="text_light">Events</h1>
+        <h1 class="text_light">Your Events</h1>
     
-        <div class="all-events-container">
-            <div class="event_list_container">
-                <h2 class="text_dark ">My Events</h2>
-                <div>
-                    {% if user_events %}
-                        {% for user_event in user_events%}
-                            <div class="card box_shadow text_light event" 
-                            data-id="{{ user_event.event_id }}"
-                            data-name="{{ user_event.event_name }}"
-                            data-description="{{ user_event.description }}"
-                            data-location="{{ user_event.location }}"
-                            data-date="{{ user_event.date }}"
-                            data-time="{{ user_event.time }}"
-                            data-points="{{ user_event.total_points}}"
-                            onclick="openEventDetails(this, 'user')">
-                                <p>{{user_event.date}}</p>
-                                <h3>{{user_event.event_name}}</h3>
-                                <p>📍{{user_event.location}}</p>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <p class="text_dark">There are no current events ongoing</p>
-                    {% endif %}
-                </div>
-            </div>
-            
-            <div class="event_list_container">
-                <h2 class="text_dark">Join Events</h2>
-                <div>
-                    {% if events %}
-                        {% for event in events%}
-                            <div class="card box_shadow text_light event" 
-                            data-id="{{ event.event_id }}"
-                            data-name="{{ event.event_name }}"
-                            data-description="{{ event.description }}"
-                            data-location="{{ event.location }}"
-                            data-date="{{ event.date }}"
-                            data-time="{{ event.time }}"
-                            data-points="{{ event.total_points}}"
-                            onclick="openEventDetails(this, 'general')">
-                                <p>{{event.date}}</p>
-                                <h3>{{event.event_name}}</h3>
-                                <p>📍{{event.location}}</p>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <p class="text_dark">You have already joined all ongoing events</p>
-                    {% endif %}
-                </div>
+        <div class="event_list_container">
+            <div>
+                {% if gamekeeper_events %}
+                    {% for event in gamekeeper_events%}
+                        <div class="card box_shadow text_light event" 
+                        data-id="{{ event.event_id }}"
+                        data-name="{{ event.event_name }}"
+                        data-description="{{ event.description }}"
+                        data-location="{{ event.location }}"
+                        data-date="{{ event.date }}"
+                        data-time="{{ event.time }}"
+                        data-points="{{ event.total_points}}"
+                        qr_code="{{ event.qr_code.url }}"
+                        onclick="openEventDetails(this)">
+                            <p>{{event.date}}</p>
+                            <h3>{{event.event_name}}</h3>
+                            <p>📍{{event.location}}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text_dark">You havnt created any ongoing events</p>
+                {% endif %}
             </div>
         </div>
+
+        <div class="create_event_form_container">
+            <div id="create_event_form" class="create-event-form">
+                <div class="flex_h heading">
+                    <h1 class="text_dark">Create A New Event</h1>
+                    <button class="button exit_button text_light" onclick="closeEventFormPopup()"> x </button>
+                </div>
+                <form action="{% url 'create_event' %}" method="POST" id="event-form" class="flex_v">
+                    {% csrf_token %}
+                    <input type="text" name="event_name" placeholder="Event Name" required>
+                    <input type="text" name="description" placeholder="Description" required>
+                    <input type="text" name="location" placeholder="Location" required>
+                    <div class="flex_h">
+                        <input type="date" name="date" required>
+                        <input type="time" name="time" required> 
+                    </div>
+                    <div class="flex_h">
+                        <h3>Event Tasks:</h3>
+                        <button type="button" onClick="addEventTask()" class="button text_light">+</button>  
+                    </div>
+                    <div id="task_container">
+                        <div class="flex_h margin_sml_bot">
+                            <input type="text" name="task_name" placeholder="Task Name" required>
+                            <input type="number" name="task_points" placeholder="Points" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="button text_light">Create Event</button>
+                </form>
+            </div>
+        </div>"
         
         
 
-        <!-- Events popup, showing a specific event -->
+
         <div class="event_details_container">
             <div class="event_details margin_std box_shadow" id="event_details">
                 <div class="flex_h heading">
@@ -218,31 +227,45 @@
                         <p id="points"></p>
                         <p>  Points</p>
                     </div>
-            
-                    
-                    <div id="map" style="width: 100%; height: 200px;"></div>
+
+                    <div class="flex_h flex_center">
+                        <img id="qr_code" style="width: 70%; height: auto;">
+                    </div>
                     
                     <h4>Event Tasks:</h4>
                     <div id="tasks"></div>
         
                     <h4>About Event:</h4>
                     <p id="description"></p>
-                </div>
-    
-                <div class="flex_center button_container">
-                    <button class="button text_light join_button" id="button"></button>
+
+                    <div id="map" style="width: 100%; height: 200px;"></div>
                 </div>
         </div>
 
-        
-        </div>
     </body>
     
     
     <script>
         let map = null;
-        let checkboxes = document.querySelectorAll('input[type="checkbox"]');
         
+        function addEventTask(){
+            const taskContainer = document.getElementById("task_container");
+            let taskItem = document.createElement('div');
+            taskItem.classList.add('flex_h', 'margin_sml_bot');
+
+            taskItem.innerHTML = `
+                <input type="text" name="task_name" placeholder="Task Name" required>
+                <input type="number" name="task_points" placeholder="Points" required>
+            `;
+
+            taskContainer.appendChild(taskItem);
+        }
+
+        function createEventPopUp() {
+            const createForm = document.getElementById("create_event_form");
+            createForm.style.display = "block";
+        }
+
 
         //creates the map which is displayed within the event popup
         function createMap(lat, lon, zoom = 18) {
@@ -256,7 +279,7 @@
         }
 
         //opens an event's details popup
-        function openEventDetails(element, eventType) {
+        function openEventDetails(element) {
             let eventDetails = document.getElementById("event_details");
             eventDetails.style.display = "block";
             eventDetails.setAttribute("event-id", element.dataset.id);
@@ -266,20 +289,9 @@
                 eventDetails.querySelector(`#${field}`).textContent = element.dataset[field]
             );
 
-            let button =  eventDetails.querySelector("#button");
-            button.setAttribute("event-id", element.dataset.id);
-            if (eventType === "user"){
-                button.onclick = completeEvent;
-                button.textContent = "Complete Event";
-            } else if (eventType === "general") {
-                button.onclick = joinEvent;
-                button.textContent = "Join Event";
-            }
-
             let tasksContainer = eventDetails.querySelector("#tasks");
             tasksContainer.innerHTML = ""; 
 
-            const checkedTasks = JSON.parse(localStorage.getItem("checkboxValues")) || [];
             //gets all the tasks within a specific event
             getEventTask(element.dataset.id)
                 .then(data => {
@@ -289,44 +301,20 @@
                         data.tasks.forEach(task => {
                             let taskDiv = document.createElement("div");
                             taskDiv.classList.add("box_shadow", "text_light", "taskcard");
-                            
-                            if (eventType === "user"){
-                                const checkboxId = `${eventDetails.event_name}-${task.task_name}`;
-                                taskDiv.innerHTML = `<input type="checkbox" id="${checkboxId}">${task.task_name}`;
-                                if (checkedTasks.includes(checkboxId)) {
-                                    taskDiv.querySelector("input").checked = true;
-                                }
-                            } 
-                            else {
-                                taskDiv.innerHTML = `<p>${task.task_name}</p>`;
-                            }
-                            
+
+                            taskDiv.innerHTML = `${task.task_name}`;
+                        
                             tasksContainer.appendChild(taskDiv);
                         });
                     }
-
-                    setCheckBoxListener();
                 });
 
+            eventDetails.querySelector("#qr_code").src = element.getAttribute("qr_code");
+        
             //map coodinates hardcoded for now
             createMap(50.734967, -3.533750);
 
             eventDetails.style.display = "block";
-        }
-
-        function setCheckBoxListener (){
-            checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function () {
-                    let checkedValues = [];
-                    checkboxes.forEach(box => {
-                        if (box.checked) {
-                            checkedValues.push(box.id);
-                        }
-                    });
-                    localStorage.setItem("checkboxValues", JSON.stringify(checkedValues));
-                });
-            });
         }
 
         //closes the event detail pop up
@@ -339,59 +327,10 @@
             }
         }
 
-        //updates the database that the user wants to join an event
-        function joinEvent() {
-            let eventId = document.getElementById("button").getAttribute("event-id");
-
-            fetch("{% url 'join_event' %}", {
-                method: "POST",
-                headers:{"X-CSRFToken": getCSRFToken() },
-                body: new URLSearchParams({ event_id: eventId })
-            }).then(response => response.json())  
-            .then(data => console.log("Success:", data)) 
-            .then(data => {
-                location.reload();
-            })
-            .catch(error => console.error("Error:", error));
+        function closeEventFormPopup() {
+            const createForm = document.getElementById("create_event_form").style.display = "none";
         }
 
-        //updates the database that the user no longer wanted to be part of an event
-        function leaveEvent() {
-            let eventId = document.getElementById("button").getAttribute("event-id");
-
-            fetch("{% url 'leave_event' %}", {
-                method: "POST",
-                headers:{"X-CSRFToken": getCSRFToken() },
-                body: new URLSearchParams({ event_id: eventId })
-            }).then(response => response.json()) 
-            .then(data => console.log("Success:", data))  
-            .then(data => {
-                location.reload();
-            })
-            .catch(error => console.error("Error:", error));
-        }
-
- 
-        //updates the database when an event is completed
-        function completeEvent() {
-            let eventId = document.getElementById("button").getAttribute("event-id");
-
-            fetch("{% url 'complete_event' %}", {
-                method: "POST",
-                headers: { "X-CSRFToken": getCSRFToken() },
-                body: new URLSearchParams({ event_id: eventId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    // Display the error message (e.g., "Event not validated.")
-                    alert(data.message);
-                }
-            })
-            .catch(error => console.error("Error:", error));
-        }
 
         //gets all the tasks for an event
         function getEventTask(eventId) {
