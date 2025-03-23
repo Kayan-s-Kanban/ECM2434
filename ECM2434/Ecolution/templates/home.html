@@ -36,10 +36,6 @@
         </button>
     </section>
 
-    {% if request.user.pet_set.count <= 1 %}
-    <section class="spacer_large"></section>
-    {% endif %}
-
     <section class="status_bar flex_h flex_center text_light">
         <div class="pet_status flex_v margin_sml flex_v_fill">
             <div class="pet_info_bar flex_h" style="justify-content: space-between;"> <!-- this displays the pets name and level -->
