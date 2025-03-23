@@ -10,11 +10,16 @@
 :root {
     --font_family_stack: Poppins, Arial, -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, Cantarell, Ubuntu, roboto, noto, helvetica, arial, sans-serif;
     --font_size_rem: 16px;
-    --color_dark: black;
+    --color_dark: #283633;
     --color_light: white;
     --color_light_off: #ddd;
     --color_primary: #3a8d84;
     --color_button: var(--color_primary);
+    --color_button_hover: #2F746C;
+    --color_button_active: #29665F;
+    --color_button_alt: rgb(235, 235, 235);
+    --color_button_alt_hover: rgb(215, 215, 215);
+    --color_button_alt_active: rgb(200, 200, 200);
     --color_button_hover: #2F746C;
     --color_button_active: #29665F;
     --color_button_menu: var(--color_light);
@@ -24,7 +29,9 @@
     --color_background: var(--color_primary);
     --color_page_background: #8abd8f;
     --color_page_background_sea: #82b3d8;
-    --color_form_background:  rgba(255, 255, 255, 0.95);
+    --color_form_background:  rgba(244, 244, 244, 1);
+    --color_form_background:  rgba(244, 244, 244, 1);
+    --color_form_background_glassy:  rgba(244, 244, 244, 0.8);
     --box_shadow: rgba(0, 0, 0, 0.16) 0px 0px 5px -6px, rgba(0, 0, 0, 0.12) 0px 8px 10px -2px;
     --text_light_shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
     --text_dark_shadow: 1px 1px 5px rgba(0, 0, 0, 0.12);
@@ -76,6 +83,11 @@ p {
     text-shadow: var(--text_dark_shadow);
 }
 
+.particle {
+    image-rendering: pixelated;
+    position: absolute !important;
+    transition: 330ms ease-in-out;
+}
 
 
 /* [[[ 2.A) Buttons ]]] */
@@ -95,17 +107,36 @@ p {
     transition: 330ms ease;
 }
 
-.button_alt {
-    background-color: var(--color_primary);
-}
-
-
 .button:hover {
     background-color: var(--color_button_hover);
 }
 
 .button:active {
     background-color: var(--color_button_active);
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125), var(--box_shadow);
+}
+
+.button_alt {
+    font-family: var(--font_family_stack);
+    background-color: var(--color_button_alt);
+    border: none;
+    border-radius: 2em;
+    height: fit-content;
+    padding: 0.5rem 1rem;
+    letter-spacing: var(--letter_spacing_lg);
+    padding: 10px;
+    color: var(--color_dark);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 330ms ease;
+}
+
+.button_alt:hover {
+    background-color: var(--color_button_alt_hover);
+}
+
+.button_alt:active {
+    background-color: var(--color_button_alt_active);
     box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125), var(--box_shadow);
 }
 
@@ -137,6 +168,7 @@ input[type="range"] {
     background-color: var(--color_primary);
     border: none;
     width: 3rem;
+    height: 3rem;
     aspect-ratio: 1;
     border-radius: 2em;
 }
@@ -144,6 +176,12 @@ input[type="range"] {
 .button_img img {
     width: inherit;
     height: inherit;
+}
+
+.button_img svg {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
 }
 
 /* Element: Button With Image (Light) */
@@ -190,6 +228,10 @@ img.img_leaf {
 
 
 /* [[[ 3. Helper Classes ]]] */
+.font_bold {
+    font-weight: bold;
+}
+
 .font_small {
     font-size: 0.8rem;
 }
@@ -308,6 +350,7 @@ section.pet div.image_wrapper {
     width: 160px;
     height: 160px;
     position: relative;
+    pointer-events: none;
     /* overflow: hidden; */
 }
 
@@ -315,56 +358,61 @@ section.pet img.hat {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 128px;
+    height: 128px;
     pointer-events: none; /* so clicks go through to the pet if needed */
 }
 
 .hat.mushroom.small {
     top: 40px;
-    left: 110px;
+    left: 100px;
 }
 .hat.mushroom.medium{
+    top: 32px;
+    left: 140px;
+}
+.hat.mushroom.large {
     top: 25px;
     left: 120px;
 }
-.hat.mushroom.large {
-    top: 10px;
-    left: 105px;
-}
 .hat.acorn.small {
-    top: 50px;
-    left: 118px;
+    top: 70px;
+    left: 130px;
 }
 .hat.acorn.medium {
-    top: 55px;
-    left: 120px;
+    top: 76px;
+    left: 135px;
 }
 .hat.acorn.large {
-    top: 30px;
-    left: 120px;
+    top: 50px;
+    left: 132px;
 }
 .hat.plant.small {
-    top: 60px;
-    left: 110px;
+    top: 70px;
+    left: 128px;
 }
 .hat.plant.medium {
-    top: 55px;
-    left: 120px;
+    top: 70px;
+    left: 125px;
 }
 .hat.plant.large {
-    top: -10px;
-    left: 110px;
+    top: -20px;
+    left: 135px;
 }
 
 section.cycle_pet_section {
     margin-top: 8rem;
-    z-index: 5;
 }
 
 .background {
     image-rendering: pixelated;
     background: url('/static/images/bg_x6.png');
     background-position: 50% 2%;
+}
+
+.card_task {
+    position: relative;
+    z-index: 2;
 }
 
 .card {
@@ -376,8 +424,35 @@ section.cycle_pet_section {
     padding-bottom: 0.05px;
 }
 
+.card_alt {
+    background-color: var(--color_form_background);
+    border-radius: 1em;
+    margin-block: 1em;
+    /* This padding is here to prevent margin collapse */
+    padding-top: 0.05px;
+    padding-bottom: 0.05px;
+}
+
+.container {
+    background-color: var(--color_form_background);
+    padding: 1.2rem;
+    border-radius: 10px;
+    margin-block: 1em;
+}
+
 .box_shadow {
     box-shadow: var(--box_shadow);
+}
+
+.button_list {
+    list-style: none;
+    padding-left: 0px;
+}
+
+.button_list .button {
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 
@@ -487,27 +562,28 @@ section.signup {
     text-align: center;
 }
 
-/* Section: Settings Menu */
+/* Section: Main Menu */
 /* Ensure the parent container has relative positioning so we can position elements inside it */
-.button_settings {
+.main_menu_container {
     position: relative; /* This allows absolute positioning of the dropdown inside it */
 }
 
-/* General Settings Button and Menu Styling */
-section.settings_menu {
+/* General Main Menu Button and Menu Styling */
+section.main_menu {
     display: none; /* Initially hidden */
     position: absolute;
     top: 55px;
     left: 0;
-    background-color: var(--color_form_background);
+    background-color: var(--color_form_background_glassy);
+    backdrop-filter: blur(7px);
     border-radius: 0.8em;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1;
+    z-index: 10;
     padding: 1rem;
     width: 200px; /* Set a reasonable width for the dropdown */
 }
 
-section.settings_menu a {
+section.main_menu a {
     display: block;
     padding: 10px;
     text-decoration: none;
@@ -516,8 +592,13 @@ section.settings_menu a {
     margin: 5px 0;
 }
 
-section.settings_menu a:hover {
+section.main_menu a:hover {
     background-color: var(--color_primary);
+    color: var(--color_light);
+}
+
+section.main_menu a:active {
+    background-color: var(--color_button_active);
     color: var(--color_light);
 }
 

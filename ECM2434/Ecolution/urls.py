@@ -38,4 +38,5 @@ urlpatterns = [
     path("gamekeeper_tasks/add/", views.add_gamekeeper_task, name="add_gamekeeper_task"),
     path("gamekeeper_tasks/delete/<int:task_id>/", views.delete_gamekeeper_task, name="delete_gamekeeper_task"),
     path('cycle_pet/', views.cycle_pet, name='cycle_pet'),
+    path('select_accessory/', views.select_accessory, name='select_accessory'),
 ]

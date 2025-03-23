@@ -392,15 +392,24 @@ def change_password(request):
         current_password = request.POST["current_password"]
         new_password1 = request.POST["new_password1"]
         new_password2 = request.POST["new_password2"]
-        
-        if new_password1 != new_password2:
-            messages.error(request, "New passwords do not match!")
-            return redirect("settings")
 
         user = request.user
         if not user.check_password(current_password):
             messages.error(request, "Current password is incorrect!")
-            return redirect("settings")
+            return render(request, "settings.html")
+        
+        if new_password1 != new_password2:
+            messages.error(request, "Passwords do not match!")
+            return render(request, "settings.html")
+
+        # Validate the password against Django's validators
+        try:
+            validate_password(new_password1)
+        except ValidationError as e:
+            # Display each error message from the validators
+            for error in e.messages:
+                messages.error(request, error)
+            return render(request, "settings.html")
 
         user.set_password(new_password1)
         user.save()
@@ -409,7 +418,7 @@ def change_password(request):
         update_session_auth_hash(request, user)
 
         messages.success(request, "Password updated successfully!")
-        return redirect("settings")
+        return render(request, "settings.html")
 
     return redirect("settings")
 
@@ -528,6 +537,33 @@ def cycle_pet(request):
         user.displayed_pet = pets[next_index]
         user.save()
     return redirect("home")
+
+@login_required
+def select_accessory(request):
+    user = request.user
+    pet = user.displayed_pet
+
+    user_hat_items = UserItem.objects.filter(user=user, shopitem__is_hat=True)
+
+    if request.method == 'POST':
+        selected_item_id = request.POST.get('selected_item_id')
+        if selected_item_id:
+            #assign the item to the currently displayed pet
+            try:
+                shop_item = ShopItem.objects.get(id=selected_item_id, is_hat=True)
+                pet.hat = shop_item
+                pet.save()
+            except ShopItem.DoesNotExist:
+                pass
+
+        return redirect('home')
+    
+    context = {
+        'pet': pet,
+        'hat_items': user_hat_items,
+        'points': user.points,
+    }
+    return render(request, 'select_accessory.html', context)
 
 @login_required
 def validate_qr(request, token):
