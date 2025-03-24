@@ -334,7 +334,6 @@ def complete_event(request):
 @gamekeeper_required
 @login_required
 def create_event(request):
-    # Allows gamekeepers to create new events along with associated tasks.
     if request.method == "POST":
         event_name = request.POST.get("event_name")
         description = request.POST.get("description")
@@ -349,6 +348,7 @@ def create_event(request):
         creator = request.user
 
         try:
+            # Create the main event
             event = Event.objects.create(
                 event_name=event_name,
                 description=description,
@@ -359,7 +359,8 @@ def create_event(request):
                 time=time,
                 creator=creator,
             )
-            # Create each task associated with the event.
+
+            # Create each task associated with this event
             for name, points, xp in zip(task_names, task_points, task_xps):
                 if name.strip():
                     Task.objects.create(
@@ -369,62 +370,23 @@ def create_event(request):
                         points_given=int(points),
                         creator=creator
                     )
-        except IntegrityError:
-            # Mimic 'tasks' structure: on error, return an immediate response.
-            # Instead of JSON, just redirect back to gamekeeper_events.
-            return redirect("gamekeeper_events")
+            
+            # Return JSON similar to how add_task does
+            return JsonResponse({
+                "status": "success",
+                "message": "Event created successfully!",
+                "event_name": event_name,  # or any extra data you want to send
+            })
 
-        # If no IntegrityError, redirect on success
-        return redirect("gamekeeper_events")
+        except IntegrityError as e:
+            return JsonResponse({
+                "status": "error",
+                "message": f"Database Integrity Error: {e}"
+            }, status=400)
 
-    # If it's not a POST, do what tasks_view does: return an immediate response.
-    # Instead of JSON, just redirect to gamekeeper_events (or anywhere you want).
-    return redirect("gamekeeper_events")
+    # If it's not POST, just return an error JSON (like add_task does)
+    return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
 
-# def create_event(request):
-#     # Allows gamekeepers to create new events along with associated tasks.
-#     if request.method == "POST":
-#         event_name = request.POST.get("event_name")
-#         description = request.POST.get("description")
-#         location = request.POST.get("location")
-#         latitude = request.POST.get("latitude")
-#         longitude = request.POST.get("longitude")
-#         date = request.POST.get("date")
-#         time = request.POST.get("time")
-#         task_names = request.POST.getlist("task_name")
-#         task_points = request.POST.getlist("task_points")
-#         task_xps = request.POST.getlist("task_xp")
-#         creator = request.user
-
-#         try:
-#             event = Event.objects.create(
-#                 event_name=event_name,
-#                 description=description,
-#                 location=location,
-#                 latitude=latitude,
-#                 longitude=longitude,
-#                 date=date,
-#                 time=time,
-#                 creator=creator,
-#             )
-
-#             # Create each task associated with the event.
-#             for name, points, xp in zip(task_names, task_points, task_xps):
-#                 if name.strip():
-#                     Task.objects.create(
-#                         event=event,
-#                         task_name=name,
-#                         xp_given=int(xp),
-#                         points_given=int(points),
-#                         creator=creator
-#                     )
-
-#         except IntegrityError as e:
-#             return JsonResponse({"status": "error", "message": "Database Integrity Error: " + str(e)}, status=400)
-    
-#         return redirect("gamekeeper_events") 
-
-#     return JsonResponse({"status": "error"}, status=400)
     
 
 @login_required
