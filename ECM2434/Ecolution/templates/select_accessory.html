@@ -24,10 +24,7 @@
                 {% for user_item in hat_items %}
                     <label style="margin: 1rem;">
                         {# Display the accessory image using the static file path #}
-                        <img src="{% static hat.image_path|add:'.png' %}" 
-                             alt="{{ user_item.shopitem.name }}" 
-                             style="width: 64px; height: 64px;"
-                             class = "Hat">
+                        <img src="{% static user_item.shopitem.image_path|add:'.png' %}" alt="hat" class="hat" style="width: 64px; height: 64px;">
                         <br>
                         {# Radio button to select this accessory #}
                         <input type="radio" name="selected_item_id" value="{{ user_item.shopitem.id }}">

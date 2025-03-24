@@ -60,9 +60,9 @@
         <form method="POST">
             {% csrf_token %}
             {# Button to confirm deletion #}
-            <button type="submit" class="delete">Yes, Delete My Account</button>
+            <button type="submit" class="delete button">Yes, Delete My Account</button>
             {# Link to cancel deletion and return to the settings page #}
-            <a href="{% url 'settings' %}" class="cancel">Cancel</a>
+            <a href="{% url 'settings' %}" class="cancel button_alt">Cancel</a>
         </form>
     </div>
 {% endblock %}
