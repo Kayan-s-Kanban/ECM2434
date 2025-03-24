@@ -146,7 +146,7 @@ def home_view(request):
 def tasks_view(request):
     """
     Renders the tasks page showing all tasks for the current user.
-    Displays both predefined tasks (superuser-created) and custom tasks (user-created).
+    Displays both predefined tasks (gamekeeper-created) and custom tasks (user-created).
     """
     user_tasks = UserTask.objects.filter(user=request.user)
     predefined_tasks = Task.objects.filter(predefined=True)
@@ -193,7 +193,7 @@ def add_task(request):
             # IntegrityError occurs if the task already exists for the day.
             return JsonResponse({
                 "status": "error",
-                "message": "This task already exists!"
+                "message": "You have already completed this task today!"
             }, status=400)
 
         return JsonResponse({
@@ -319,7 +319,7 @@ def complete_event(request):
             event_xp = event.total_xp
             pet = request.user.displayed_pet
             if pet:
-                pet.pet_exp += task.xp_given  # Note: This should likely be event_xp, not task.xp_given.
+                pet.pet_exp += event_xp  # Note: This should likely be event_xp, not task.xp_given.
                 while pet.pet_exp >= 100:
                     pet.pet_level += 1
                     pet.pet_exp -= 100

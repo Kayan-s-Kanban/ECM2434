@@ -18,20 +18,32 @@
                 if (pointsEl) { 
                     pointsEl.innerText = data.points; 
                 }
-                // NOTE: For testing out animations, turn on spawn particle, swap the remove to be on a timer, and stop the redirect.
+                // Removes task and reloads the page, spwans particles for a success animation
                 var taskElement = element.closest(".task");
                 if (taskElement) {
-                    // spawnParticles(taskElement, 60);
-                    taskElement.remove();
-                    // setTimeout(() => {
-                    //     taskElement.remove();
-                    // }, 3000);
+                    spawnParticles(taskElement, 60);
+                    // Change the z-index to be above the particles
+                    taskElement.style.zIndex = 2;
+                    // Set a CSS transition for the opacity to fade out
+                    taskElement.style.transition = "opacity ease-out 3s";
+                    // Trigger the fade by setting opacity to 0
+                    taskElement.style.opacity = "0";
+                    taskElement.style.opacity
+                    setTimeout(() => {
+                        taskElement.remove();
+
+                        if (window.location.href.includes("tasks")) {
+                            window.location.href = "/ecolution/tasks/";
+                        } else {
+                            window.location.href = "/ecolution/home/";
+                        }
+                    }, 3000);
                 }
-                if (window.location.href.includes("tasks")) {
-                    window.location.href = "/ecolution/tasks/";
-                } else {
-                    window.location.href = "/ecolution/home/";
-                }
+                // if (window.location.href.includes("tasks")) {
+                //     window.location.href = "/ecolution/tasks/";
+                // } else {
+                //     window.location.href = "/ecolution/home/";
+                // }
             }
         })
         .catch(error => console.error('Error completing task:', error));
