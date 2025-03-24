@@ -31,6 +31,9 @@ ALLOWED_HOSTS = [
     "ecolution.onrender.com",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://ecolution.onrender.com',
+]
 
 # Application definition
 
