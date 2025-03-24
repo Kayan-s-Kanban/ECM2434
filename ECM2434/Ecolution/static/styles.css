@@ -44,8 +44,7 @@
 html {
     font-family: var(--font_family_stack);
     font-size: var(--font_size_rem);
-    /* background-color: var(--color_page_background); */
-    background-color: var(--color_page_background_sea);
+    background-color: var(--color_page_background);
     letter-spacing: var(--letter_spacing);
 }
 
