@@ -24,8 +24,10 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+import '@cypress/code-coverage/support';
+
 Cypress.Commands.add('login', (username, password) => {
-    cy.visit('http://127.0.0.1:8000/login/');
+    cy.visit('http://127.0.0.1:8000/ecolution/login/');
 
     // select and enter username
     cy.get('input[name="username"]').type(username);
@@ -39,29 +41,54 @@ Cypress.Commands.add('login', (username, password) => {
 
 Cypress.Commands.add(
   'signup',
-  (username, email, password, agreeToTerms = false, petOption = null) => {
-    cy.visit('/ecolution/signup/');
+  (email, password, petOption = 'mushroom', petName = '', agreeToTerms = false) => {
+    cy.visit('http://127.0.0.1:8000/ecolution/signup/');
 
-    // fill in the signup form
+    const username = `user_${Date.now()}`;  // Generate a unique username
+
+    // Fill in the signup form
     cy.get('input[name="username"]').type(username);
-    cy.get('input[name="email"]').type(email);
-    cy.get('input[name="password"]').type(password);
-    cy.get('input[name="confirm_password"]').type(password);
 
-    // conditionally check the terms checkbox
-    if (agreeToTerms) {
-      cy.get('input[name="terms"]').check();
+    if (email) {
+        cy.get('input[name="email"]').type(email);
     }
+    cy.get('input[name="password1"]').type(password);
+    cy.get('input[name="password2"]').type(password);
 
-    // conditionally select a pet option
+    // If pet type is provided (petOption is defaulted to mushroom)
     if (petOption) {
-      cy.get(`input[name="pet"][value="${petOption}"]`).check();
+        cy.get(`input[name="pet_type"][value="${petOption}"]`).check({ force: true });
+        if (petName) {
+            cy.get('input[name="pet_name"]').should('be.visible').type(petName, { force: true });
+        }
     }
 
-    // submit form
+    // Check the terms checkbox if needed
+    if (agreeToTerms) {
+      cy.get('input[name="agree_terms"]').check();
+    }
+
+    // Submit the form
     cy.get('button[type="submit"]').click();
+
+    // Wrap the username in a chainable and return it using `cy.wrap()`
+    cy.wrap(username).as('username');
   }
 );
+
+Cypress.Commands.add('navigateToPage', (pageUrl) => {
+    // Open the menu and verify it's visible
+    cy.get('button[onclick="toggleUseMenu()"]').should('be.visible').click();
+
+    // Wait for the menu to be visible
+    cy.get('#mainMenu').should('be.visible');
+
+    // Click on the first link corresponding to the pageUrl
+    cy.get(`a[href="${pageUrl}"]`).first().click();
+
+    // Wait for page load and verify that the URL is correct
+    cy.url().should('include', pageUrl);
+});
 
 Cypress.Commands.add('deleteAccount', (username) => {
   cy.visit('/account/settings/delete_account');

@@ -1,13 +1,13 @@
-from datetime import datetime
+from datetime import datetime, time
 from django.test import TestCase
 from django.urls import reverse
-from Ecolution.models import CustomUser, Event
+from Ecolution.models import CustomUser, Event, UserEvent
 
-class EventsTestCase(TestCase):
+
+class EventsUnitTests(TestCase):
     def setUp(self):
-        # create a test user
-        self.user1 = CustomUser.objects.create_user(username = 'testuser', password = 'password')
-        self.client.login(username = 'testuser', password = 'password')
+        self.user1 = CustomUser.objects.create_user(username='testuser', password='password')
+        self.client.login(username='testuser', password='password')
 
         # create a test event
         self.event = Event.objects.create(
@@ -15,14 +15,21 @@ class EventsTestCase(TestCase):
             description='Test Event Description',
             location='Test Event Location',
             date='2025-03-15',
+            time=time(10, 0, 0),  # Use datetime.time object
         )
 
+        # event url
+        self.url_event = reverse('events')
+        self.url_join_event = reverse('join_event')
+        self.url_leave_event = reverse('leave_event')
+
+    # As a user, I can create an event
     def test_event_creation(self):
         self.assertIsNotNone(self.event.event_id)
 
     # As a user, I can view the Events page
     def test_view_events(self):
-        response = self.client.get(reverse('events'))
+        response = self.client.get(self.url_event)
 
         # check response status code is 200
         self.assertEqual(response.status_code, 200)
@@ -34,44 +41,43 @@ class EventsTestCase(TestCase):
 
     # As a user, I can join Events
     def test_join_event(self):
-        response = self.client.post(reverse('join_event'), args = [self.event.event_id])  # Change this URL pattern to match your app
+        # user joins event
+        response = self.client.post(self.url_join_event, {'event_id': self.event.event_id})
 
-        # user is redirected to the event detail page
-        self.assertRedirects(response, reverse('get_event_tasks', args = [self.event.event_id]))
+        # check request was successful. The view returns a JSON response with {"success": True}
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"success": True})
 
-        # check user is now part of the event's attendees (assuming there's a ManyToMany relation with CustomUser)
-        # self.assertIn(self.user1, self.event.attendees.all()) # TODO: fix reference
+        # check UserEvent object has been created linking the user and the event
+        self.assertTrue(UserEvent.objects.filter(user = self.user1, event = self.event).exists())
 
     # As a user, I can leave Events
     def test_leave_event(self):
-        # event is added for user
-        self.client.post(reverse('join_event'), args = [self.event.event_id])
-
-        # event appears in user's events list
-        response = self.client.post(reverse('events'))
-        self.assertContains(response, 'Test Event')
-
-        # user views event details
-        self.client.post(reverse('events'), args=[self.event.event_id])
-
-        # user can view "leave event" button ??? TODO:
-        self.assertContains(self.client.post(reverse('events')), 'Leave Event')
+        # user joins event
+        self.client.post(self.url_join_event, {'event_id': self.event.event_id})
 
         # user leaves event
-        response = self.client.post(reverse('leave_event'), args=[self.event.event_id])
+        response = self.client.post(self.url_leave_event, {'event_id': self.event.event_id})
 
-        # event no longer appears
-        self.assertNotContains(self.client.post(reverse('events')), 'Leave Event')
+        # Check if the user is no longer associated with the event
+        user_event = UserEvent.objects.filter(user=self.user1, event=self.event)
+        self.assertFalse(user_event.exists())
+
+        # Check if the response is successful
+        self.assertJSONEqual(str(response.content, encoding='utf8'), '{"success": true}')
 
     # As a user, I can see the location of the event
     def test_event_location(self):
-        response = self.client.get(reverse('event_detail', args=[self.event.id]))  # Assuming 'event_detail' is the URL name
+        response = self.client.get(self.url_event)
 
         # check location appears on page
         self.assertContains(response, 'Test Event Location')
 
     # As a user, I can see the date of the event
+    def test_event_date(self):
+        response = self.client.get(self.url_event)
 
-    # As a user, I can see the start time of the event
+        # check date appears on page
+        self.assertContains(response, 'March 15, 2025')
 
 

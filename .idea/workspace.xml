@@ -5,14 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9996bd9d-24eb-4b54-b987-c86cc8434eab" name="Changes" comment="Minor fixes to Leaderboard tests">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]1/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase__Changes_1.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ECM2434/Ecolution/tests/integration/test_integration_homepage.py" beforeDir="false" afterPath="$PROJECT_DIR$/ECM2434/Ecolution/tests/integration/test_integration_homepage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ECM2434/Ecolution/tests/integration/test_integration_signup.py" beforeDir="false" afterPath="$PROJECT_DIR$/ECM2434/Ecolution/tests/integration/test_integration_signup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ECM2434/Ecolution/tests/integration/test_integration_tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/ECM2434/Ecolution/tests/integration/test_integration_tasks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ECM2434/Ecolution/tests/unit/test_homepage.py" beforeDir="false" afterPath="$PROJECT_DIR$/ECM2434/Ecolution/tests/unit/test_homepage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ECM2434/Ecolution/tests/unit/test_logout.py" beforeDir="false" afterPath="$PROJECT_DIR$/ECM2434/Ecolution/tests/unit/test_logout.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/node_modules/lodash/_apply.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/node_modules/lodash/_arrayAggregator.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/node_modules/lodash/_arrayEachRight.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/node_modules/lodash/_arrayIncludesWith.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/node_modules/lodash/_arrayLikeKeys.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/node_modules/lodash/_arrayMap.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/node_modules/lodash/_arrayPush.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/node_modules/lodash/_arrayReduce.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/node_modules/lodash/_asciiSize.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/node_modules/lodash/_asciiToArray.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/node_modules/lodash/_assignValue.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/node_modules/lodash/_baseAggregator.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/node_modules/lodash/_baseGt.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/node_modules/lodash/_baseMatchesProperty.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/node_modules/lodash/_stringToArray.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/node_modules/lodash/bind.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECM2434/node_modules/lodash/groupBy.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +66,7 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/KayanHyatt/ECM2434.git&quot;,
+    &quot;url&quot;: &quot;https://github.com/Kayan-s-Kanban/ECM2434.git&quot;,
     &quot;accountId&quot;: &quot;6b6b1a40-5dee-44cd-b2f6-1b0e470ed641&quot;
   }
 }</component>
@@ -68,86 +78,88 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Django Server.ECM2434.executor": "Run",
-    "Django tests.Test: Ecolution.tests.executor": "Coverage",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_admin.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_earn_points_from_event.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_updating_user_points.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_events.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_homepage.HomepageIntegrationTests.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_homepage.HomepageIntegrationTests.test_homepage_points_increase.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_homepage.HomepageIntegrationTests.test_homepage_view_pet_name.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_homepage.HomepageTestCase.test_homepage_current_tasks.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_homepage.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_login.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_logout.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_map.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_settings.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_shop.ShopIntegrationTest.test_shop_user_points_decrease.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_shop.ShopIntegrationTest.test_user_points_increment.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_shop.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_signup.SignupIntegrationTests.test_signup_different_passwords.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_signup.SignupIntegrationTests.test_signup_redirect.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_signup.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_already_completed.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_invalid_method.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_not_assigned_to_user.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_success.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_completed_task_filtering.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_current_task_filtering.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_delete_task_task_not_found.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_pet_level_up_on_task_completion.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_user_deletes_tasks.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_view_completed_tasks.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_view_current_tasks.executor": "Run",
-    "Django tests.Test: Ecolution.tests.integration.test_integration_tasks.executor": "Run",
-    "Django tests.Test: Ecolution.tests.unit.test_events.EventsTestCase.test_events_menu.executor": "Run",
-    "Django tests.Test: Ecolution.tests.unit.test_events.EventsTestCase.test_view_events.executor": "Run",
-    "Django tests.Test: Ecolution.tests.unit.test_events.executor": "Run",
-    "Django tests.Test: Ecolution.tests.unit.test_gdpr_privpol.GDPRPPTestCase.test_download_gdpr_agree.executor": "Run",
-    "Django tests.Test: Ecolution.tests.unit.test_gdpr_privpol.GDPRPPTestCase.test_view_gdpr.executor": "Run",
-    "Django tests.Test: Ecolution.tests.unit.test_gdpr_privpol.executor": "Run",
-    "Django tests.Test: Ecolution.tests.unit.test_homepage.executor": "Run",
-    "Django tests.Test: Ecolution.tests.unit.test_leaderboard.TestLeaderboard.test_leaderboard_view_pet_level.executor": "Debug",
-    "Django tests.Test: Ecolution.tests.unit.test_leaderboard.TestLeaderboard.test_view_leaderboard.executor": "Run",
-    "Django tests.Test: Ecolution.tests.unit.test_leaderboard.executor": "Run",
-    "Django tests.Test: Ecolution.tests.unit.test_logout.executor": "Run",
-    "Django tests.Test: Ecolution.tests.unit.test_qrcode.executor": "Run",
-    "Django tests.Test: Ecolution.tests.unit.test_settings.executor": "Run",
-    "Django tests.Test: Ecolution.tests.unit.test_shop.ShopTest.test_cannot_buy_item_again.executor": "Run",
-    "Django tests.Test: Ecolution.tests.unit.test_shop.ShopTest.test_view_item_name.executor": "Run",
-    "Django tests.Test: Ecolution.tests.unit.test_shop.ShopTest.test_view_item_price.executor": "Run",
-    "Django tests.Test: Ecolution.tests.unit.test_shop.TestShop.test_view_shop.executor": "Run",
-    "Django tests.Test: Ecolution.tests.unit.test_shop.executor": "Run",
-    "Django tests.Test: Ecolution.tests.unit.test_tasks.TasksUnitTests.test_user_earns_points.executor": "Run",
-    "Django tests.Test: Ecolution.tests.unit.test_tasks.executor": "Run",
-    "Node.js.cypress.config.js.executor": "Run",
-    "Python tests.Python tests for test_integration_tasks.TaskIntegrationTests.executor": "Debug",
-    "Python tests.Python tests in test_integration_tasks.py.executor": "Run",
-    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "django.template.preview.state": "SHOW_EDITOR",
-    "git-widget-placeholder": "testing",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.intellij.python.django.customization.DjangoModulesConfigurable",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Django Server.ECM2434.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.executor&quot;: &quot;Coverage&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_admin.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_earn_points_from_event.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_events.EventsTestCase.test_updating_user_points.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_events.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_homepage.HomepageIntegrationTests.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_homepage.HomepageIntegrationTests.test_homepage_points_increase.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_homepage.HomepageIntegrationTests.test_homepage_view_pet_name.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_homepage.HomepageTestCase.test_homepage_current_tasks.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_homepage.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_login.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_logout.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_map.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_settings.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_shop.ShopIntegrationTest.test_shop_user_points_decrease.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_shop.ShopIntegrationTest.test_user_points_increment.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_shop.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_signup.SignupIntegrationTests.test_signup_different_passwords.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_signup.SignupIntegrationTests.test_signup_redirect.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_signup.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_already_completed.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_invalid_method.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_not_assigned_to_user.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_complete_task_success.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_completed_task_filtering.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_current_task_filtering.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_delete_task_task_not_found.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_pet_level_up_on_task_completion.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_user_deletes_tasks.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_view_completed_tasks.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_tasks.TaskIntegrationTests.test_view_current_tasks.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.integration.test_integration_tasks.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.unit.test_events.EventsTestCase.test_events_menu.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.unit.test_events.EventsTestCase.test_view_events.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.unit.test_events.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.unit.test_gdpr_privpol.GDPRPPTestCase.test_download_gdpr_agree.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.unit.test_gdpr_privpol.GDPRPPTestCase.test_view_gdpr.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.unit.test_gdpr_privpol.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.unit.test_homepage.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.unit.test_leaderboard.TestLeaderboard.test_leaderboard_view_pet_level.executor&quot;: &quot;Debug&quot;,
+    &quot;Django tests.Test: Ecolution.tests.unit.test_leaderboard.TestLeaderboard.test_view_leaderboard.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.unit.test_leaderboard.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.unit.test_logout.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.unit.test_qrcode.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.unit.test_settings.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.unit.test_shop.ShopTest.test_cannot_buy_item_again.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.unit.test_shop.ShopTest.test_view_item_name.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.unit.test_shop.ShopTest.test_view_item_price.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.unit.test_shop.TestShop.test_view_shop.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.unit.test_shop.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.unit.test_tasks.TasksUnitTests.test_user_earns_points.executor&quot;: &quot;Run&quot;,
+    &quot;Django tests.Test: Ecolution.tests.unit.test_tasks.executor&quot;: &quot;Run&quot;,
+    &quot;Node.js.cypress.config.js.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_integration_tasks.TaskIntegrationTests.executor&quot;: &quot;Debug&quot;,
+    &quot;Python tests.Python tests in test_integration_tasks.py.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;testing&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.intellij.python.django.customization.DjangoModulesConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/ECM2434" />
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/ECM2434/Ecolution/tests/unit" />
       <recent name="$PROJECT_DIR$/ECM2434/cypress/e2e/specs" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Django Server.ECM2434">
     <configuration name="Test: Ecolution.tests" type="DjangoTestsConfigurationType" temporary="true">
       <module name="Ecolution" />
       <option name="ENV_FILES" value="" />
@@ -264,7 +276,7 @@
       </envs>
       <option name="SDK_HOME" value="" />
       <option name="SDK_NAME" value="Python 3.13" />
-      <option name="WORKING_DIRECTORY" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/ECM2434" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
@@ -323,6 +335,8 @@
       <workItem from="1741704059261" duration="8841000" />
       <workItem from="1741871452057" duration="12869000" />
       <workItem from="1742394884654" duration="6269000" />
+      <workItem from="1742837989931" duration="1210000" />
+      <workItem from="1742839207604" duration="294000" />
     </task>
     <task id="LOCAL-00001" summary="Implemented tests for Homepage, adjusted setUp() for test files">
       <option name="closed" value="true" />
@@ -452,7 +466,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742254042981</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Minor fixes to Leaderboard tests">
+      <option name="closed" value="true" />
+      <created>1742839643371</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1742839643371</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -493,7 +515,8 @@
     <MESSAGE value="Updated tests + added tests for Shop, Leaderboard, GDPR + PP" />
     <MESSAGE value="Added initial tests for Leaderboard page" />
     <MESSAGE value="Minor fixes to Leaderboard tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="Minor fixes to Leaderboard tests" />
+    <MESSAGE value="Updated Cypress files" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated Cypress files" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ECM2434$Test__Ecolution_tests_integration_test_integration_homepage_HomepageTestCase_test_homepage_current_tasks.coverage" NAME="Test: Ecolution.tests.integration.test_integration_homepage.HomepageTestCase.test_homepage_current_tasks Coverage Results" MODIFIED="1739899697715" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
