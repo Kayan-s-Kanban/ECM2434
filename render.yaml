@@ -1,9 +1,8 @@
-infrastructureVersion: v1
-
 services:
   - name: ecolution
     type: web
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: python ECM2434/manage.py runserver 0.0.0.0:8000
-    releaseCommand: python ECM2434/manage.py migrate
+    startCommand: |
+      python ECM2434/manage.py migrate && \
+      python ECM2434/manage.py runserver 0.0.0.0:8000
