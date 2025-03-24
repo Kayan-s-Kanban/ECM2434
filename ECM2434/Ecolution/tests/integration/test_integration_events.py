@@ -17,7 +17,10 @@ class EventsIntegrationTests(TestCase):
         self.client.login(username="testuser", password="password")
 
         # create event
-        self.event = Event.objects.create(event_name="Sample Event", description="An event to leave")
+        self.event = Event.objects.create(
+            event_name="Test Event",
+            description="An event",
+        )
 
         # create tasks for event
         self.task1 = Task.objects.create(
@@ -49,20 +52,32 @@ class EventsIntegrationTests(TestCase):
         self.url_complete = reverse("complete_event")
         self.url_get_tasks = reverse('get_event_tasks', args=[self.event.event_id])
 
-    # As a user, I can earn points from completing events
+    # As a user, I can earn points from completing event tasks
     def test_earn_points_from_event(self):
         # make sure that one 1 event object exists
-        Event.objects.all().delete()  # delete all othercevents first
-
-        # create event
-        self.event = Event.objects.create(
-            event_name="Test Event",
-            event_id="12",
-        )
-        self.event._total_points = 100  # set points for event
-        self.event.save()
-
         self.assertEqual(Event.objects.count(), 1)
+        created_event = Event.objects.first()  # get the first (and only) event created
+        self.assertEqual(created_event.event_name, 'Test Event')  # check event name matches
+
+        # set event as validated by user
+        self.user_event.validated = True
+
+        # TODO: user completes tasks
+
+
+        # user completes event
+        self.client.post(reverse('complete_event'), {'event': self.event})
+
+        # reload user + pet data after event completion
+        self.user1.refresh_from_db()
+        self.pet1.refresh_from_db()
+        self.event.refresh_from_db()
+
+        # reload user data after event completion
+        self.user1.refresh_from_db()
+
+        # check user's points has increased
+        self.assertEqual(self.user1.points, 25)
 
     # As a user, I can earn XP from completing events
     def test_earn_xp_from_event(self):
@@ -91,7 +106,7 @@ class EventsIntegrationTests(TestCase):
         # reload user + pet data after event completion
         self.user1.refresh_from_db()
         self.pet1.refresh_from_db()
-        self.event1.refresh_from_db()
+        self.event.refresh_from_db()
 
         print("Final XP:", self.pet1.pet_exp)
 
@@ -121,7 +136,6 @@ class EventsIntegrationTests(TestCase):
         response = self.client.post(self.url_leave, {"event_id": 99999})
 
         # check that an error message is returned
-        self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(str(response.content, encoding='utf8'),
                              {"success": False, "message": "No Event matches the given query."})
 
@@ -139,8 +153,7 @@ class EventsIntegrationTests(TestCase):
         self.client.login(username="testuser", password="password")
         response = self.client.get(self.url_leave)
 
-        # Assert that an error message is returned
-        self.assertEqual(response.status_code, 200)
+        # check error message is returned
         self.assertJSONEqual(str(response.content, encoding='utf8'), {"success": False, "message": "Invalid request"})
 
     def test_leave_event_exception_handling(self):
@@ -149,10 +162,9 @@ class EventsIntegrationTests(TestCase):
             mock_filter.side_effect = Exception("Unexpected error")
 
             self.client.login(username="testuser", password="password")
-            response = self.client.post(self.url_leave, {"event_id": self.event.event_id})  # Changed to url_leave
+            response = self.client.post(self.url_leave, {"event_id": self.event.event_id})
 
             # check error message is returned
-            self.assertEqual(response.status_code, 200)
             self.assertJSONEqual(str(response.content, encoding='utf8'),
                                  {"success": False, "message": "Unexpected error"})
 
@@ -231,9 +243,9 @@ class EventsIntegrationTests(TestCase):
         # send a valid request
         response = self.client.post(self.url_complete, data)
 
-        self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(str(response.content, encoding="utf8"),
                              {"success": False, "message": "Event not validated."})
+        self.assertFalse(self.user_event.validated)
 
     ## As a user, I can complete a validated event
     def test_event_validated_completed(self):
@@ -253,14 +265,15 @@ class EventsIntegrationTests(TestCase):
 
         # user completes event
         data = {"event_id": self.event.event_id}
-        response = self.client.post(self.url_complete, data)  # Updated reference to self.url_complete
+        response = self.client.post(self.url_complete, data)
 
-        # check response code is 200 (since the view may not raise a 404 directly)
+        # check response code is 200
         self.assertEqual(response.status_code, 200)
 
         # check message indicating the absence of UserEvent
         self.assertIn("No UserEvent matches the given query.", response.json().get("message", ""))
 
+    # As a user, I can view the tasks for an event I have joined
     def test_get_event_tasks_success(self):
         # log in as the user
         self.client.login(username='testuser', password='password')

@@ -115,6 +115,7 @@ class TaskIntegrationTests(TestCase):
         self.assertEqual(response.json()["status"], "error")
         self.assertEqual(response.json()["message"], "You already created a custom task with that title.")
 
+    # As a user, I can create new tasks
     def test_new_task_creation(self):
         response = self.client.post(reverse("add_task"), {
             "task_name": "New Task",
@@ -160,8 +161,8 @@ class TaskIntegrationTests(TestCase):
         self.assertIn("task_name", response.json())
         self.assertIn("description", response.json())
 
+    # invalid request method (GET) does not create task
     def test_invalid_request_method(self):
-        """Test that a non-POST request returns an error (Line 161)."""
         response = self.client.get(reverse("add_task"))
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["status"], "error")
