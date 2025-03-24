@@ -21,6 +21,7 @@ from django.db.models import Max
 from .decorators import gamekeeper_required
 from django.utils import timezone
 import logging
+from django.db.models import Max
 logger = logging.getLogger(__name__)
 
 # Create your views here.
