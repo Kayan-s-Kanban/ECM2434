@@ -393,7 +393,7 @@
         const form = document.getElementById("event-form");
         const formData = new FormData(form);
 
-        fetch("/ecolution/events/create/", {
+        fetch("/ecolution/gamekeeper_events/createevent/", {
             method: "POST",
             headers: {
                 "X-CSRFToken": getCSRFToken()
