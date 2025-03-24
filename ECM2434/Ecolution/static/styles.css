@@ -399,7 +399,7 @@ section.pet img.hat {
     left: 132px;
 }
 .hat.plant.small {
-    top: 70px;
+    top: 56px;
     left: 128px;
 }
 .hat.plant.medium {
@@ -735,6 +735,11 @@ img.profile_pic {
 .shop-page {
     text-align: center;
     color: #fff;
+}
+
+.shop-list {
+    list-style-type: none;
+    padding-inline-start: 0px;
 }
 
 .button.buy {

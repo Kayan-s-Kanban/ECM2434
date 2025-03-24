@@ -94,6 +94,7 @@ def signup_view(request):
 
 
 def login_view(request):
+    print("DOES THIS FUCKING WORK")
     # Handles user login.
     if request.method == "POST":
         username = request.POST["username"]
