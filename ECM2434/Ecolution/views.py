@@ -231,7 +231,8 @@ def complete_task(request, task_id):
             pet = request.user.displayed_pet
             if pet:
                 pet.pet_exp += task.xp_given
-                if pet.pet_exp >= 100:
+                # Increase pet_level for every 100 XP and reduce pet_exp accordingly
+                while pet.pet_exp >= 100:
                     pet.pet_level += 1
                     pet.pet_exp -= 100
                 pet.save()
@@ -295,12 +296,12 @@ def complete_event(request):
             event_xp = event.total_xp
             pet = request.user.displayed_pet
             if pet:
-                pet.pet_exp += event_xp
-                if pet.pet_exp >= 100:
+                pet.pet_exp += task.xp_given
+                # Increase pet_level for every 100 XP and reduce pet_exp accordingly
+                while pet.pet_exp >= 100:
                     pet.pet_level += 1
                     pet.pet_exp -= 100
                 pet.save()
-            
             # Mark the event as completed for the user.
             user_event.completed = True
             user_event.save()
@@ -309,6 +310,37 @@ def complete_event(request):
         except Exception as e:
             return JsonResponse({"success": False, "message": str(e)})
     return JsonResponse({"success": False, "message": "Invalid request"})
+
+# @gamekeeper_required
+# @login_required
+# def create_event(request):
+#     if request.method == "POST":
+#         event_name = request.POST.get("event_name")
+#         description = request.POST.get("description")
+#         location = request.POST.get("location")
+#         latitude = request.POST.get("latitude")
+#         longitude = request.POST.get("longitude")
+#         date = request.POST.get("date")
+#         time = request.POST.get("time")
+#         task_names = request.POST.getlist("task_name")
+#         task_points = request.POST.getlist("task_points")
+#         creator = request.user
+
+#         try:
+#             event = Event.objects.create(
+#                 event_name=event_name,
+#                 description=description,
+#                 location=location,
+#                 latitude=latitude,
+#                 longitude=longitude,
+#                 date=date,
+#                 time=time,
+#                 creator=creator,
+#             )
+
+#             for task_name, task_point in zip(task_names, task_points):
+#                 if task_name.strip(): 
+#                     Task.objects.create(event=event, task_name=task_name, points_given=int(task_point), xp_given=int(task_point))
 
 @gamekeeper_required
 @login_required
@@ -323,6 +355,7 @@ def create_event(request):
         time = request.POST.get("time")
         task_names = request.POST.getlist("task_name")
         task_points = request.POST.getlist("task_points")
+        task_xps = request.POST.getlist("task_xp")
         creator = request.user
 
         try:
@@ -337,9 +370,16 @@ def create_event(request):
                 creator=creator,
             )
 
-            for task_name, task_point in zip(task_names, task_points):
-                if task_name.strip(): 
-                    Task.objects.create(event=event, task_name=task_name, points_given=int(task_point), xp_given=int(task_point))
+            # For each task provided, create a task with xp_given set from task_xp.
+            for task_name, task_xp in zip(task_names, task_xps):
+                if task_name.strip():
+                    Task.objects.create(
+                        event=event,
+                        task_name=task_name,
+                        xp_given=int(task_xp),
+                        points_given=int(task_points),
+                        creator=creator
+                    )
 
         except IntegrityError as e:
             return JsonResponse({"status": "error", "message": "Database Integrity Error: " + str(e)}, status=400)
@@ -372,7 +412,7 @@ def get_event_tasks(request, event_id):
 @gamekeeper_required
 @login_required
 def gamekeeper_events(request):
-    gamekeeper_events = Event.objects.filter(date__gte=timezone.now(), creator=request.user)
+    gamekeeper_events = Event.objects.filter(creator=request.user)
     context = {"gamekeeper_events": gamekeeper_events}
     return render(request, "gamekeeper_events.html", context)
 
