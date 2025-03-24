@@ -134,7 +134,7 @@ def generate_qr_code(sender, instance, created, **kwargs):
     if created or not instance.qr_code:
         # Generate the relative URL using reverse()
         relative_url = reverse('validate_qr', kwargs={'token': instance.unique_token})
-        full_url = f'https://ecolution.onrender.com/{relative_url}'
+        full_url = f'https://ecolution.onrender.com{relative_url}'
         
         # Create the QR code image using the qrcode library.
         qr = qrcode.QRCode(
