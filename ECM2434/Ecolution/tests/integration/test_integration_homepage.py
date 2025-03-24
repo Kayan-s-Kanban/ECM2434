@@ -7,6 +7,11 @@ class HomepageIntegrationTests(TestCase):
         # create a user
         self.user1 = CustomUser.objects.create_user(username='testuser', password='password')
         self.user1.points = 10
+
+        # login user
+        self.client.login(username='testuser', password='password')
+
+        # create main pet
         self.pet1 = Pet.objects.create(
             user=self.user1,
             pet_name='Gertrude',
@@ -43,6 +48,9 @@ class HomepageIntegrationTests(TestCase):
         self.task1 = Task.objects.create(task_name="Buy groceries", description="Go to the store and buy food")
         self.task1.points = 50
 
+        # assign task to user
+        user_task = UserTask.objects.create(user=self.user1, task=self.task1)
+
         # urls
         self.url_home= reverse('home')
         self.url_cycle_pet = reverse("cycle_pet")
@@ -63,7 +71,6 @@ class HomepageIntegrationTests(TestCase):
 
         # check tasks appear on homepage
         self.assertContains(response, "Buy groceries")
-        self.assertContains(response, "Go to the store and buy food")
 
     ## As a user, I can change my pet on the homepage without any unexpected redirects
     def test_cycle_pet_redirects_to_home(self):

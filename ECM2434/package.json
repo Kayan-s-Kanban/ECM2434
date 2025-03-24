@@ -1,5 +1,12 @@
 {
   "devDependencies": {
-    "cypress": "^14.0.3"
+    "cypress": "^14.0.3",
+    "nyc": "^15.0.0",
+    "@cypress/code-coverage": "^3.9.11"
+  },
+  "scripts": {
+    "cypress:run": "cypress run",
+    "test:coverage": "nyc --reporter=lcov --reporter=text-summary npm run cypress:run"
   }
 }
+

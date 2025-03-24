@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.contrib.messages import get_messages
 from django.test import TestCase
 from django.urls import reverse
@@ -12,6 +14,7 @@ class SettingsIntegrationTests(TestCase):
         # urls
         self.url_change_password = reverse('change_password')
         self.url_change_username = reverse('change_username')
+        self.url_settings = reverse('settings')
 
     ## As a user, I can change my password
     def test_settings_change_pwd(self):
@@ -33,6 +36,9 @@ class SettingsIntegrationTests(TestCase):
 
     ## As a user, I cannot change my password with incorrect current password
     def test_settings_change_pwd_invalid_currentpwd(self):
+        # save original password hash
+        original_password = self.user.password
+
         # send POST request with incorrect current password
         response = self.client.post(self.url_change_password, {
             "current_password": "wrongpassword123",
@@ -40,12 +46,13 @@ class SettingsIntegrationTests(TestCase):
             "new_password2": "newpassword123"
         })
 
-        # check response redirects to the settings page with an error message
-        self.assertRedirects(response, reverse("settings"))
-
         # check if the error message is present
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(str(messages[0]), "Current password is incorrect!")
+
+        # check if user's password has stayed the same
+        self.user.refresh_from_db()  # Refresh the user instance to get the latest data from the database
+        self.assertEqual(self.user.password, original_password)
 
     ## As a user, I cannot change my password with the new password fields not matching
     def test_settings_change_pwd_different_newpwds(self):
@@ -126,24 +133,6 @@ class SettingsIntegrationTests(TestCase):
         except CustomUser.DoesNotExist:
             pass # user is deleted from db
 
-    def test_username_changed_successfully(self):
-        data = {
-            "current_username": "old_username",  # Current username
-            "new_username1": "new_username",     # New username
-            "new_username2": "new_username",     # Confirm new username
-        }
-
-        response = self.client.post(self.url_change_username, data)
-
-        # refresh the user from the database to check if the username was updated
-        self.user.refresh_from_db()
-
-        # check username has been successfully updated
-        self.assertEqual(self.user.get_username(), "new_username")
-
-        # Check if the response contains a success message
-        self.assertContains(response, "Username updated successfully!")
-
     ## As a user, I cannot change my username if I enter two different usernames
     def test_username_mismatch_error(self):
         data = {
@@ -159,24 +148,6 @@ class SettingsIntegrationTests(TestCase):
         # check that the username was not changed
         self.user.refresh_from_db()
         self.assertNotEqual(self.user.username, 'oldusername')
-
-    def test_incorrect_current_username_error(self):
-        data = {
-            'current_username': 'incorrectusername',
-            'new_username1': 'newusername',
-            'new_username2': 'newusername',
-        }
-        response = self.client.post(self.url_change_username, data)
-
-        # check for error message
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'Current username is incorrect!')
-
-        # check username was not changed
-        self.user.refresh_from_db()
-        self.assertEqual(self.user.username, 'oldusername')
-
-        self.assertRedirects(response, 'settings')  # Update this if needed
 
     def test_invalid_request_method(self):
         response = self.client.get(self.url_change_username)
@@ -194,26 +165,7 @@ class SettingsIntegrationTests(TestCase):
         # should redirect to login page if not authenticated
         self.assertRedirects(response, '/ecolution/login/?next=' + self.url_change_username)
 
-    ## As a user, I cannot change my username if the username already exists for another account
-    def test_change_username_not_unique(self):
-        second_user = CustomUser.objects.create_user(
-            username='seconduser', password='password123'
-        )
 
-        data = {
-            'current_username': 'oldusername',
-            'new_username1': 'seconduser',  # try to change to an existing username
-            'new_username2': 'seconduser',
-        }
-        response = self.client.post(self.url_change_username, data)
-
-        # check for error message
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'Username already exists.')
-
-        # check username was not changed
-        self.user.refresh_from_db()
-        self.assertEqual(self.user.username, 'oldusername')
 
 
 

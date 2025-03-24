@@ -16,13 +16,15 @@ class TaskIntegrationTests(TestCase):
         self.task = Task.objects.create(
             task_name = "Buy groceries",
             description = "Go to the store and buy food",
-            points_given = 100
+            points_given = 100,
+            xp_given = 20
         )
 
         self.task1 = Task.objects.create(
             task_name = "Task 1",
             description = "Task description here",
-            points_given = 100
+            points_given = 100,
+            xp_given = 20
         )
 
         # create a UserTask assigned to the user
@@ -30,7 +32,7 @@ class TaskIntegrationTests(TestCase):
         self.other_user_task = UserTask.objects.create(user=self.other_user, task=self.task1)
 
         # create a pet for the user
-        self.pet = Pet.objects.create(user=self.user1, pet_name="TestPet", pet_level=1, pet_exp=95, pet_type="mushroom")
+        self.pet = Pet.objects.create(user=self.user1, pet_name="TestPet", pet_level=1, pet_exp=40, pet_type="mushroom")
         self.user1.displayed_pet = self.pet
         self.user1.save()
 
@@ -219,7 +221,7 @@ class TaskIntegrationTests(TestCase):
 
         # check if the pet's XP has increased
         self.pet.refresh_from_db()
-        self.assertEqual(self.pet.pet_exp, self.task.xp_given)
+        self.assertEqual(self.pet.pet_exp, 60)
 
         # check if the pet's level has not changed since the XP is less than 100
         self.assertEqual(self.pet.pet_level, 1)
@@ -342,3 +344,45 @@ class TaskIntegrationTests(TestCase):
         # Assert that the page contains the task points
         self.assertContains(response, '<span class="points">50 points</span>')
 
+    # As a user, I can complete tasks and earn points
+    def test_user_completes_task_and_earns_points(self):
+        user_points_before = self.user1.points
+        task_id = self.task.task_id
+        complete_task_url = reverse('complete_task',
+                                    kwargs={'task_id': task_id})
+
+        # Simulate a POST request to mark the task as complete
+        response = self.client.post(complete_task_url)
+        self.assertEqual(response.status_code, 200)
+
+        # refresh the user object from the database to get the updated points
+        updated_user = CustomUser.objects.get(pk=self.user1.pk)
+        user_points_after = updated_user.points
+
+        # check user's points have increased by the task's points_given value
+        self.assertEqual(user_points_after, user_points_before + self.task.points_given)
+
+        # check if the UserTask is marked as completed
+        updated_user_task = UserTask.objects.get(user=self.user1, task=self.task)
+        self.assertTrue(updated_user_task.completed)
+
+    # As a user, I can complete tasks and earn xp
+    def test_user_completes_task_and_pet_earns_xp(self):
+        pet_xp_before = self.pet.pet_exp
+        task_id = self.task.task_id
+        complete_task_url = reverse('complete_task', kwargs={'task_id': task_id})
+
+        # Simulate a POST request to mark the task as complete
+        response = self.client.post(complete_task_url)
+        self.assertEqual(response.status_code, 200)
+
+        # Refresh the pet object from the database to get the updated XP
+        updated_pet = Pet.objects.get(pk=self.pet.pk)
+        pet_xp_after = updated_pet.pet_exp
+
+        # Check if the pet's XP has increased by the task's xp_given value
+        self.assertEqual(pet_xp_after, pet_xp_before + self.task1.xp_given)
+
+        # Optionally, you can also check if the UserTask is marked as completed
+        updated_user_task = UserTask.objects.get(user=self.user1, task=self.task)
+        self.assertTrue(updated_user_task.completed)

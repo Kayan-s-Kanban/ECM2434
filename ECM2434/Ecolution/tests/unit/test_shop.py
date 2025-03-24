@@ -4,7 +4,6 @@ from django.db import connection
 from Ecolution.models import CustomUser, Event, Pet, ShopItem, UserItem
 from Ecolution.views import User
 
-
 class ShopUnitTests(TestCase):
 
     def setUp(self):
@@ -54,7 +53,7 @@ class ShopUnitTests(TestCase):
         response = self.client.post(reverse('buy_item', args = [self.item1.id]))
         self.assertEqual(response.status_code, 200)
 
-    # ⚠️ As a user, I cannot purchase a one-time-purchase item more than once
+    # As a user, I cannot purchase a one-time-purchase item more than once
     def test_cannot_buy_item_again(self):
         # user buys shop item
         response = self.client.post(reverse('buy_item', args=[self.item1.id]))

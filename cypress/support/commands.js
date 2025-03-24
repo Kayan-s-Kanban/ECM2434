@@ -24,6 +24,8 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+import '@cypress/code-coverage/support';
+
 Cypress.Commands.add('login', (username, password) => {
     cy.visit('http://127.0.0.1:8000/ecolution/login/');
 
