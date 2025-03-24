@@ -1,31 +1,68 @@
 {% extends "base.html" %}
 {% load static %}
 
+{# ------------------------- TITLE BLOCK ------------------------- #}
 {% block title %}
     <title>Delete Account - Ecolution</title>
 {% endblock %}
 
-<!-- Style Content Here (Should be integrated into styles.css eventually) -->
+{# ------------------------- STYLE BLOCK ------------------------- #}
+{# Inline styles for this page (to be moved to styles.css in the future) #}
 {% block style %}
     <style>
-        body { font-family: Arial, sans-serif; background: #f4f4f4; text-align: center; }
-        .container { max-width: 400px; margin: 50px auto; background: white; padding: 20px; border-radius: 10px; }
-        .warning { color: red; font-weight: bold; }
-        button { padding: 10px; margin: 10px; border: none; cursor: pointer; }
-        .delete { background: red; color: white; }
-        .cancel { background: gray; color: white; }
+        /* Set basic font, background color, and text alignment for the page */
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #f4f4f4; 
+            text-align: center; 
+        }
+        /* Container for the delete account confirmation form */
+        .container { 
+            max-width: 400px; 
+            margin: 50px auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+        }
+        /* Styling for warning messages */
+        .warning { 
+            color: red; 
+            font-weight: bold; 
+        }
+        /* Base styling for buttons */
+        button { 
+            padding: 10px; 
+            margin: 10px; 
+            border: none; 
+            cursor: pointer; 
+        }
+        /* Styling for the delete confirmation button */
+        .delete { 
+            background: red; 
+            color: white; 
+        }
+        /* Styling for the cancel action (styled as a button) */
+        .cancel { 
+            background: gray; 
+            color: white; 
+        }
     </style>
 {% endblock %}
 
+{# ------------------------- MAIN CONTENT BLOCK ------------------------- #}
 {% block main %}
     <div class="container">
+        {# Warning message alerting the user that deletion is irreversible #}
         <h2 class="warning">⚠️ Warning: This action is irreversible!</h2>
+        {# Message prompting the user to confirm account deletion #}
         <p>Are you sure you want to delete your account? All your data will be lost.</p>
+        {# Form to confirm deletion; using POST to submit for security #}
         <form method="POST">
             {% csrf_token %}
+            {# Button to confirm deletion #}
             <button type="submit" class="delete">Yes, Delete My Account</button>
+            {# Link to cancel deletion and return to the settings page #}
             <a href="{% url 'settings' %}" class="cancel">Cancel</a>
         </form>
     </div>
 {% endblock %}
-

@@ -1,24 +1,41 @@
 {% extends "base.html" %}
 {% load static %}
 
+{# ------------------------- TITLE BLOCK ------------------------- #}
 {% block title %}
     <title>Login - Ecolution</title>
 {% endblock %}
 
-<!-- Overrides header block so there isn't a navbar on this page -->
+{# ------------------------- HEADER OVERRIDE ------------------------- #}
+{# Overrides header block so that there is no navbar on the login page #}
 {% block header %}
 {% endblock %}
 
+{# ------------------------- MAIN CONTENT BLOCK ------------------------- #}
 {% block main %}
+    {# Spacer for extra vertical space #}
     <section class="spacer_big"></section>
-    <section class="signup card flex_v flex_center box_shadow"> <!-- box where the form to login exists -->
-        <h2 class="text_dark margin_std_bot">Login to Ecolution</h2> 
+    
+    {# Container for the login form styled as a card with box-shadow #}
+    <section class="signup card flex_v flex_center box_shadow"> 
+        {# Heading for the login section #}
+        <h2 class="text_dark margin_std_bot">Login to Ecolution</h2>
+        
+        {# ------------------------- LOGIN FORM ------------------------- #}
         <form class="flex_v flex_v_fill" method="POST">
+            {# CSRF token for security #}
             {% csrf_token %}
+            {# Input field for username #}
             <input type="text" name="username" placeholder="Username" required>
+            {# Input field for password #}
             <input type="password" name="password" placeholder="Password" required>
+            {# Submit button to log in #}
             <button class="button box_shadow" type="submit">Login</button>
         </form>
-        <p class="text_dark font_small margin_std_top">Don't have an account? <a href="{% url 'signup' %}">Sign up here</a></p> <!-- link to the sign up page to create an account if the user doesnt have one -->
+        
+        {# Link to the signup page for users who do not have an account #}
+        <p class="text_dark font_small margin_std_top">
+            Don't have an account? <a href="{% url 'signup' %}">Sign up here</a>
+        </p>
     </section>
 {% endblock %}

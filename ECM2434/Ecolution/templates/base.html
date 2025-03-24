@@ -1,6 +1,7 @@
 {% load static %}
 <!-- Used so pure JS files can access the static images folder -->
 <script>
+    // Sets a constant with the URL path to the static images folder
     const STATIC_IMAGES = "{% static 'images/' %}";
 </script>
 
@@ -8,22 +9,39 @@
 <html lang="en">
 
 <head>
+    {# ------------------------- TITLE BLOCK ------------------------- #}
     {% block title %}
         <title>Ecolution</title>
     {% endblock %}
+    
+    {# Set character encoding and viewport for responsive design #}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    {# Preconnect to Google Fonts for improved loading speed #}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    {# Include Google Fonts #}
     <link href="https://fonts.googleapis.com/css2?family=Jost&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    
+    {# Load the static tag again (if needed) and link to the main CSS file #}
     {% load static %}
     <link rel="stylesheet" href="{% static 'styles.css' %}">
+    
+    {# Favicon for the site #}
     <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+    
+    {# Include SweetAlert2 CSS and JS for alerts and popups #}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    {# ------------------------- STYLE BLOCK ------------------------- #}
     {% block style %}
         <!-- Style Content Here (Should be integrated into styles.css eventually) -->
     {% endblock %}
+    
+    {# If the user is authenticated, set custom font size from user preference #}
     {% if user.is_authenticated %}
     <style>
         :root {
@@ -39,20 +57,24 @@
 <body class="background">
     <section class="content_wrapper">
         <header>
+            {# ------------------------- HEADER BLOCK ------------------------- #}
             {% block header %}
                 <!-- Default Header Content -->
                 <div class="flex_h margin_std">
                     <section class="main_menu_container">
-                        <!-- Button that toggles main menu -->
+                        {# Button that toggles main menu visibility #}
                         <button class="button_img button flex_v flex_center box_shadow" type="button" onclick="toggleUseMenu()">
-                            <svg xmlns="http://www.w3.org/2000/svg" alt="Menu Button" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path fill="#ffffff" d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" alt="Menu Button" viewBox="0 0 448 512">
+                                <!-- Font Awesome menu icon -->
+                                <path fill="#ffffff" d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/>
+                            </svg>
                         </button>
-                        <!-- Main menu contains links to all pages, display is toggled when button pressed -->
+                        {# Main menu with navigation links, toggled via the button #}
                         <section class="main_menu" id="mainMenu">
                             <a href="{% url 'home' %}">Home</a>
                             <a href="{% url 'tasks' %}">Tasks</a>
                             {% if user.is_gamekeeper %}
-                                <!-- Gamekeeper only menu item, allows gamekeepers to create predefined tasks for other users -->
+                                <!-- Menu items visible only to gamekeepers -->
                                 <a href="{% url 'gamekeeper_tasks' %}">Gamekeeper Tasks</a>
                                 <a href="{% url 'gamekeeper_events' %}">Gamekeeper Events</a>
                             {% endif %}
@@ -63,7 +85,7 @@
                             <a href="{% url 'settings' %}">Settings</a>
                         </section> 
                     </section>
-                    <!-- Displays how many leaves you have (the currency for the shop) -->
+                    {# Displays current currency (leaves) of the user #}
                     <section class="currency_indicator">
                         <div class="flex_h flex_h_fill flex_center">
                             <h3 class="text_light">{{ points }}</h3>
@@ -73,6 +95,7 @@
                 </div>
     
                 <script>
+                    // Function to toggle the display of the main menu
                     function toggleUseMenu() {
                         var menu = document.getElementById("mainMenu");
                         menu.style.display = menu.style.display === "block" ? "none" : "block";
@@ -81,10 +104,12 @@
             {% endblock %}
         </header>
         <main class="margin_std flex_v">
+            {# ------------------------- MAIN CONTENT BLOCK ------------------------- #}
             {% block main %}
                 <!-- Main Content -->
             {% endblock %}
         </main>
+        {# Django messages container (hidden by default) for displaying alerts #}
         {% if messages %}
             <div id="django-messages" style="display: none;">
                 {% for message in messages %}
@@ -94,11 +119,13 @@
         {% endif %}
     </section>
 
+    {# ------------------------- ADDITIONAL CONTENT BLOCK ------------------------- #}
     {% block additional %}
         <!-- Any Additional Content (Scripts, etc.) -->
         <script src="{% static 'js/taskActions.js' %}"></script>
         <script src="{% static 'js/spawnParticles.js' %}"></script>
         <script>
+            // Once the DOM content is loaded, process Django messages with SweetAlert2
             document.addEventListener('DOMContentLoaded', function () {
                 const messagesContainer = document.getElementById('django-messages');
                 if (messagesContainer) {

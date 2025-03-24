@@ -1,14 +1,16 @@
 {% extends "base.html" %}
 {% load static %}
 
+{# ------------------------- TITLE BLOCK ------------------------- #}
 {% block title %}
     <title>Admin Tasks - Ecolution</title>
 {% endblock %}
 
-<!-- Style Content Here (Should be integrated into styles.css eventually) -->
+{# ------------------------- STYLE BLOCK ------------------------- #}
+{# Inline styles for this template. These should eventually be moved to styles.css #}
 {% block style %}
     <style>
-
+        /* Container styling for the task area with a light background and shadow */
         .task-container {
             background: rgba(255, 255, 255, 0.9);
             padding: 15px;
@@ -17,6 +19,7 @@
             margin-top: 20px;
         }
 
+        /* Background overlay for popups; hidden by default */
         .popup-bg {
             display: none;
             position: fixed;
@@ -27,6 +30,7 @@
             background: rgba(0, 0, 0, 0.5);
         }
 
+        /* Popup box styling: centered, with padding and a shadow */
         .popup {
             display: none;
             position: fixed;
@@ -40,6 +44,7 @@
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
         }
 
+        /* Styling for buttons inside the popup */
         .popup button {
             margin: 5px;
             padding: 10px;
@@ -47,6 +52,7 @@
             cursor: pointer;
         }
 
+        /* Styling for inputs and textareas inside the popup */
         .popup input, .popup textarea {
             width: 90%;
             padding: 8px;
@@ -57,15 +63,17 @@
     </style>
 {% endblock %}
 
+{# ------------------------- MAIN CONTENT BLOCK ------------------------- #}
 {% block main %}
     <div class="task-container">
-        <!-- Button that will open the pop up to allow the user to  -->
+        {# Button to open the popup for creating a new task #}
         <div>
             <button class="button" onclick="openPopup()">Create Task</button>
         </div>
 
-    <!-- Area to show the tasks the gamekeeper has created -->
+        {# ------------------------- DISPLAY CREATED TASKS ------------------------- #}
         <div id="created-tasks">
+            {# Loop through all tasks created by the gamekeeper and include a partial template for each #}
             {% for task in tasks %}
                 {% include 'partials/gamekeeper_task_card.html' with task=task %}
             {% empty %}
@@ -74,49 +82,58 @@
         </div>
     </div>
 
-    <!-- Task Popup to add tasks -->
+    {# ------------------------- TASK CREATION POPUP ------------------------- #}
     <div class="popup-bg" id="popupBg"></div>
     <div class="popup" id="popup">
-
         <div>
+            {# Input field for task title #}
             <input type="text" id="taskName" placeholder="Task Title" required>
+            {# Textarea for task description #}
             <textarea id="taskDescription" placeholder="Task Description" required></textarea>
+            {# Input field for the point reward associated with the task #}
             <input type="number" id="taskPoints" placeholder="Point Reward" required>
+            {# Input field for the EXP reward associated with the task #}
             <input type="number" id="taskEXP" placeholder="EXP Reward" required>
 
+            {# Button to submit the new task #}
             <button onclick="submitGamekeeperTask()">Add Task</button>
         </div>
 
+        {# Button to cancel and close the popup #}
         <button onclick="closePopup()">Cancel</button>
     </div>
-
 {% endblock %}
 
+{# ------------------------- ADDITIONAL SCRIPTS BLOCK ------------------------- #}
 {% block additional %}
     {{ block.super }}
     <script>
+        // Function to open the popup and show its background overlay
         function openPopup() {
             document.getElementById("popup").style.display = "block";
             document.getElementById("popupBg").style.display = "block";
         }
 
+        // Function to close the popup and hide its background overlay
         function closePopup() {
             document.getElementById("popup").style.display = "none";
             document.getElementById("popupBg").style.display = "none";
         }
 
-
+        // Helper function to retrieve the CSRF token from the cookie
         function getCSRFToken() {
             return document.cookie.match(/csrftoken=([^;]+)/)[1];
         }
 
-            // This function
+        // Function to submit a new task created by the gamekeeper
         function submitGamekeeperTask() {
+            // Retrieve input values from the popup form
             let taskName = document.getElementById("taskName").value;
             let taskDesc = document.getElementById("taskDescription").value;
             let taskPoints = document.getElementById("taskPoints").value;
             let taskEXP = document.getElementById("taskEXP").value;
 
+            // Send a POST request to the server with the new task data in JSON format
             fetch("/ecolution/gamekeeper_tasks/add/", {
                 method: "POST",
                 headers: {
@@ -133,19 +150,22 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Refresh page on success
+                        // Refresh the page if the task was added successfully
                         location.reload();
                     } else {
+                        // Alert the error message if task creation fails
                         alert("Error: " + data.error);
                     }
                 })
                 .catch(error => console.error("Error:", error));
 
-            // closes the popup
-            closePopup()
+            // Close the popup after attempting to submit the task
+            closePopup();
         }
 
+        // Function to delete an existing gamekeeper task
         function deleteGamekeeperTask(taskId) {
+            // Send a POST request to delete the task identified by taskId
             fetch("/ecolution/gamekeeper_tasks/delete/" + taskId + "/", {
                 method: "POST",
                 headers: { "X-CSRFToken": getCSRFToken() }
@@ -153,8 +173,10 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    // Reload the page upon successful deletion
                     location.reload();
                 } else {
+                    // Alert the error message if deletion fails
                     alert("Error: " + data.message);
                 }
             })
