@@ -1,15 +1,17 @@
 {% extends "base.html" %}
 {% load static %}
 
+{# ---------------------------  TITLE BLOCK --------------------------- #}
 {% block title %}
     <title>Tasks - Ecolution</title>
 {% endblock %}
 
-<!-- Style Content Here (Should be integrated into styles.css eventually) -->
+{# ---------------------------  STYLE BLOCK ---------------------------
+     The style block includes CSS which will eventually be integrated into styles.css
+#}
 {% block style %}
     <style>
-        
-
+        /* Container for task cards with subtle shadow and rounded corners */
         .task-container {
             background: rgba(255, 255, 255, 0.9);
             padding: 15px;
@@ -18,6 +20,7 @@
             margin-top: 20px;
         }
 
+        /* Flex container for the tabs at the top */
         .tabs {
             display: flex;
             justify-content: space-between;
@@ -25,17 +28,20 @@
             border-bottom: 2px solid green;
         }
 
+        /* Individual tab styling */
         .tab {
             cursor: pointer;
             padding: 10px;
             border-bottom: 2px solid transparent;
         }
 
+        /* Active tab gets a green bottom border and bold text */
         .tab.active {
             border-bottom: 2px solid green;
             font-weight: bold;
         }
 
+        /* Background overlay for popups */
         .popup-bg {
             display: none;
             position: fixed;
@@ -46,6 +52,7 @@
             background: rgba(0, 0, 0, 0.5);
         }
 
+        /* Popup styling for adding tasks */
         .popup {
             display: none;
             position: fixed;
@@ -61,6 +68,7 @@
             overflow-y: auto;
         }
 
+        /* Styling for input and textarea elements within the popup */
         .popup input, .popup textarea {
             width: 90%;
             padding: 8px;
@@ -71,23 +79,29 @@
     </style>
 {% endblock %}
 
+{# ---------------------------  MAIN CONTENT BLOCK --------------------------- #}
 {% block main %}
     <div>
-        <div></div>
+        <div></div> {# Empty container placeholder, potentially for future content #}
     </div>
-
 
     <div class="container">
         <div class="flex_h">
+            {# ---------------------------  TAB NAVIGATION --------------------------- #}
             <div class="tabs">
                 <div class="tab active" onclick="showTasks('current')">Current Tasks</div>
                 <div class="tab" onclick="showTasks('completed')">Completed Tasks</div>
             </div>
+            {# Button to open the task popup for adding tasks #}
             <button class="button button_img" onclick="openPopup()">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path fill="#ffffff" d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                    <!-- Font Awesome icon for adding tasks -->
+                    <path fill="#ffffff" d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/>
+                </svg>
             </button>
         </div>
 
+        {# ---------------------------  CURRENT TASKS SECTION --------------------------- #}
         <div id="current-tasks">
             {% for user_task in user_tasks %}
                 {% if not user_task.completed %}
@@ -98,6 +112,7 @@
             {% endfor %}
         </div>
         
+        {# ---------------------------  COMPLETED TASKS SECTION --------------------------- #}
         <div id="completed-tasks" style="display: none;">
             {% for user_task in user_tasks %}
                 {% if user_task.completed %}
@@ -107,14 +122,14 @@
                 <p>No completed tasks available.</p>
             {% endfor %}
         </div>
-
     </div>
 
-    <!-- Task Popup to add tasks -->
+    {# ---------------------------  TASK POPUP FOR ADDING TASKS --------------------------- #}
     <div class="popup-bg" id="popupBg"></div>
     <div class="popup" id="popup">
         <h3>Add Task</h3>
 
+        {# Section for predefined tasks #}
         <h4>Predefined Tasks</h4>
         <ul class="button_list" id="predefined-tasks">
             {% for task in predefined_tasks %}
@@ -128,6 +143,7 @@
             {% endfor %}
         </ul>
 
+        {# Section for user's custom tasks #}
         <h4>Your Custom Tasks</h4>
         <ul class="button_list" id="custom-tasks">
             {% for task in custom_tasks %}
@@ -141,47 +157,55 @@
             {% endfor %}
         </ul>
 
+        {# Button to show the form for creating a new custom task #}
         <button class="button_alt" onclick="showCustomTaskForm()">Create Custom Task</button>
 
+        {# Custom Task Form (initially hidden) #}
         <div id="custom-task-form" style="display: none;">
             <input type="text" id="custom-task-name" placeholder="Task Title">
             <textarea id="custom-task-desc" placeholder="Task Description"></textarea>
             <button class="button_alt" onclick="submitCustomTask()">Add Custom Task</button>
         </div>
 
+        {# Cancel button to close the popup #}
         <button class="button_alt" onclick="closePopup()">Cancel</button>
     </div>
-
 {% endblock %}
 
+{# ---------------------------  ADDITIONAL SCRIPTS BLOCK --------------------------- #}
 {% block additional %}
     {{ block.super }}
     <script>
+        // Open the popup and its background overlay
         function openPopup() {
             document.getElementById("popup").style.display = "block";
             document.getElementById("popupBg").style.display = "block";
         }
 
+        // Close the popup and hide the background overlay
         function closePopup() {
             document.getElementById("popup").style.display = "none";
             document.getElementById("popupBg").style.display = "none";
         }
 
+        // Display the form to create a custom task
         function showCustomTaskForm() {
             document.getElementById("custom-task-form").style.display = "block";
         }
 
+        // Helper function to retrieve CSRF token from cookies
         function getCSRFToken() {
             return document.cookie.match(/csrftoken=([^;]+)/)[1];
         }
 
+        // Function to add a task (predefined or custom) using a POST request
         function addTask(taskId, taskName, taskDesc) {
             fetch("/ecolution/tasks/add/", {
                 method: "POST",
                 headers: { "X-CSRFToken": getCSRFToken() },
                 body: new URLSearchParams({ task_id: taskId })
             })
-            // this checks if there was an error
+            // Check for errors in the response
             .then(response => {
                 if (!response.ok) {
                     return response.json().then(err => { throw err; });
@@ -189,14 +213,16 @@
                 return response.json();
             })
             .then(data => {
+                // Reload the page to reflect the new task
                 location.reload();
             })
-            // if there was an error, then it will be because of the integrity constraints in the DB
+            // Alert user if there's an error (e.g., task already exists)
             .catch(error => {
                 alert(error.message || "You are already completing this task.");
             });
         }
 
+        // Function to submit a new custom task via a POST request
         function submitCustomTask() {
             let taskName = document.getElementById("custom-task-name").value;
             let taskDesc = document.getElementById("custom-task-desc").value;
@@ -209,16 +235,18 @@
             .then(data => location.reload());
         }
 
+        // Function to toggle between displaying current and completed tasks
         function showTasks(tab) {
             const currentTasks = document.getElementById("current-tasks");
             const completedTasks = document.getElementById("completed-tasks");
             const tabs = document.getElementsByClassName("tab");
 
-            // Reset tab styles
+            // Remove active style from all tabs
             for (let i = 0; i < tabs.length; i++) {
                 tabs[i].classList.remove("active");
             }
 
+            // Toggle visibility based on the selected tab and add active class
             if (tab === 'current') {
                 currentTasks.style.display = "block";
                 completedTasks.style.display = "none";
@@ -229,6 +257,5 @@
                 document.querySelector(".tab:nth-child(2)").classList.add("active");
             }
         }
-
     </script>
 {% endblock %}

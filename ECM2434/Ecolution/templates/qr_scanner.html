@@ -1,29 +1,47 @@
 {% extends "base.html" %}
 {% load static %}
 
+{# ------------------------- TITLE BLOCK ------------------------- #}
 {% block title %}
   <title>QR Scanner - Ecolution</title>
 {% endblock %}
 
+{# ------------------------- MAIN CONTENT BLOCK ------------------------- #}
 {% block main %}
   <section class="qr-scanner-container">
+    {# Heading for the QR scanner section #}
     <h2>Scan QR Code</h2>
+    {# This div will be replaced by the QR code reader UI #}
     <div id="reader"></div>
   </section>
+  
+  {# ------------------------- EXTERNAL SCRIPT ------------------------- #}
+  {# Load the html5-qrcode library from an external CDN #}
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  
+  {# ------------------------- JAVASCRIPT CODE ------------------------- #}
   <script>
+    // Function called when a QR code is successfully scanned.
+    // 'decodedText' is the text from the QR code, and 'decodedResult' provides additional result info.
     function onScanSuccess(decodedText, decodedResult) {
-      // Redirect the user to the URL from the QR code.
+      // Redirect the user to the URL contained in the QR code.
       window.location.href = decodedText;
     }
 
+    // Function called when there is an error during scanning.
+    // The error message is logged to the console.
     function onScanError(errorMessage) {
       console.warn(errorMessage);
     }
 
+    // Create a new instance of the QR code scanner.
+    // "reader" is the id of the element where the scanner will be rendered.
+    // The options object sets the frames per second and the dimensions of the scanning box.
     let html5QrcodeScanner = new Html5QrcodeScanner(
-      "reader", { fps: 10, qrbox: {width: 250, height: 250} }, false
+      "reader", { fps: 10, qrbox: { width: 250, height: 250 } }, false
     );
+    
+    // Render the QR code scanner on the page, passing the success and error callback functions.
     html5QrcodeScanner.render(onScanSuccess, onScanError);
   </script>
 {% endblock %}
