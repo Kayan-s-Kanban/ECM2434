@@ -371,7 +371,7 @@ def create_event(request):
                             points_given=int(points),
                             creator=creator
                         )
-                    except IntegrityError:
+                    except Exception as e:
                         return JsonResponse({
                             "status": "error",
                             "message": f"Task '{name}' already exists for this user."
