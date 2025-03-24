@@ -199,6 +199,7 @@ def generate_qr_code(sender, instance, created, **kwargs):
         # Save the QR code image to a bytes buffer
         buffer = io.BytesIO()
         img.save(buffer, format='PNG')
+        print("QR buffer size:", len(buffer.getvalue()))
         
         # Generate a filename for the QR code image and save it to the model field
         file_name = f'event_{instance.pk}_qr.png'
