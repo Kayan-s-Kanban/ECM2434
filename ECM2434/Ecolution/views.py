@@ -146,7 +146,7 @@ def home_view(request):
 def tasks_view(request):
     """
     Renders the tasks page showing all tasks for the current user.
-    Displays both predefined tasks (superuser-created) and custom tasks (user-created).
+    Displays both predefined tasks (gamekeeper-created) and custom tasks (user-created).
     """
     user_tasks = UserTask.objects.filter(user=request.user)
     predefined_tasks = Task.objects.filter(predefined=True)
