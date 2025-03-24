@@ -363,13 +363,19 @@ def create_event(request):
             # Create each task associated with this event
             for name, points, xp in zip(task_names, task_points, task_xps):
                 if name.strip():
-                    Task.objects.create(
-                        event=event,
-                        task_name=name,
-                        xp_given=int(xp),
-                        points_given=int(points),
-                        creator=creator
-                    )
+                     try:
+                        Task.objects.create(
+                            event=event,
+                            task_name=name,
+                            xp_given=int(xp),
+                            points_given=int(points),
+                            creator=creator
+                        )
+                    except IntegrityError:
+                        return JsonResponse({
+                            "status": "error",
+                            "message": f"Task '{name}' already exists for this user."
+                        }, status=400)
             
             # Return JSON similar to how add_task does
             return JsonResponse({
@@ -386,8 +392,6 @@ def create_event(request):
 
     # If it's not POST, just return an error JSON (like add_task does)
     return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
-
-    
 
 @login_required
 def get_event_tasks(request, event_id):
