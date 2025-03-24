@@ -331,37 +331,6 @@ def complete_event(request):
             return JsonResponse({"success": False, "message": str(e)})
     return JsonResponse({"success": False, "message": "Invalid request"})
 
-# @gamekeeper_required
-# @login_required
-# def create_event(request):
-#     if request.method == "POST":
-#         event_name = request.POST.get("event_name")
-#         description = request.POST.get("description")
-#         location = request.POST.get("location")
-#         latitude = request.POST.get("latitude")
-#         longitude = request.POST.get("longitude")
-#         date = request.POST.get("date")
-#         time = request.POST.get("time")
-#         task_names = request.POST.getlist("task_name")
-#         task_points = request.POST.getlist("task_points")
-#         creator = request.user
-
-#         try:
-#             event = Event.objects.create(
-#                 event_name=event_name,
-#                 description=description,
-#                 location=location,
-#                 latitude=latitude,
-#                 longitude=longitude,
-#                 date=date,
-#                 time=time,
-#                 creator=creator,
-#             )
-
-#             for task_name, task_point in zip(task_names, task_points):
-#                 if task_name.strip(): 
-#                     Task.objects.create(event=event, task_name=task_name, points_given=int(task_point), xp_given=int(task_point))
-
 @gamekeeper_required
 @login_required
 def create_event(request):
