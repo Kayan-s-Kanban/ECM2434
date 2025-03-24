@@ -204,11 +204,10 @@
                         <input type="date" name="date" required>
                         <input type="time" name="time" required> 
                     </div>
-                    <input type="text" name="location" placeholder="Location" required>
-                    <div class="flex_h flex_gap_std">
-                        <input type="number" name="latitude" class="flex_v_fill" placeholder="Latitude" step="0.000001" min="-90" max="90" required>
-                        <input type="number" name="longitude" class="flex_v_fill" placeholder="Longitude" step="0.000001" min="-180" max="180" required>
-                    </div>  
+                    <input type="text" name="location" placeholder="Event Address" id="event-address" required>
+                    <!-- Hidden fields for lat and lon -->
+                    <input type="hidden" name="latitude" id="latitude">
+                    <input type="hidden" name="longitude" id="longitude">
                     
                     <div class="flex_h">
                         <h3>Event Tasks:</h3>
@@ -222,7 +221,7 @@
                         </div>
                     </div>
                     <button type="submit" class="button text_light">Create Event</button>
-                </form>
+                </form>                
             </div>
         </div>"
         
@@ -389,6 +388,42 @@
         function getCSRFToken() {
             return document.cookie.match(/csrftoken=([^;]+)/)[1];
         }
+         // Function to geocode the address using Nominatim API
+        function geocodeAddress(address) {
+            // Nominatim API endpoint. 'format=json' returns JSON data.
+            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+            return fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    // If results exist, return the first one.
+                    if (data && data.length > 0) {
+                        return {
+                            latitude: data[0].lat,
+                            longitude: data[0].lon
+                        };
+                    } else {
+                        throw new Error("Address not found.");
+                    }
+                });
+        }
+
+        // Listen for blur event on the address field
+        document.getElementById("event-address").addEventListener("blur", function(){
+            const address = this.value;
+            if (address) {
+                geocodeAddress(address)
+                    .then(coords => {
+                        // Populate the hidden latitude and longitude fields
+                        document.getElementById("latitude").value = coords.latitude;
+                        document.getElementById("longitude").value = coords.longitude;
+                        console.log("Coordinates found:", coords);
+                    })
+                    .catch(error => {
+                        console.error("Geocoding error:", error);
+                        alert("Could not find the address. Please check your input.");
+                    });
+            }
+        });
     </script>
 {% endblock %}
 
