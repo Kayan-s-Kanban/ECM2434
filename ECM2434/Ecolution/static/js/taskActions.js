@@ -18,18 +18,17 @@
                 if (pointsEl) { 
                     pointsEl.innerText = data.points; 
                 }
-                // NOTE: For testing out animations, turn on spawn particle, swap the remove to be on a timer, and stop the redirect.
+                // Removes task and reloads the page, spwans particles for a success animation
                 var taskElement = element.closest(".task");
                 if (taskElement) {
                     spawnParticles(taskElement, 60);
                     // Change the z-index to be above the particles
-                    taskElement.style.z_index = 2;
+                    taskElement.style.zIndex = 2;
                     // Set a CSS transition for the opacity to fade out
                     taskElement.style.transition = "opacity ease-out 3s";
                     // Trigger the fade by setting opacity to 0
                     taskElement.style.opacity = "0";
-                    // taskElement.remove();
-                    taskElement.style.opacity // Make this transform to fade away thank you aplesseskljsdlkfj
+                    taskElement.style.opacity
                     setTimeout(() => {
                         taskElement.remove();
 
