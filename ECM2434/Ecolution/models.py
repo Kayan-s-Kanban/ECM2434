@@ -10,6 +10,8 @@ from django.core.files.base import ContentFile
 from django.urls import reverse
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+import logging
+logger = logging.getLogger(__name__)
 
 class CustomUser(AbstractUser):  # Custom User model is the user class we use for base users and super users
     
@@ -132,6 +134,7 @@ class Event(models.Model):
 def generate_qr_code(sender, instance, created, **kwargs):
     # If the Event is new or if for some reason the QR code hasn't been generated
     if created or not instance.qr_code:
+        logger.info("Generating QR code for Event ID: %s", instance.pk)
         # Generate the relative URL using reverse()
         relative_url = reverse('validate_qr', kwargs={'token': instance.unique_token})
         full_url = f'https://ecolution.onrender.com/{relative_url}'
