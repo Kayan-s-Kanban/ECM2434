@@ -147,12 +147,12 @@
         <h1 class="text_light">Events</h1>
     
         <div class="all-events-container">
-            <div class="event_list_container">
+            <div class="container">
                 <h2 class="text_dark ">My Events</h2>
                 <div>
                     {% if user_events %}
                         {% for user_event in user_events%}
-                            <div class="card box_shadow text_light event" 
+                            <div class="card box_shadow text_light event button" 
                             data-id="{{ user_event.event_id }}"
                             data-name="{{ user_event.event_name }}"
                             data-description="{{ user_event.description }}"
@@ -174,12 +174,12 @@
                 </div>
             </div>
             
-            <div class="event_list_container">
+            <div class="container">
                 <h2 class="text_dark">Join Events</h2>
                 <div>
                     {% if events %}
                         {% for event in events%}
-                            <div class="card box_shadow text_light event" 
+                            <div class="card box_shadow text_light event button" 
                             data-id="{{ event.event_id }}"
                             data-name="{{ event.event_name }}"
                             data-description="{{ event.description }}"
