@@ -1,48 +1,69 @@
 {% extends "base.html" %}
 {% load static %}
 
+{# ------------------------- TITLE BLOCK ------------------------- #}
 {% block title %}
     <title>Leaderboard - Ecolution</title>
 {% endblock %}
 
+{# ------------------------- MAIN CONTENT BLOCK ------------------------- #}
 {% block main %}
 <div class="margin_std">
-    <!-- Leaderboard Title (no background color here) -->
+    {# Leaderboard title centered at the top #}
     <h2 class="text_light" style="text-align: center;">Leaderboard</h2>
+    
     <div class="container">
-        <!-- Top 3 Players -->
+        {# ------------------------- TOP 3 PLAYERS SECTION ------------------------- #}
         <div class="flex_h" style="justify-content: space-around; margin-bottom: 1rem;">
+            {# Check if the second place pet exists and display its info #}
             {% if second_pet %}
             <div style="text-align: center;">
-                <img src="{{ second_pet.displayed_pet.computed_image_url }}" alt="{{ second_pet.displayed_pet.pet_type }} pet" style="width: 60px; height: 60px; image-rendering: pixelated;">
+                <img src="{{ second_pet.displayed_pet.computed_image_url }}" 
+                     alt="{{ second_pet.displayed_pet.pet_type }} pet" 
+                     style="width: 60px; height: 60px; image-rendering: pixelated;">
                 <p class="text_dark font_bold">2 - Level {{ second_pet.displayed_pet.pet_level }}</p>
                 <p class="text_dark font_bold">{{ second_pet.username }}</p>
             </div>
             {% endif %}
+            
+            {# Check if the top pet exists and display its info with a crown icon #}
             {% if top_pet %}
             <div style="text-align: center;">
-                <img src="{{ top_pet.displayed_pet.computed_image_url }}" alt="{{ top_pet.displayed_pet.pet_type }} pet" style="width: 80px; height: 80px; image-rendering: pixelated;">
+                <img src="{{ top_pet.displayed_pet.computed_image_url }}" 
+                     alt="{{ top_pet.displayed_pet.pet_type }} pet" 
+                     style="width: 80px; height: 80px; image-rendering: pixelated;">
                 <p class="text_dark font_bold">1 👑 - Level {{ top_pet.displayed_pet.pet_level }}</p>
                 <p class="text_dark font_bold">{{ top_pet.username }}</p>
             </div>
             {% endif %}
+            
+            {# Check if the third place pet exists and display its info #}
             {% if third_pet %}
             <div style="text-align: center;">
-                <img src="{{ third_pet.displayed_pet.computed_image_url }}" alt="{{ third_pet.displayed_pet.pet_type }} pet" style="width: 60px; height: 60px; image-rendering: pixelated;">
+                <img src="{{ third_pet.displayed_pet.computed_image_url }}" 
+                     alt="{{ third_pet.displayed_pet.pet_type }} pet" 
+                     style="width: 60px; height: 60px; image-rendering: pixelated;">
                 <p class="text_dark font_bold">3 - Level {{ third_pet.displayed_pet.pet_level }}</p>
                 <p class="text_dark font_bold">{{ third_pet.username }}</p>
             </div>
             {% endif %}
         </div>
-        <!-- Remaining Leaderboard Entries (4th place onwards) -->
+        
+        {# ------------------------- REMAINING LEADERBOARD ENTRIES (4th place onwards) ------------------------- #}
         <div>
+            {# Loop through the remaining leaderboard entries #}
             {% for entry in leaderboard_entries %}
             <div class="card box_shadow" style="padding: 0.5rem; margin-bottom: 0.5rem;">
                 <div class="flex_h" style="justify-content: space-between; align-items: center;">
                     <div class="flex_h" style="align-items: center;">
-                        <img src="{{ entry.displayed_pet.computed_image_url }}" alt="{{ entry.displayed_pet.pet_type }} pet" style="width: 40px; height: 40px; margin-right: 0.5rem; image-rendering: pixelated;">
+                        {# Display the pet image for the entry #}
+                        <img src="{{ entry.displayed_pet.computed_image_url }}" 
+                             alt="{{ entry.displayed_pet.pet_type }} pet" 
+                             style="width: 40px; height: 40px; margin-right: 0.5rem; image-rendering: pixelated;">
+                        {# Display the username #}
                         <p class="text_light font_bold">{{ entry.username }}</p>
                     </div>
+                    {# Display the pet level #}
                     <p class="text_light font_bold">Level {{ entry.displayed_pet.pet_level }}</p>
                 </div>
             </div>

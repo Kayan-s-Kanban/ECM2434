@@ -1,18 +1,22 @@
 {% extends "base.html" %}
 {% load static %}
 
+{# ------------------------- TITLE BLOCK ------------------------- #}
 {% block title %}
     <title>Settings - Ecolution</title>
 {% endblock %}
 
+{# ------------------------- STYLE BLOCK ------------------------- #}
 {% block style %}
     <style>
+        /* Container for the settings page */
         .settings-container {
             background: white;
             border-radius: 10px;
             overflow: hidden;
         }
 
+        /* Header styling with background color and rounded bottom edges */
         .header {
             background: #4a7c59;
             padding: 30px;
@@ -22,6 +26,7 @@
             border-bottom-right-radius: 20px;
         }
 
+        /* Profile picture styling: circular, with border and fixed dimensions */
         .profile-pic {
             width: 80px;
             height: 80px;
@@ -31,20 +36,24 @@
             margin-top: -40px;
         }
 
+        /* Centered user info container with padding */
         .user-info {
             text-align: center;
             padding: 15px;
         }
 
+        /* Styling for user name in user-info */
         .user-info h2 {
             margin: 10px 0 5px;
         }
 
+        /* Styling for user description or extra info */
         .user-info p {
             color: #666;
             font-size: 14px;
         }
 
+        /* Details section styling for additional info displayed in a row */
         .details {
             display: flex;
             justify-content: space-around;
@@ -53,12 +62,14 @@
             color: #555;
         }
 
+        /* List styling for settings options */
         .settings-list {
             list-style: none;
             padding: 0;
             margin: 0;
         }
 
+        /* Each settings list item styling */
         .settings-list li {
             padding: 15px;
             display: flex;
@@ -67,27 +78,30 @@
             cursor: pointer;
         }
 
+        /* Hover effect for list items */
         .settings-list li:hover {
             background: #e9f5e9;
         }
 
+        /* Icon styling within list items */
         .settings-list li img {
             width: 20px;
             margin-right: 10px;
         }
 
+        /* Special styling for logout button (red text) */
         .logout {
             color: red;
             font-weight: bold;
         }
 
-        /* Hide the password form by default */
+        /* Hide the password update form by default */
         #password-form {
             display: none;
             padding: 15px;
         }
 
-        /* Hide the username form by default */
+        /* Hide the username update form by default */
         #username-form {
             display: none;
             padding: 15px;
@@ -95,19 +109,33 @@
     </style>
 {% endblock %}
 
+{# ------------------------- MAIN CONTENT BLOCK ------------------------- #}
 {% block main %}
+    {# Spacer section for vertical spacing #}
     <section class="spacer_big"></section>
+    
+    {# Settings container styled as a card with shadow and centered alignment #}
     <section class="signup card flex_v flex_center box_shadow">
         <h2 class="text_dark margin_sml_bot">Settings</h2>
+        
+        {# Menu container for settings options and forms #}
         <section class="menu card flex_v flex_v_fill">
             <section class="spacer"></section>
+            
+            {# ------------------------- USER INFORMATION ------------------------- #}
             <div class="user_info flex_h flex_center">
+                {# Optionally include a static profile image (commented out) #}
                 {% comment %} <img src="{% static 'images/profile.jpg' %}" alt="Profile Picture" class="profile-pic"> {% endcomment %}
+                {# Fallback profile image icon #}
                 <img src="{% static 'images/person.svg' %}" alt="Profile Picture" class="profile_pic box_shadow">
+                {# Display the user's name dynamically #}
                 <h3>{{name}}</h3>
             </div>
             <section class="spacer"></section>
+            
+            {# ------------------------- SETTINGS MENU OPTIONS ------------------------- #}
             <div class="menu_container flex_v flex_v_fill">
+                {# Font Size Dropdown Option #}
                 <div class="dropdown-container flex_h flex_start button button_menu box_shadow" style="justify-content: start; gap: 8px;">
                     <label for="font-size-select">Font Size:</label>
                     <select id="font-size-select" class="dropdown">
@@ -116,14 +144,13 @@
                         <option value=19 {% if user.preferred_font_size == 19 %}selected{% endif %}>Large</option>
                     </select>
                 </div>
+                
+                {# Button to trigger username change form #}
                 <button class="button button_menu box_shadow" type="button" id="change-username-btn">Change username</button>
+                {# Hidden Username Change Form #}
                 <div id="username-form">
                     <form id="change-username-form" method="POST" action="{% url 'change_username' %}">
                         {% csrf_token %}
-                        <div class="form-group-horizontal">
-                            <label for="current_username">Current username:</label>
-                            <input type="username" id="current_username" name="current_username" required>
-                        </div>
                         <div class="form-group-horizontal">
                             <label for="new_username1">New username:</label>
                             <input type="username" id="new_username1" name="new_username1" required>
@@ -136,7 +163,9 @@
                     </form>
                 </div>
 
+                {# Button to trigger password change form #}
                 <button class="button button_menu box_shadow" type="button" id="change-password-btn">Change Password</button>
+                {# Hidden Password Change Form #}
                 <div id="password-form">
                     <form id="change-password-form" method="POST" action="{% url 'change_password' %}">
                         {% csrf_token %}
@@ -155,22 +184,28 @@
                         <button type="submit">Update Password</button>
                     </form>
                 </div>
+                
+                {# Button for account deletion, redirects to delete_account URL #}
                 <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'delete_account' %}'">Delete Account</button>
+                {# Logout button, redirects to logout URL #}
                 <button class="button button_menu box_shadow" type="button" onclick="location.href='{% url 'logout' %}'">Logout</button>
+                {# Button to open the Terms and Conditions page in a new tab #}
                 <button class="button button_menu box_shadow" type="button" onclick="window.open('{% url 'term_of_use' %}', '_blank')">Terms and Conditions</button>
             </div>
         </section>
     </section>
 {% endblock %}
 
+{# ------------------------- ADDITIONAL SCRIPTS BLOCK ------------------------- #}
 {% block additional %}
 {{ block.super }}
 <script>
+    // Wait until the document has fully loaded
     document.addEventListener("DOMContentLoaded", function () {
         const fontSizeSelect = document.getElementById("font-size-select");
         console.log("fontSizeSelect element:", fontSizeSelect);
 
-        // Fetch the user's current font size and set the dropdown value
+        // Fetch the user's current font size preference from the server
         fetch("{% url 'get_fontsize' %}")
             .then(response => response.json())
             .then(data => {
@@ -180,13 +215,17 @@
             })
             .catch(error => console.error("Error fetching font size:", error));
         
+        // Toggle the display of the password change form when the button is clicked
         document.getElementById("change-password-btn").addEventListener("click", function () {
             const passwordForm = document.getElementById("password-form");
+            // Get current computed display style
             const computedDisplay = window.getComputedStyle(passwordForm).display;
             console.log("Computed display:", computedDisplay);
+            // Toggle between 'none' and 'block'
             passwordForm.style.display = computedDisplay === "none" ? "block" : "none";
         });
 
+        // Toggle the display of the username change form when the button is clicked
         document.getElementById("change-username-btn").addEventListener("click", function () {
             const usernameForm = document.getElementById("username-form");
             const computedDisplay = window.getComputedStyle(usernameForm).display;
@@ -194,6 +233,7 @@
             usernameForm.style.display = computedDisplay === "none" ? "block" : "none";
         });
 
+        // Listen for changes in the font size dropdown to update the user's preference
         fontSizeSelect.addEventListener("change", function () {
             console.log("Dropdown changed, new value:", this.value);
             fetch("{% url 'update_fontsize' %}", {
@@ -213,6 +253,7 @@
               }).catch(error => console.error("Error:", error));
         });
 
+        // Helper function to retrieve the CSRF token from cookies
         function getCSRFToken() {
             let cookieValue = null;
             if (document.cookie && document.cookie !== "") {

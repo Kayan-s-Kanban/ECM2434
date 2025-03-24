@@ -1,35 +1,47 @@
 {% extends "base.html" %}
 {% load static %}
 
+{# ------------------------- TITLE BLOCK ------------------------- #}
 {% block title %}
-<title>Select Accessory</title>
+    <title>Select Accessory</title>
 {% endblock %}
 
-
+{# ------------------------- MAIN CONTENT BLOCK ------------------------- #}
 {% block main %}
 <section class="margin_std text_light">
+    {# Display the heading with the pet's name dynamically inserted #}
     <h2>Select an Accessory for {{ pet.pet_name }}</h2>
+    
+    {# Check if the user owns any hat accessories #}
     {% if hat_items %}
         <p>Choose a hat from your owned items:</p>
+        {# Form for selecting and equipping a hat accessory #}
         <form method="POST">
+            {# CSRF token for security #}
             {% csrf_token %}
             <div class="hat_list flex_v flex_center">
+                {# Loop through each owned hat item #}
                 {% for user_item in hat_items %}
                     <label style="margin: 1rem;">
+                        {# Display the accessory image using the static file path #}
                         <img src="{% static user_item.shopitem.image_path %}" 
                              alt="{{ user_item.shopitem.name }}" 
                              style="width: 64px; height: 64px;">
                         <br>
+                        {# Radio button to select this accessory #}
                         <input type="radio" name="selected_item_id" value="{{ user_item.shopitem.id }}">
+                        {# Display the accessory name #}
                         {{ user_item.shopitem.name }}
                     </label>
                 {% endfor %}
             </div>
+            {# Submit button to equip the selected accessory #}
             <button class="button box_shadow text_light button_alt" style="margin-top: 1rem;">
                 Equip Selected Hat
             </button>
         </form>
     {% else %}
+        {# If the user doesn't own any accessories, show a message and a button to go to the shop #}
         <p>You don't own any accessories. Go to the shop to buy them!</p>
         <button class="button box_shadow text_light button_alt" 
                 onclick="window.location.href='{% url 'home' %}'" 

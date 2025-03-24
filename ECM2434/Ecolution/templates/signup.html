@@ -1,44 +1,64 @@
 {% extends "base.html" %}
 {% load static %}
 
+{# ------------------------- TITLE BLOCK ------------------------- #}
 {% block title %}
     <title>Sign Up - Ecolution</title>
 {% endblock %}
 
-<!-- Overrides header block so there isn't a navbar on this page -->
+{# ------------------------- HEADER OVERRIDE ------------------------- #}
+{# Overrides header block so that there is no navbar on this page #}
 {% block header %}
 {% endblock %}
 
+{# ------------------------- MAIN CONTENT BLOCK ------------------------- #}
 {% block main %}
+    {# Spacer section for vertical space #}
     <section class="spacer_big"></section>
+    
+    {# Container for the sign up form and related elements #}
     <section class="container flex_v flex_center box_shadow">
+        {# Main heading for the page #}
         <h2 class="text_dark margin_std_bot">Create an Account</h2>
         <h3 class="text_dark margin_sml_bot align_self_start">Enter your details</h3>
+        
+        {# Start of the sign up form. POST method is used to submit user details #}
         <form class="flex_v flex_v_fill" method="POST">
             {% csrf_token %}
-            <input type="email" name="email" placeholder="Email" required> <!-- takes the email address check there is an @ sign -->
-            <input type="text" name="username" placeholder="Username" required> <!-- comment -->
+            
+            {# Email input: requires an email format (checks for an "@" symbol) #}
+            <input type="email" name="email" placeholder="Email" required>
+            
+            {# Username input: simple text field for username #}
+            <input type="text" name="username" placeholder="Username" required>
+            
+            {# Password input: requires at least one digit, one uppercase letter, one lowercase letter and minimum 8 characters #}
             <input type="password" name="password1" 
                 pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
                 title="Must contain at least one number, one uppercase and lowercase letter, and at least 8 characters" 
-                placeholder="Password" required> <!-- has a password and a confirm password to esure the user entered the correct password -->
+                placeholder="Password" required>
+            
+            {# Confirm Password input: ensures that the user correctly repeats their password #}
             <input type="password" name="password2" placeholder="Confirm Password" required>
 
-            <!-- Pet Selection -->
+            {# ------------------------- PET SELECTION SECTION ------------------------- #}
             <h3 class="text_dark margin_sml_top align_self_start">Choose your pet</h3>
             <section class="pet_selection flex_h flex_center">
+                {# Option 1: Mushroom pet #}
                 <label class="pet_option">
                     <input type="radio" name="pet_type" value="mushroom" required>
                     <div class="image_wrapper">
                         <img src="{% static 'images/pets/mushroom/mushroom_small.gif' %}" alt="Mushroom Pet">
                     </div>
                 </label>
+                {# Option 2: Plant pet #}
                 <label class="pet_option">
                     <input type="radio" name="pet_type" value="plant" required>
                     <div class="image_wrapper">
                         <img src="{% static 'images/pets/plant/plant_small.gif' %}" alt="Plant Pet">
                     </div>
                 </label>
+                {# Option 3: Acorn pet #}
                 <label class="pet_option">
                     <input type="radio" name="pet_type" value="acorn" required>
                     <div class="image_wrapper">
@@ -47,41 +67,58 @@
                 </label>
             </section>
 
-            <!-- Pet Name Input (Hidden by Default) -->
+            {# Pet Name Input: Hidden by default and will be shown once a pet is selected #}
             <input type="text" name="pet_name" id="pet_name_input" placeholder="Pet Name" style="display: none;">
             
+            {# ------------------------- TERMS & CONDITIONS CHECKBOX ------------------------- #}
             <label class="terms_checkbox font_small align_self_center margin_sml_top margin_sml_bot">
                 <input type="checkbox" name="agree_terms" required>
-                <span>I have read and agree to the <a href="{% url 'term_of_use' %}" target="_blank">Terms and Conditions</a></span> <!-- link to the terms and conditions page along with a necessary checkbox to agree to the T's and C's -->
+                <span>
+                    I have read and agree to the 
+                    <a href="{% url 'term_of_use' %}" target="_blank">Terms and Conditions</a>
+                </span>
             </label>            
             
+            {# Submit button for the sign up form #}
             <button class="button box_shadow" type="submit">Sign Up</button>
         </form>
-        <p class="text_dark font_small margin_std_top">Already have an account? <a href="{% url 'login' %}">Login here</a></p> 
+        
+        {# Link for users who already have an account #}
+        <p class="text_dark font_small margin_std_top">
+            Already have an account? <a href="{% url 'login' %}">Login here</a>
+        </p> 
     </section>
 
+    {# ------------------------- JAVASCRIPT FOR PET NAME TOGGLE ------------------------- #}
     <script>
+        // Wait for the DOM to fully load before executing the script
         document.addEventListener("DOMContentLoaded", function() {
+            // Select all pet radio input options
             let petOptions = document.querySelectorAll("input[name='pet_type']");
+            // Get the pet name input field
             let petNameInput = document.getElementById("pet_name_input");
     
+            // Function to toggle the visibility and requirement of the pet name input
             function togglePetNameInput() {
+                // Check if any pet option is selected
                 let selectedPet = document.querySelector("input[name='pet_type']:checked");
                 if (selectedPet) {
+                    // If a pet is selected, show the pet name input and mark it as required
                     petNameInput.style.display = "block";
                     petNameInput.required = true;
                 } else {
+                    // If no pet is selected, hide the pet name input and remove the required attribute
                     petNameInput.style.display = "none";
                     petNameInput.required = false;
                 }
             }
     
-            // Run function when selection changes
+            // Add change event listener to all pet options
             petOptions.forEach(option => {
                 option.addEventListener("change", togglePetNameInput);
             });
     
-            // Run function on page load to check pre-selected option
+            // Run the toggle function on page load in case a pet option is pre-selected
             togglePetNameInput();
         });
     </script>

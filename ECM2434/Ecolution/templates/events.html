@@ -1,18 +1,22 @@
 {% extends "base.html" %}
 {% load static %}
 
+{# ------------------------- TITLE AND STYLE BLOCK ------------------------- #}
 {% block title %}
     <title>Events - Ecolution</title>
+    {# Link to the main CSS file for common styles #}
     <link rel="stylesheet" href="{% static 'styles.css' %}">
+    {# Include Leaflet CSS for map functionality #}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
         crossorigin=""/>
     
+    {# Inline styles specific to the Events page #}
     <style>
-        .heading{
+        .heading {
             align-items: center;
         }
-
+        /* Container for the events list with padding, background, and slight opacity */
         .event_list_container {
             background-color: white;
             padding: 20px;
@@ -20,69 +24,67 @@
             margin: 5px;
             opacity: 0.9;
         }
-
+        /* Basic styling for each event card */
         .event {
             margin: 5px;
             padding: 15px;
         }
-
+        /* Container for event details popup; centered and fixed */
         .event_details_container {
             display: flex;
             justify-content: center;
             position: fixed;
         }
-
+        /* Popup for event details; hidden by default */
         .event_details {
             display: none;
             background-color: white;
-            width: 400px;
+            max-width: 400px;
             height: 70vh;
             border-radius: 15px 15px;
             padding: 20px 20px;
         }
-
+        /* Content within event details; scrollable without visible scrollbar */
         .event_details_content {
             overflow-y: auto;
-            max-height:  calc(70vh - 115px);
+            max-height: calc(70vh - 115px);
         }
-
         .event_details_content::-webkit-scrollbar {
             display: none; /* Hides the scrollbar */
         }
-
+        /* Container to align exit button to the right */
         .exit_button_container {
             display: flex;
             justify-content: end;
         }
-
+        /* Styling for exit button */
         .exit_button {
             margin-top: 10px;
             display: inline-block;
         }
-
-        .join_button{
+        /* Styling for join button if applicable */
+        .join_button {
             font-size: 16px;
             align-self: center;
         }
-
+        /* Container for grouping buttons; sticky position */
         .button_container {
             display: flex;
             position: sticky;
             padding: 20px;
-            
         }
-
+        /* Center align headings */
         h1 {
             text-align: center;
         }
-
+        /* Styling for datetime information with gap and specific color */
         .datetime {
             display: flex;
             justify-content: flex-start;
             gap: 10px;
             color: #3a8d84;
         }
-
+        /* Styling for individual task cards within an event */
         .taskcard {
             background-color: #3a8d84;
             border-radius: 0.8em;
@@ -90,80 +92,86 @@
             margin-block: 0.4em;
             opacity: 1;
         }
-
+        /* Set the map container height */
         #map { 
             height: 200px; 
         }
-
-        .points{
+        /* Styling for points display */
+        .points {
             display: flex;
             justify-content: flex-start;
             font-weight: bold;
         }
-
-        .qr-container{
+        /* Container for QR code scanner; hidden by default */
+        .qr-container {
             display: none;
             background-color: white;
             z-index: 1;
             border-radius: 15px 15px;
             padding: 20px 20px;
-            
         }
-
+        /* Container for all events with vertical scroll and rounded corners */
         .all-events-container {
             overflow-y: auto;
             max-height: 80vh;
             border-radius: 20px 20px;
         }
-
         .all-events-container::-webkit-scrollbar {
             display: none; /* Hides the scrollbar */
         }
     </style>
 
+    {# Include Leaflet JS for map functionality #}
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""></script>
 
+    {# Include html5-qrcode library for QR code scanning if needed #}
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 {% endblock %}
 
+{# ------------------------- MAIN CONTENT BLOCK ------------------------- #}
 {% block main %}
     <!-- Main Content -->
-
     <body>
-        
-
-
+        {# ------------------------- QR CODE CONTAINER ------------------------- #}
+        {# Container for the QR scanner which is hidden by default #}
         <div class="qr-container" id="qr-container">
             <div class="flex_h heading">
+                {# Button to close the QR scanner #}
                 <button class="button exit_button text_light" onclick="closeQrScanner()"> ← </button>
                 <h4>Scan the QR code to complete the task</h4>
             </div>
+            {# Div where the QR code reader UI will render #}
             <div id="reader" width="600px"></div>
         </div>
         
-
+        {# ------------------------- EVENTS HEADING ------------------------- #}
         <h1 class="text_light">Events</h1>
     
+        {# ------------------------- EVENTS LIST CONTAINER ------------------------- #}
         <div class="all-events-container">
+            {# Container for the user's own events #}
             <div class="container">
-                <h2 class="text_dark ">My Events</h2>
+                <h2 class="text_dark">My Events</h2>
                 <div>
                     {% if user_events %}
-                        {% for user_event in user_events%}
+                        {# Loop through each event created by the user and render an event card #}
+                        {% for user_event in user_events %}
                             <div class="card box_shadow text_light event button" 
-                            data-id="{{ user_event.event_id }}"
-                            data-name="{{ user_event.event_name }}"
-                            data-description="{{ user_event.description }}"
-                            data-location="{{ user_event.location }}"
-                            data-date="{{ user_event.date }}"
-                            data-time="{{ user_event.time }}"
-                            data-points="{{ user_event.total_points}}"
-                            onclick="openEventDetails(this, 'user')">
-                                <p>{{user_event.date}}</p>
-                                <h3>{{user_event.event_name}}</h3>
-                                <p>📍{{user_event.location}}</p>
+                                data-id="{{ user_event.event_id }}"
+                                data-name="{{ user_event.event_name }}"
+                                data-description="{{ user_event.description }}"
+                                data-location="{{ user_event.location }}"
+                                data-longitude="{{ user_event.longitude }}"
+                                data-latitude="{{ user_event.latitude }}"
+                                data-date="{{ user_event.date }}"
+                                data-time="{{ user_event.time }}"
+                                data-points="{{ user_event.total_points}}"
+                                onclick="openEventDetails(this, 'user')">
+                                <p>{{ user_event.date }}</p>
+                                <h3>{{ user_event.event_name }}</h3>
+                                <p>📍{{ user_event.location }}</p>
                             </div>
                         {% endfor %}
                     {% else %}
@@ -172,23 +180,27 @@
                 </div>
             </div>
             
+            {# Container for events available for joining #}
             <div class="container">
                 <h2 class="text_dark">Join Events</h2>
                 <div>
                     {% if events %}
-                        {% for event in events%}
+                        {# Loop through each general event and render an event card #}
+                        {% for event in events %}
                             <div class="card box_shadow text_light event button" 
-                            data-id="{{ event.event_id }}"
-                            data-name="{{ event.event_name }}"
-                            data-description="{{ event.description }}"
-                            data-location="{{ event.location }}"
-                            data-date="{{ event.date }}"
-                            data-time="{{ event.time }}"
-                            data-points="{{ event.total_points}}"
-                            onclick="openEventDetails(this, 'general')">
-                                <p>{{event.date}}</p>
-                                <h3>{{event.event_name}}</h3>
-                                <p>📍{{event.location}}</p>
+                                data-id="{{ event.event_id }}"
+                                data-name="{{ event.event_name }}"
+                                data-description="{{ event.description }}"
+                                data-location="{{ event.location }}"
+                                data-longitude="{{ event.longitude }}"
+                                data-latitude="{{ event.latitude }}"
+                                data-date="{{ event.date }}"
+                                data-time="{{ event.time }}"
+                                data-points="{{ event.total_points}}"
+                                onclick="openEventDetails(this, 'general')">
+                                <p>{{ event.date }}</p>
+                                <h3>{{ event.event_name }}</h3>
+                                <p>📍{{ event.location }}</p>
                             </div>
                         {% endfor %}
                     {% else %}
@@ -198,77 +210,79 @@
             </div>
         </div>
         
-        
-
-        <!-- Events popup, showing a specific event -->
+        {# ------------------------- EVENT DETAILS POPUP ------------------------- #}
         <div class="event_details_container">
             <div class="event_details margin_std box_shadow" id="event_details">
                 <div class="flex_h heading">
-                    <h1 id="name", class="text_dark"></h1>
+                    {# Event name will be populated dynamically #}
+                    <h1 id="name" class="text_dark"></h1>
+                    {# Button to close the event details popup #}
                     <button class="button exit_button text_light" onclick="closeEventDetails()"> x </button>
                 </div>
 
-                <div class="event_details_content" >
+                <div class="event_details_content">
+                    {# Display event date and time #}
                     <div class="datetime">
                         <p id="time"></p>
                         <p id="date"></p>
                     </div>
 
+                    {# Display event points (e.g., Leaves reward) #}
                     <div class="points">
                         <p id="points"></p>
-                        <p>  Points</p>
+                        <p>  Leaves</p>
                     </div>
-            
-                    
+ 
+                    {# Map container to show event location #}
                     <div id="map" style="width: 100%; height: 200px;"></div>
                     
                     <h4>Event Tasks:</h4>
+                    {# Container where event tasks will be listed #}
                     <div id="tasks"></div>
         
                     <h4>About Event:</h4>
+                    {# Paragraph for the event description #}
                     <p id="description"></p>
                 </div>
     
+                {# Container for the action button (join/complete) #}
                 <div class="flex_center button_container">
                     <button class="button text_light join_button" id="button"></button>
                 </div>
-        </div>
-
-        
+            </div>
         </div>
     </body>
     
-    
+    {# ------------------------- JAVASCRIPT CODE ------------------------- #}
     <script>
         let map = null;
         let checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        
 
-        //creates the map which is displayed within the event popup
+        // Creates a Leaflet map within the event details popup
         function createMap(lat, lon, zoom = 18) {
             map = L.map('map').setView([lat, lon], zoom);
-
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
-
             L.marker([lat, lon]).addTo(map);
         }
 
-        //opens an event's details popup
+        // Opens the event details popup and populates it with event data
         function openEventDetails(element, eventType) {
             let eventDetails = document.getElementById("event_details");
             eventDetails.style.display = "block";
             eventDetails.setAttribute("event-id", element.dataset.id);
 
+            // Populate event detail fields from data attributes
             const eventAttributes = ["name", "description", "date", "time", "points"];
             eventAttributes.forEach(field =>
                 eventDetails.querySelector(`#${field}`).textContent = element.dataset[field]
             );
 
-            let button =  eventDetails.querySelector("#button");
+            // Set up the action button based on event type ('user' for owned events, 'general' for joinable events)
+            let button = eventDetails.querySelector("#button");
             button.setAttribute("event-id", element.dataset.id);
-            if (eventType === "user"){
+            if (eventType === "user") {
                 button.onclick = completeEvent;
                 button.textContent = "Complete Event";
             } else if (eventType === "general") {
@@ -279,8 +293,9 @@
             let tasksContainer = eventDetails.querySelector("#tasks");
             tasksContainer.innerHTML = ""; 
 
+            // Retrieve any saved checkbox values from localStorage
             const checkedTasks = JSON.parse(localStorage.getItem("checkboxValues")) || [];
-            //gets all the tasks within a specific event
+            // Fetch tasks associated with the event
             getEventTask(element.dataset.id)
                 .then(data => {
                     if (data.tasks.length === 0) {
@@ -290,31 +305,30 @@
                             let taskDiv = document.createElement("div");
                             taskDiv.classList.add("box_shadow", "text_light", "taskcard");
                             
-                            if (eventType === "user"){
-                                const checkboxId = `${eventDetails.event_name}-${task.task_name}`;
+                            // For user events, include a checkbox to mark task completion
+                            if (eventType === "user") {
+                                const checkboxId = `${element.dataset.name}-${task.task_name}`;
                                 taskDiv.innerHTML = `<input type="checkbox" id="${checkboxId}">${task.task_name}`;
                                 if (checkedTasks.includes(checkboxId)) {
                                     taskDiv.querySelector("input").checked = true;
                                 }
-                            } 
-                            else {
+                            } else {
                                 taskDiv.innerHTML = `<p>${task.task_name}</p>`;
                             }
                             
                             tasksContainer.appendChild(taskDiv);
                         });
                     }
-
                     setCheckBoxListener();
                 });
 
-            //map coodinates hardcoded for now
-            createMap(50.734967, -3.533750);
-
+            // Create map for event location using provided latitude and longitude
+            createMap(element.dataset.latitude, element.dataset.longitude);
             eventDetails.style.display = "block";
         }
 
-        function setCheckBoxListener (){
+        // Sets up change listeners for checkboxes to persist their state in localStorage
+        function setCheckBoxListener() {
             checkboxes = document.querySelectorAll('input[type="checkbox"]');
             checkboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', function () {
@@ -329,53 +343,50 @@
             });
         }
 
-        //closes the event detail pop up
+        // Closes the event details popup and removes the map instance
         function closeEventDetails() {
             document.getElementById("event_details").style.display = "none";
-
             if (map) {
                 map.remove();
                 map = null;
             }
         }
 
-        //updates the database that the user wants to join an event
+        // Function to join an event by sending a POST request
         function joinEvent() {
             let eventId = document.getElementById("button").getAttribute("event-id");
-
             fetch("{% url 'join_event' %}", {
                 method: "POST",
-                headers:{"X-CSRFToken": getCSRFToken() },
+                headers: { "X-CSRFToken": getCSRFToken() },
                 body: new URLSearchParams({ event_id: eventId })
-            }).then(response => response.json())  
-            .then(data => console.log("Success:", data)) 
-            .then(data => {
+            })
+            .then(response => response.json())  
+            .then(data => console.log("Success:", data))
+            .then(() => {
                 location.reload();
             })
             .catch(error => console.error("Error:", error));
         }
 
-        //updates the database that the user no longer wanted to be part of an event
+        // Function to leave an event (not currently used but available for future use)
         function leaveEvent() {
             let eventId = document.getElementById("button").getAttribute("event-id");
-
             fetch("{% url 'leave_event' %}", {
                 method: "POST",
-                headers:{"X-CSRFToken": getCSRFToken() },
+                headers: { "X-CSRFToken": getCSRFToken() },
                 body: new URLSearchParams({ event_id: eventId })
-            }).then(response => response.json()) 
-            .then(data => console.log("Success:", data))  
-            .then(data => {
+            })
+            .then(response => response.json())
+            .then(data => console.log("Success:", data))
+            .then(() => {
                 location.reload();
             })
             .catch(error => console.error("Error:", error));
         }
 
- 
-        //updates the database when an event is completed
+        // Function to mark an event as complete by updating the database
         function completeEvent() {
             let eventId = document.getElementById("button").getAttribute("event-id");
-
             fetch("{% url 'complete_event' %}", {
                 method: "POST",
                 headers: { "X-CSRFToken": getCSRFToken() },
@@ -386,51 +397,45 @@
                 if (data.success) {
                     location.reload();
                 } else {
-                    // Display the error message (e.g., "Event not validated.")
                     alert(data.message);
                 }
             })
             .catch(error => console.error("Error:", error));
         }
 
-        //gets all the tasks for an event
+        // Fetches tasks for a given event from the server
         function getEventTask(eventId) {
             return fetch(`/ecolution/events/gettasks/${eventId}/`)
                 .then(response => response.json())  
                 .catch(error => {
-                    console.error("Error:", error)
+                    console.error("Error:", error);
                 });
         }
 
+        // Displays an error popup with the provided message
         function showErrorPopup(message) {
-            // Create a new popup div
             let popup = document.createElement("div");
             popup.className = "error-popup";
             popup.innerText = message;
-            
-            // Basic inline styling for the popup (you can move these to your CSS file)
+            // Inline styling for error popup; consider moving these styles to CSS
             popup.style.position = "fixed";
             popup.style.top = "20px";
             popup.style.right = "20px";
             popup.style.padding = "10px 20px";
-            popup.style.backgroundColor = "#ff4d4d";  // Red background for error
+            popup.style.backgroundColor = "#ff4d4d";  // Red background indicates an error
             popup.style.color = "#fff";
             popup.style.borderRadius = "5px";
             popup.style.boxShadow = "0px 2px 5px rgba(0, 0, 0, 0.3)";
             popup.style.zIndex = "1000";
-            
-            // Append the popup to the body
             document.body.appendChild(popup);
-            
-            // Automatically remove the popup after 3 seconds
             setTimeout(() => {
                 popup.remove();
             }, 3000);
         }
         
+        // Helper function to retrieve the CSRF token from cookies
         function getCSRFToken() {
             return document.cookie.match(/csrftoken=([^;]+)/)[1];
         }
     </script>
 {% endblock %}
-

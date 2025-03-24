@@ -1,30 +1,42 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{# ------------------------- TITLE BLOCK ------------------------- #}
 {% block title %}
     <title>Shop | Ecolution</title>
 {% endblock %}
 
+{# ------------------------- MAIN CONTENT BLOCK ------------------------- #}
 {% block main %}
 <div class="shop-page margin_std">
+    {# Main heading for the Shop page #}
     <h2 class="text_light">Shop</h2>
+    
+    {# Container for shop items #}
     <div class="shop-items">
+        {# Check if there are any shop items available #}
         {% if shop_items %}
             <ul class="shop-list">
+                {# Loop through each shop item #}
                 {% for item in shop_items %}
                 <li class="shop-item card margin_std">
+                  {# Display the item image centered #}
                   <div style="text-align: center;">
                     <img src="{% static item.image_path %}" alt="{{ item.name }}" class="shop-item-image" style="width: 100px; height: 100px;">
                   </div>
+                  {# Display item details such as name and price #}
                   <div class="shop-item-content">
                     <h3 class="shop-item-title margin_sml">{{ item.name }}</h3>
                     <p class="shop-item-price margin_sml">Price: {{ item.price }}</p>
+                    {# Check if the item is already purchased #}
                     {% if item.id in purchased_item_ids %}
                       <div class="sold-out-banner">Sold Out</div>
                       <button class="button margin_std" disabled>Sold Out</button>
+                    {# Check if the user doesn't have enough points to buy the item #}
                     {% elif item.price > user.points %}
-                      <div class="insufficient-banner">Not Enough Points</div>
+                      <div class="insufficient-banner">Not Enough Leaves</div>
                       <button class="button margin_std buy" disabled>Buy</button>
+                    {# If the item is available and user has enough points, show the Buy button #}
                     {% else %}
                       <button class="button margin_std buy" onclick="buyItem('{{ item.id }}')">Buy</button>
                     {% endif %}
@@ -32,6 +44,7 @@
                 </li>
                 {% endfor %}
             </ul>
+        {# If no shop items are available, display a message #}
         {% else %}
             <p>No items available at the moment. Please check back later.</p>
         {% endif %}
@@ -39,27 +52,33 @@
 </div>
 {% endblock %}
 
+{# ------------------------- ADDITIONAL SCRIPTS BLOCK ------------------------- #}
 {% block additional %}
 <script>
+  // Function to handle the buying process for an item
   function buyItem(itemId) {
+    // Construct the URL for buying an item by replacing the dummy id (0) with the actual itemId
     fetch("{% url 'buy_item' item_id=0 %}".replace("0", itemId), {
-      method: "POST",
+      method: "POST", // POST request to purchase the item
       headers: {
-        "X-CSRFToken": "{{ csrf_token }}",
+        "X-CSRFToken": "{{ csrf_token }}", // Include CSRF token for security
         "Content-Type": "application/json"
       },
+      // Send the item id in the request body as JSON
       body: JSON.stringify({item_id: itemId})
     })
     .then(response => response.json())
     .then(data => {
+      // If the purchase is successful, alert the message and reload the page
       if (data.status === "success") {
          alert(data.message);
          window.location.reload();
       } else {
+         // If not successful, alert the error message
          alert(data.message);
       }
     })
-    .catch(error => console.error("Error:", error));
+    .catch(error => console.error("Error:", error)); // Log any errors to the console
   }
 </script>
 {% endblock %}
