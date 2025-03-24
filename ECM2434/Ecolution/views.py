@@ -287,7 +287,7 @@ def complete_event(request):
             
             # Check if the event has been validated
             if not user_event.validated:
-                return JsonResponse({"success": False, "message": "Event not validated."})
+                return JsonResponse({"success": False, "message": "Event not validated. Please ask the event organiser for the QR code and go to the QR code scanner page."})
             
             # Award points and xp since the event is validated.
             event_points = event.total_points
