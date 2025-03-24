@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-MEDIA_ROOT = '/data/media' 
+if os.environ.get('RENDER'):
+    MEDIA_ROOT = '/data/media'
 MEDIA_URL = '/media/'
 
 MIDDLEWARE = [
