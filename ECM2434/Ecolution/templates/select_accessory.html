@@ -8,7 +8,7 @@
 
 {# ------------------------- MAIN CONTENT BLOCK ------------------------- #}
 {% block main %}
-<section class="margin_std text_light">
+<section class="margin_std container text_dark">
     {# Display the heading with the pet's name dynamically inserted #}
     <h2>Select an Accessory for {{ pet.pet_name }}</h2>
     
@@ -16,13 +16,13 @@
     {% if hat_items %}
         <p>Choose a hat from your owned items:</p>
         {# Form for selecting and equipping a hat accessory #}
-        <form method="POST">
+        <form class="margin_std" method="POST">
             {# CSRF token for security #}
             {% csrf_token %}
             <div class="hat_list flex_v flex_center">
                 {# Loop through each owned hat item #}
                 {% for user_item in hat_items %}
-                    <label style="margin: 1rem;">
+                    <label class="card flex_v flex_center box_shadow margin_sml" style="width: 80%; padding: 0.5rem; font-size: 1rem; font-weight: 500;">
                         {# Display the accessory image using the static file path #}
                         <img src="{% static user_item.shopitem.image_path|add:'.png' %}" alt="hat" class="hat" style="width: 64px; height: 64px;">
                         <br>
