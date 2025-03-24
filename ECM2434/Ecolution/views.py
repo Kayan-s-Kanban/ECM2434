@@ -334,6 +334,7 @@ def complete_event(request):
 @gamekeeper_required
 @login_required
 def create_event(request):
+    # Allows gamekeepers to create new events along with associated tasks.
     if request.method == "POST":
         event_name = request.POST.get("event_name")
         description = request.POST.get("description")
@@ -358,8 +359,7 @@ def create_event(request):
                 time=time,
                 creator=creator,
             )
-
-            # Create each associated task
+            # Create each task associated with the event.
             for name, points, xp in zip(task_names, task_points, task_xps):
                 if name.strip():
                     Task.objects.create(
@@ -369,25 +369,17 @@ def create_event(request):
                         points_given=int(points),
                         creator=creator
                     )
+        except IntegrityError:
+            # Mimic 'tasks' structure: on error, return an immediate response.
+            # Instead of JSON, just redirect back to gamekeeper_events.
+            return redirect("gamekeeper_events")
 
-            # Return the same page or another page (e.g. a blank create-event form or the list of events)
-            return render(request, "gamekeeper_events.html", {
-                "points": request.user.points,
-                "message": "Event created successfully!",
-            })
-        
-        except IntegrityError as e:
-            # If something went wrong with the DB insertion
-            messages.error(request, f"Database Error: {str(e)}")
-            return render(request, "gamekeeper_events.html", {
-                "points": request.user.points,
-                "message": f"Database Error: {str(e)}",
-            })
+        # If no IntegrityError, redirect on success
+        return redirect("gamekeeper_events")
 
-    # If it's a GET request (or any non-POST), just render the form
-    return render(request, "gamekeeper_events.html", {
-        "points": request.user.points,
-    })
+    # If it's not a POST, do what tasks_view does: return an immediate response.
+    # Instead of JSON, just redirect to gamekeeper_events (or anywhere you want).
+    return redirect("gamekeeper_events")
 
 # def create_event(request):
 #     # Allows gamekeepers to create new events along with associated tasks.
