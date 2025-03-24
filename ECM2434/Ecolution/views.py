@@ -1,5 +1,4 @@
 import json
-import os
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -17,8 +16,6 @@ from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent, ShopItem,
 from django.db.models import Max
 from .decorators import gamekeeper_required
 from django.utils import timezone
-import logging
-logger = logging.getLogger(__name__)
 
 # Create your views here.
 def index(request):
@@ -384,7 +381,6 @@ def get_event_tasks(request, event_id):
 @gamekeeper_required
 @login_required
 def gamekeeper_events(request):
-    logger.info("AWS_ACCESS_KEY_ID: %s", os.environ.get("AWS_ACCESS_KEY_ID"))
     gamekeeper_events = Event.objects.filter(creator=request.user)
     context = {"gamekeeper_events": gamekeeper_events}
     return render(request, "gamekeeper_events.html", context)
