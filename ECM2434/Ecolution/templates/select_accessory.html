@@ -16,10 +16,10 @@
     {% if hat_items %}
         <p>Choose a hat from your owned items:</p>
         {# Form for selecting and equipping a hat accessory #}
-        <form class="margin_std" method="POST">
+        <form class="margin_std flex_v flex_center" method="POST">
             {# CSRF token for security #}
             {% csrf_token %}
-            <div class="hat_list flex_v flex_center">
+            <div class="hat_list flex_v flex_center" style="width: 100%;">
                 {# Loop through each owned hat item #}
                 {% for user_item in hat_items %}
                     <label class="card flex_v flex_center box_shadow margin_sml" style="width: 80%; padding: 0.5rem; font-size: 1rem; font-weight: 500;">
