@@ -10,8 +10,6 @@ from django.core.files.base import ContentFile
 from django.urls import reverse
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-import logging
-logger = logging.getLogger(__name__)
 
 # ------------------------- CustomUser Model -------------------------
 class CustomUser(AbstractUser):
@@ -183,8 +181,7 @@ def generate_qr_code(sender, instance, created, **kwargs):
     This function updates the qr_code and url_qr_code fields without re-triggering the signal.
     """
     if created or not instance.qr_code:
-        logger.info("Generating QR code for Event ID: %s", instance.pk)
-        # Generate a relative URL for validating the QR code
+        # Generate the relative URL using reverse()
         relative_url = reverse('validate_qr', kwargs={'token': instance.unique_token})
         full_url = f'https://ecolution.onrender.com/{relative_url}'
         

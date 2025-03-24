@@ -1,5 +1,4 @@
 import json
-import os
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -20,9 +19,6 @@ from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent, ShopItem,
 from django.db.models import Max
 from .decorators import gamekeeper_required
 from django.utils import timezone
-import logging
-from django.db.models import Max
-logger = logging.getLogger(__name__)
 
 # Create your views here.
 
@@ -679,7 +675,7 @@ def leaderboard_view(request):
     top_users = list(
         CustomUser.objects.annotate(highest_pet_level_db=Max('pet__pet_level'))
         .filter(highest_pet_level_db__isnull=False)
-        .order_by('-highest_pet_level_db')[:5]
+        .order_by('-highest_pet_level_db')[:100]
     )
     
     # Replace each user's displayed_pet with their highest-level pet.
