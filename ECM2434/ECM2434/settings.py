@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-MEDIA_ROOT = '/data/media' 
 MEDIA_URL = '/media/'
 
 MIDDLEWARE = [
@@ -149,3 +148,4 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = '/ecolution/login/'
+
