@@ -2,23 +2,16 @@ import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
-from django.db import IntegrityError
-from django.shortcuts import redirect, render, get_object_or_404
-from django.contrib.auth import logout, authenticate, login, get_user_model, update_session_auth_hash
-from django.http import HttpResponse, JsonResponse, Http404
+from django.db import IntegrityError, transaction
+from django.http import JsonResponse, Http404
 from django.contrib.auth.password_validation import validate_password
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import never_cache
-from django.contrib.auth.decorators import login_required
 from .decorators import gamekeeper_required
 from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent, ShopItem, UserItem
 from django.db.models import Max
-from .decorators import gamekeeper_required
-from django.utils import timezone
 
 # Create your views here.
 
@@ -335,35 +328,36 @@ def complete_event(request):
 @login_required
 def create_event(request):
     if request.method == "POST":
-        event_name = request.POST.get("event_name")
-        description = request.POST.get("description")
-        location = request.POST.get("location")
-        latitude = request.POST.get("latitude")
-        longitude = request.POST.get("longitude")
-        date = request.POST.get("date")
-        time = request.POST.get("time")
-        task_names = request.POST.getlist("task_name")
-        task_points = request.POST.getlist("task_points")
-        task_xps = request.POST.getlist("task_xp")
-        creator = request.user
-
         try:
-            # Create the main event
-            event = Event.objects.create(
-                event_name=event_name,
-                description=description,
-                location=location,
-                latitude=latitude,
-                longitude=longitude,
-                date=date,
-                time=time,
-                creator=creator,
-            )
+            with transaction.atomic():
+                # Gather inputs
+                event_name = request.POST.get("event_name")
+                description = request.POST.get("description")
+                location = request.POST.get("location")
+                latitude = request.POST.get("latitude")
+                longitude = request.POST.get("longitude")
+                date = request.POST.get("date")
+                time = request.POST.get("time")
+                task_names = request.POST.getlist("task_name")
+                task_points = request.POST.getlist("task_points")
+                task_xps = request.POST.getlist("task_xp")
+                creator = request.user
 
-            # Create each task associated with this event
-            for name, points, xp in zip(task_names, task_points, task_xps):
-                if name.strip():
-                    try:
+                # Create the event
+                event = Event.objects.create(
+                    event_name=event_name,
+                    description=description,
+                    location=location,
+                    latitude=latitude,
+                    longitude=longitude,
+                    date=date,
+                    time=time,
+                    creator=creator,
+                )
+
+                # Create associated tasks
+                for name, points, xp in zip(task_names, task_points, task_xps):
+                    if name.strip():
                         Task.objects.create(
                             event=event,
                             task_name=name,
@@ -371,27 +365,29 @@ def create_event(request):
                             points_given=int(points),
                             creator=creator
                         )
-                    except Exception as e:
-                        return JsonResponse({
-                            "status": "error",
-                            "message": f"Task '{name}' already exists for this user."
-                        }, status=400)
-            
-            # Return JSON similar to how add_task does
-            return JsonResponse({
-                "status": "success",
-                "message": "Event created successfully!",
-                "event_name": event_name,  # or any extra data you want to send
-            })
 
         except IntegrityError as e:
             return JsonResponse({
                 "status": "error",
                 "message": f"Database Integrity Error: {e}"
             }, status=400)
+        
+        except Exception as e:
+            return JsonResponse({
+                "status": "error",
+                "message": f"Unexpected error: {e}"
+            }, status=400)
 
-    # If it's not POST, just return an error JSON (like add_task does)
-    return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
+        return JsonResponse({
+            "status": "success",
+            "message": "Event created successfully!"
+        })
+
+    return JsonResponse({
+        "status": "error",
+        "message": "Invalid request method."
+    }, status=400)
+
 
 @login_required
 def get_event_tasks(request, event_id):
