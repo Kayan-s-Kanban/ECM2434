@@ -4,10 +4,9 @@ from django.urls import reverse
 from Ecolution.models import Pet, CustomUser
 
 
-class SignupTestCase(TestCase):
+class SignupUnitTests(TestCase):
     def setUp(self):
-        """Set up the test client and user data before each test."""
-        self.signup_url = reverse("signup")
+        # valid user data for form entry
         self.valid_user_data = {
             "username": "testuser",
             "email": "testuser@example.com",
@@ -17,55 +16,72 @@ class SignupTestCase(TestCase):
             "pet_type": "Dog",
         }
 
+        # urls
+        self.url_signup = reverse("signup")
+        self.url_login = reverse("login")
+
+    # As a user, I can sign up for an account with valid details <-- integration test?
     def test_signup_successful(self):
-        """Test if a user can sign up successfully with valid details."""
-        response = self.client.post(self.signup_url, self.valid_user_data, follow=True)
+        # user signs up for an account
+        response = self.client.post(self.url_signup, self.valid_user_data, follow = True)
 
-        self.assertEqual(response.status_code, 200)  # Should redirect successfully
-        self.assertTrue(CustomUser.objects.filter(username="testuser").exists())  # User created
-        user = CustomUser.objects.get(username="testuser")
+        # check user is successfully redirected to login page
+        self.assertRedirects(response, self.url_login)
 
-        self.assertTrue(Pet.objects.filter(user=user).exists())  # Pet assigned
+        # check that user has been created
+        self.assertTrue(CustomUser.objects.filter(username = "testuser").exists())
+        user = CustomUser.objects.get(username = "testuser")
+
+        # check that user pet has been assigned
+        self.assertTrue(Pet.objects.filter(user=user).exists())
         messages = list(get_messages(response.wsgi_request))
         self.assertIn("Account created! You can now log in.", [msg.message for msg in messages])
 
+    # As a user, I cannot sign up for an account with an invalid email
     def test_signup_invalid_email(self):
-        """Test signup with an invalid email format."""
+        # replace email from setUp() with invalid email
         data = self.valid_user_data.copy()
         data["email"] = "invalid-email"
 
-        response = self.client.post(self.signup_url, data, follow=True)
-        self.assertFalse(CustomUser.objects.filter(username="testuser").exists())  # Ensure user isn't created
+        response = self.client.post(self.url_signup, data, follow = True)
 
+        # check user is not created
+        self.assertFalse(CustomUser.objects.filter(username="testuser").exists())
+
+        # check user receives message regarding invalid email
         messages = list(get_messages(response.wsgi_request))
         self.assertIn("Please enter a valid email address.", [msg.message for msg in messages])
 
+    # As a user, I cannot signup for an account with a username that already exists
     def test_signup_username_already_taken(self):
-        """Test if signup fails when the username already exists."""
         CustomUser.objects.create_user(username="testuser", email="testuser@example.com", password="password123")
 
-        response = self.client.post(self.signup_url, self.valid_user_data, follow=True)
-        self.assertEqual(CustomUser.objects.filter(username="testuser").count(), 1)  # Ensure duplicate user isn't created
+        response = self.client.post(self.url_signup, self.valid_user_data, follow=True)
+
+        # check that duplicate user wasn't created
+        self.assertEqual(CustomUser.objects.filter(username="testuser").count(), 1)
 
         messages = list(get_messages(response.wsgi_request))
         self.assertIn("Username already taken!", [msg.message for msg in messages])
 
     ## As a user, I cannot signup for an account with two different passwords
     def test_signup_password_mismatch(self):
+        # replace second password from setUp() with a non-matching password
         data = self.valid_user_data.copy()
         data["password2"] = "DifferentPassword"
 
-        response = self.client.post(self.signup_url, data, follow=True)
+        response = self.client.post(self.url_signup, data, follow=True)
         self.assertFalse(CustomUser.objects.filter(username="testuser").exists())  # check user isn't created
 
     ## As a user, I am assigned the pet I chose during sign-up
     def test_pet_association_on_signup(self):
-        """Test if the pet is assigned to the user correctly."""
-        self.client.post(self.signup_url, self.valid_user_data, follow=True)
+        # signup user for an account
+        self.client.post(self.url_signup, self.valid_user_data, follow=True)
         user = CustomUser.objects.get(username="testuser")
 
+        # check that pet name and type matches form details
         pet = Pet.objects.filter(user=user).first()
-        self.assertIsNotNone(pet)  # Pet should be created
+        self.assertIsNotNone(pet)  # pet should be created
         self.assertEqual(pet.pet_name, "Buddy")
         self.assertEqual(pet.pet_type, "Dog")
 

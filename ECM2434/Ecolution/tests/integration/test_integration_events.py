@@ -8,7 +8,7 @@ from Ecolution.models import CustomUser, Event, Pet, UserEvent, Task
 from Ecolution.views import User
 
 
-class EventsTestCase(TestCase):
+class EventsIntegrationTests(TestCase):
     def setUp(self):
         # create user
         self.user1 = User.objects.create_user(username="testuser", password="password")
@@ -48,7 +48,6 @@ class EventsTestCase(TestCase):
         self.url = reverse('events')
         self.url_complete = reverse("complete_event")
         self.url_get_tasks = reverse('get_event_tasks', args=[self.event.event_id])
-
 
     # As a user, I can earn points from completing events
     def test_earn_points_from_event(self):

@@ -5,10 +5,6 @@ from Ecolution.views import User
 
 
 class SignupIntegrationTests(TestCase):
-    def __init__(self, methodName: str = "runTest"):
-        super().__init__(methodName)
-        self.shop_item = None
-
     def setUp(self):
         self.signup_url = reverse('signup')
         self.login_url = reverse('login')  # ensure you have the correct URL name for login

@@ -3,10 +3,13 @@ from django.test import TestCase
 from django.urls import reverse
 from Ecolution.models import CustomUser
 
-class SettingsTestCase(TestCase):
+class SettingsIntegrationTests(TestCase):
     def setUp(self):
-        self.user = CustomUser.objects.create_user(username = 'testuser', password = 'password')  # create user
-        self.client.login(username = 'testuser', password = 'password')  # login user
+        # create user
+        self.user = CustomUser.objects.create_user(username = 'testuser', password = 'password')
+        self.client.login(username = 'testuser', password = 'password')
+
+        # urls
         self.url_change_password = reverse('change_password')
         self.url_change_username = reverse('change_username')
 
@@ -87,7 +90,7 @@ class SettingsTestCase(TestCase):
         # check response redirects to the settings page
         self.assertRedirects(response, reverse("settings"))
 
-    def test_password_not_changed_when_get_request(self):
+    def test_pwd_not_changed_when_get_request(self):
         # save current password hash
         current_password_hash = self.user.password
 
@@ -179,7 +182,7 @@ class SettingsTestCase(TestCase):
         response = self.client.get(self.url_change_username)
         self.assertRedirects(response, '/ecolution/settings/')
 
-    def test_user_not_logged_in(self):
+    def test_cannot_access_if_user_not_logged_in(self):
         self.client.logout()
         data = {
             'current_username': 'oldusername',
@@ -192,7 +195,7 @@ class SettingsTestCase(TestCase):
         self.assertRedirects(response, '/ecolution/login/?next=' + self.url_change_username)
 
     ## As a user, I cannot change my username if the username already exists for another account
-    def test_username_not_unique(self):
+    def test_change_username_not_unique(self):
         second_user = CustomUser.objects.create_user(
             username='seconduser', password='password123'
         )

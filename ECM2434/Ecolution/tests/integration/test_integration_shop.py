@@ -7,8 +7,8 @@ from Ecolution.views import User
 
 class ShopIntegrationTest(TestCase):
     def setUp(self):
+        # create and login user
         self.user1 = CustomUser.objects.create_user(username='testuser', password='password')
-
         self.client.login(username = 'testuser', password = 'password')
 
         # add points to the user
@@ -34,7 +34,6 @@ class ShopIntegrationTest(TestCase):
         # user buys shop item
         response = self.client.post(reverse('buy_item', args = [self.item1.id]))
         self.assertEqual(response.status_code, 200)
-        print(response.content)
 
         # refresh from the database
         self.user1.refresh_from_db()
@@ -43,12 +42,21 @@ class ShopIntegrationTest(TestCase):
         self.assertEqual(self.user1.points, 40)
 
 ## As a user, I cannot buy and assign a shop item that does not exist in the database
-    def test_no_shopitem_if_not_exists(self):
-        """Test that no ShopItem is assigned if it does not exist in the database."""
-        ShopItem.objects.filter(name="Dog").delete()  # Ensure no matching ShopItem exists
-
+    def test_no_buy_shopitem_if_not_exist(self):
+        # check that the item the user will attempt to buy does not exist
+        ShopItem.objects.filter(name="item1").delete()
         user = User.objects.get(username="testuser")
 
-        user_item = UserItem.objects.filter(user=user).exists()
-        self.assertFalse(user_item)  # No UserItem should be assigned if the ShopItem doesn't exist
+        # simulate user trying to buy item
+        response = self.client.post(reverse('buy_item', args=[self.item1.id]))
+
+        # check that attempt failed
+        self.assertEqual(response.status_code, 404)
+
+        # refresh from the database
+        self.user1.refresh_from_db()
+
+        # check user still has 50 points
+        self.assertEqual(self.user1.points, 50)
+
 

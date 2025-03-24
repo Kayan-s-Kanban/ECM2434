@@ -97,13 +97,10 @@ class TaskIntegrationTests(TestCase):
         response = self.client.get(reverse('tasks'))
         self.assertEqual(response.status_code, 200)
 
-
-
     ## As a user, I can view my current tasks on the tasks page -- UPDATE TEST
     def test_view_current_tasks(self):
         response = self.client.get(reverse('tasks'))
         self.assertEqual(response.status_code, 200)
-
 
     ## As a user, I cannot create a custom task with the same name as another
     def test_existing_task_creation_prevention(self):
@@ -129,7 +126,6 @@ class TaskIntegrationTests(TestCase):
         self.assertTrue(Task.objects.filter(task_name="New Task", creator=self.user1).exists())
 
     def test_user_task_creation(self):
-        """Test that a UserTask is created successfully (Lines 145, 147)."""
         task = Task.objects.create(task_name="User Task", description="Test Desc", creator=self.user1)
 
         response = self.client.post(reverse("add_task"), {
@@ -184,7 +180,7 @@ class TaskIntegrationTests(TestCase):
             UserTask.objects.get(id=self.user_task.id)
 
     ## As a user, I cannot delete pre-defined tasks
-    def test_delete_task_task_not_found(self):
+    def test_delete_task_not_found(self):
         # Create a different user and assign a task to them
         other_user = User.objects.create_user(username='otheruser', password='password')
         other_user_task = UserTask.objects.create(user=other_user, task=self.task)
