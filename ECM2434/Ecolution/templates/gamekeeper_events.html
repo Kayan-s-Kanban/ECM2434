@@ -4,14 +4,13 @@
 {# ------------------------- TITLE AND STYLE BLOCK ------------------------- #}
 {% block title %}
     <title>Events - Ecolution</title>
-    {# Link to the main stylesheet #}
+    <!-- Link to the main stylesheet -->
     <link rel="stylesheet" href="{% static 'styles.css' %}">
-    {# Include Leaflet CSS for maps #}
+    <!-- Include Leaflet CSS for maps -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
         crossorigin=""/>
     
-    {# Inline CSS styles specific to the Events page #}
     <style>
         .heading {
             align-items: center;
@@ -146,301 +145,313 @@
         }
     </style>
 
-    {# Include Leaflet JS library for map functionality #}
+    <!-- Include Leaflet JS library for map functionality -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""></script>
 
-    {# Include html5-qrcode library for QR code functionality if needed #}
+    <!-- Include html5-qrcode library for QR code functionality if needed -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 {% endblock %}
 
-{# ------------------------- MAIN CONTENT BLOCK ------------------------- #}
 {% block main %}
-    <!-- Main Content -->
-    <body>
-        {# Button to trigger the event creation popup #}
-        <button class="button text_light create_event_button" onclick="createEventPopUp()">
-            <h3>Create Event</h3>
-        </button>
+<body>
+    {# Button to trigger the event creation popup #}
+    <button class="button text_light create_event_button" onclick="createEventPopUp()">
+        <h3>Create Event</h3>
+    </button>
 
-        {# Page title for the user's events #}
-        <h1 class="text_light">My Events</h1>
+    {# Page title for the user's events #}
+    <h1 class="text_light">My Events</h1>
+
+    {# Container displaying the list of events created by the gamekeeper #}
+    <div class="event_list_container all-events-container">
+        <div>
+            {% if gamekeeper_events %}
+                {# Loop through each event and render its summary card #}
+                {% for event in gamekeeper_events %}
+                    <div class="card box_shadow text_light event" 
+                         data-id="{{ event.event_id }}"
+                         data-name="{{ event.event_name }}"
+                         data-description="{{ event.description }}"
+                         data-location="{{ event.location }}"
+                         data-latitude="{{ event.latitude }}"
+                         data-longitude="{{ event.longitude }}"
+                         data-date="{{ event.date }}"
+                         data-time="{{ event.time }}"
+                         data-points="{{ event.total_points}}"
+                         qr_code="{{ event.qr_code.url }}"
+                         onclick="openEventDetails(this)">
+                        <p>{{ event.date }}</p>
+                        <h3>{{ event.event_name }}</h3>
+                        <p>📍{{ event.location }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text_dark">You haven't created any ongoing events</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {# ------------------------- CREATE EVENT FORM POPUP ------------------------- #}
+    <div class="create_event_form_container">
+        <div id="create_event_form" class="create-event-form">
+            <div class="flex_h heading margin_sml_bot">
+                <h1 class="text_dark">Create A New Event</h1>
+                <!-- Button to close the event creation form -->
+                <button class="button exit_button text_light" onclick="closeEventFormPopup()"> x </button>
+            </div>
+
+            <!-- Removed action/method. We'll handle this with AJAX (submitEventForm) -->
+            <form id="event-form" class="flex_v" onsubmit="submitEventForm(); return false;">
+                {% csrf_token %}
+                <input type="text" name="event_name" placeholder="Event Name" required>
+                <input type="text" name="description" placeholder="Description" required>
+                <div class="flex_h flex_center flex_gap_std">
+                    <input type="date" name="date" required>
+                    <input type="time" name="time" required> 
+                </div>
+                <input type="text" name="location" placeholder="Event Address" id="event-address" required>
+                {# Hidden fields to store latitude and longitude values obtained via geocoding #}
+                <input type="hidden" name="latitude" id="latitude">
+                <input type="hidden" name="longitude" id="longitude">
+                
+                <div class="flex_h">
+                    <h3>Event Tasks:</h3>
+                    <!-- Button to add additional event tasks dynamically -->
+                    <button type="button" onclick="addEventTask()" class="button text_light">+</button>  
+                </div>
+                <div id="task_container">
+                    <div class="flex_h margin_sml_bot flex_gap_std">
+                        <input type="text" name="task_name" placeholder="Task Name" class="flex_v_fill" required>
+                        <input type="number" name="task_points" placeholder="Points" class="flex_v_fill" required>
+                        <input type="number" name="task_xp" placeholder="XP" class="flex_v_fill" required>
+                    </div>
+                </div>
+                <button type="submit" class="button text_light">Create Event</button>
+            </form>                
+        </div>
+    </div>
     
-        {# Container displaying the list of events created by the gamekeeper #}
-        <div class="event_list_container all-events-container">
-            <div>
-                {% if gamekeeper_events %}
-                    {# Loop through each event and render its summary card #}
-                    {% for event in gamekeeper_events %}
-                        <div class="card box_shadow text_light event" 
-                            data-id="{{ event.event_id }}"
-                            data-name="{{ event.event_name }}"
-                            data-description="{{ event.description }}"
-                            data-location="{{ event.location }}"
-                            data-latitude="{{ event.latitude }}"
-                            data-longitude="{{ event.longitude }}"
-                            data-date="{{ event.date }}"
-                            data-time="{{ event.time }}"
-                            data-points="{{ event.total_points}}"
-                            qr_code="{{ event.qr_code.url }}"
-                            onclick="openEventDetails(this)">
-                            <p>{{ event.date }}</p>
-                            <h3>{{ event.event_name }}</h3>
-                            <p>📍{{ event.location }}</p>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    {# Display a message if no events have been created #}
-                    <p class="text_dark">You havn't created any ongoing events</p>
-                {% endif %}
+    {# ------------------------- EVENT DETAILS POPUP ------------------------- #}
+    <div class="event_details_container">
+        <div class="event_details margin_std box_shadow" id="event_details">
+            <div class="flex_h heading">
+                <h1 id="name" class="text_dark"></h1>
+                <button class="button exit_button text_light" onclick="closeEventDetails()"> x </button>
             </div>
-        </div>
 
-        {# ------------------------- CREATE EVENT FORM POPUP ------------------------- #}
-        <div class="create_event_form_container">
-            <div id="create_event_form" class="create-event-form">
-                <div class="flex_h heading margin_sml_bot">
-                    <h1 class="text_dark">Create A New Event</h1>
-                    {# Button to close the event creation form #}
-                    <button class="button exit_button text_light" onclick="closeEventFormPopup()"> x </button>
-                </div>
-                <form action="{% url 'create_event' %}" method="POST" id="event-form" class="flex_v">
-                    {% csrf_token %}
-                    <input type="text" name="event_name" placeholder="Event Name" required>
-                    <input type="text" name="description" placeholder="Description" required>
-                    <div class="flex_h flex_center flex_gap_std">
-                        <input type="date" name="date" required>
-                        <input type="time" name="time" required> 
-                    </div>
-                    <input type="text" name="location" placeholder="Event Address" id="event-address" required>
-                    {# Hidden fields to store latitude and longitude values obtained via geocoding #}
-                    <input type="hidden" name="latitude" id="latitude">
-                    <input type="hidden" name="longitude" id="longitude">
-                    
-                    <div class="flex_h">
-                        <h3>Event Tasks:</h3>
-                        {# Button to add additional event tasks dynamically #}
-                        <button type="button" onClick="addEventTask()" class="button text_light">+</button>  
-                    </div>
-                    {# Container where task inputs will be appended #}
-                    <div id="task_container">
-                        <div class="flex_h margin_sml_bot flex_gap_std">
-                            <input type="text" name="task_name" placeholder="Task Name" class="flex_v_fill" required>
-                            <input type="number" name="task_points" placeholder="Points" class="flex_v_fill" required>
-                            <input type="number" name="task_xp" placeholder="XP" class="flex_v_fill" required>
-                        </div>
-                    </div>
-                    <button type="submit" class="button text_light">Create Event</button>
-                </form>                
-            </div>
-        </div>
-        
-        {# ------------------------- EVENT DETAILS POPUP ------------------------- #}
-        <div class="event_details_container">
-            <div class="event_details margin_std box_shadow" id="event_details">
-                <div class="flex_h heading">
-                    {# Event name will be populated dynamically #}
-                    <h1 id="name" class="text_dark"></h1>
-                    {# Button to close the event details popup #}
-                    <button class="button exit_button text_light" onclick="closeEventDetails()"> x </button>
+            <div class="event_details_content">
+                <div class="datetime">
+                    <p id="time"></p>
+                    <p id="date"></p>
                 </div>
 
-                <div class="event_details_content">
-                    <div class="datetime">
-                        <p id="time"></p>
-                        <p id="date"></p>
-                    </div>
-
-                    <div class="points">
-                        <p id="points"></p>
-                        <p>  Leaves</p>
-                    </div>
-
-                    <div class="flex_h flex_center">
-                        {# QR code image for the event; source set dynamically #}
-                        <img id="qr_code" style="width: 70%; height: auto;">
-                    </div>
-                    
-                    <h4>Event Tasks:</h4>
-                    <div id="tasks"></div>
-        
-                    <h4>About Event:</h4>
-                    <p id="description"></p>
-
-                    {# Map container to display event location #}
-                    <div id="map" style="width: 100%; height: 200px;"></div>
+                <div class="points">
+                    <p id="points"></p>
+                    <p> Leaves</p>
                 </div>
-            </div>
-        </div>
-    </body>
+
+                <div class="flex_h flex_center">
+                    <!-- QR code image for the event; source set dynamically -->
+                    <img id="qr_code" style="width: 70%; height: auto;">
+                </div>
+                
+                <h4>Event Tasks:</h4>
+                <div id="tasks"></div>
     
-    {# ------------------------- JAVASCRIPT CODE ------------------------- #}
-    <script>
-        let map = null;
-        
-        // Function to dynamically add additional event task input fields
-        function addEventTask() {
-            const taskContainer = document.getElementById("task_container");
-            let taskItem = document.createElement('div');
-            taskItem.classList.add('flex_h', 'margin_sml_bot');
+                <h4>About Event:</h4>
+                <p id="description"></p>
 
-            taskItem.innerHTML = `
-                <input type="text" name="task_name" placeholder="Task Name" required>
-                <input type="number" name="task_points" placeholder="Points" required>
-                <input type="number" name="task_xp" placeholder="XP" class="flex_v_fill" required>
-            `;
+                <!-- Map container to display event location -->
+                <div id="map" style="width: 100%; height: 200px;"></div>
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock %}
 
-            taskContainer.appendChild(taskItem);
-        }
+{# ------------------------- JAVASCRIPT CODE BLOCK ------------------------- #}
+{% block additional %}
+{{ block.super }}
+<script>
+    let map = null;
+    
+    // Function to dynamically add additional event task input fields
+    function addEventTask() {
+        const taskContainer = document.getElementById("task_container");
+        let taskItem = document.createElement('div');
+        taskItem.classList.add('flex_h', 'margin_sml_bot');
 
-        // Function to display the create event popup form
-        function createEventPopUp() {
-            const createForm = document.getElementById("create_event_form");
-            createForm.style.display = "block";
-        }
+        taskItem.innerHTML = `
+            <input type="text" name="task_name" placeholder="Task Name" required>
+            <input type="number" name="task_points" placeholder="Points" required>
+            <input type="number" name="task_xp" placeholder="XP" class="flex_v_fill" required>
+        `;
+        taskContainer.appendChild(taskItem);
+    }
 
-        // Creates a Leaflet map centered on the given coordinates
-        function createMap(lat, lon, zoom = 18) {
-            map = L.map('map').setView([lat, lon], zoom);
+    // Show the "Create Event" popup
+    function createEventPopUp() {
+        const createForm = document.getElementById("create_event_form");
+        createForm.style.display = "block";
+    }
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
+    // Close the event creation form popup
+    function closeEventFormPopup() {
+        document.getElementById("create_event_form").style.display = "none";
+    }
 
-            L.marker([lat, lon]).addTo(map);
-        }
+    // Creates a Leaflet map centered on the given coordinates
+    function createMap(lat, lon, zoom = 18) {
+        map = L.map('map').setView([lat, lon], zoom);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+        L.marker([lat, lon]).addTo(map);
+    }
 
-        // Opens the event details popup and populates it with data attributes from the clicked event
-        function openEventDetails(element) {
-            let eventDetails = document.getElementById("event_details");
-            eventDetails.style.display = "block";
-            eventDetails.setAttribute("event-id", element.dataset.id);
+    // Opens the event details popup
+    function openEventDetails(element) {
+        let eventDetails = document.getElementById("event_details");
+        eventDetails.style.display = "block";
+        eventDetails.setAttribute("event-id", element.dataset.id);
 
-            // Populate event detail fields using data attributes
-            const eventAttributes = ["name", "description", "date", "time", "points"];
-            eventAttributes.forEach(field =>
-                eventDetails.querySelector(`#${field}`).textContent = element.dataset[field]
-            );
-
-            let tasksContainer = eventDetails.querySelector("#tasks");
-            tasksContainer.innerHTML = ""; 
-
-            // Fetch tasks for the event and display them
-            getEventTask(element.dataset.id)
-                .then(data => {
-                    if (data.tasks.length === 0) {
-                        tasksContainer.innerHTML = "<p>No tasks available</p>";
-                    } else {
-                        data.tasks.forEach(task => {
-                            let taskDiv = document.createElement("div");
-                            taskDiv.classList.add("box_shadow", "text_light", "taskcard");
-
-                            taskDiv.innerHTML = `${task.task_name}`;
-                        
-                            tasksContainer.appendChild(taskDiv);
-                        });
-                    }
-                });
-
-            // Set the QR code image source from the element's attribute
-            eventDetails.querySelector("#qr_code").src = element.getAttribute("qr_code");
-        
-            // Create the map for the event location using the provided latitude and longitude
-            createMap(element.dataset.latitude, element.dataset.longitude);
-
-            eventDetails.style.display = "block";
-        }
-
-        // Closes the event details popup and removes the map if it exists
-        function closeEventDetails() {
-            document.getElementById("event_details").style.display = "none";
-
-            if (map) {
-                map.remove();
-                map = null;
-            }
-        }
-
-        // Closes the event creation form popup
-        function closeEventFormPopup() {
-            document.getElementById("create_event_form").style.display = "none";
-        }
-
-        // Fetches tasks for a given event ID from the server
-        function getEventTask(eventId) {
-            return fetch(`/ecolution/events/gettasks/${eventId}/`)
-                .then(response => response.json())  
-                .catch(error => {
-                    console.error("Error:", error)
-                });
-        }
-
-        // Displays an error popup with a given message
-        function showErrorPopup(message) {
-            // Create a new popup div
-            let popup = document.createElement("div");
-            popup.className = "error-popup";
-            popup.innerText = message;
-            
-            // Basic inline styling for the popup (this can be moved to CSS)
-            popup.style.position = "fixed";
-            popup.style.top = "20px";
-            popup.style.right = "20px";
-            popup.style.padding = "10px 20px";
-            popup.style.backgroundColor = "#ff4d4d";  // Red background for error
-            popup.style.color = "#fff";
-            popup.style.borderRadius = "5px";
-            popup.style.boxShadow = "0px 2px 5px rgba(0, 0, 0, 0.3)";
-            popup.style.zIndex = "1000";
-            
-            // Append the popup to the body and remove it after 3 seconds
-            document.body.appendChild(popup);
-            setTimeout(() => {
-                popup.remove();
-            }, 3000);
-        }
-        
-        // Helper function to retrieve the CSRF token from cookies
-        function getCSRFToken() {
-            return document.cookie.match(/csrftoken=([^;]+)/)[1];
-        }
-        
-        // Function to geocode an address using the Nominatim API
-        function geocodeAddress(address) {
-            // Nominatim API endpoint; format=json returns data in JSON
-            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
-            return fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    // If results exist, return the first result's latitude and longitude
-                    if (data && data.length > 0) {
-                        return {
-                            latitude: data[0].lat,
-                            longitude: data[0].lon
-                        };
-                    } else {
-                        throw new Error("Address not found.");
-                    }
-                });
-        }
-
-        // Listen for the blur event on the address input field to trigger geocoding
-        document.getElementById("event-address").addEventListener("blur", function(){
-            const address = this.value;
-            if (address) {
-                geocodeAddress(address)
-                    .then(coords => {
-                        // Populate hidden latitude and longitude fields with the obtained coordinates
-                        document.getElementById("latitude").value = coords.latitude;
-                        document.getElementById("longitude").value = coords.longitude;
-                        console.log("Coordinates found:", coords);
-                    })
-                    .catch(error => {
-                        console.error("Geocoding error:", error);
-                        alert("Could not find the address. Please check your input.");
-                    });
-            }
+        const eventAttributes = ["name", "description", "date", "time", "points"];
+        eventAttributes.forEach(field => {
+            eventDetails.querySelector(`#${field}`).textContent = element.dataset[field];
         });
-    </script>
+
+        let tasksContainer = eventDetails.querySelector("#tasks");
+        tasksContainer.innerHTML = ""; 
+
+        // Fetch tasks for the event
+        getEventTask(element.dataset.id)
+            .then(data => {
+                if (data.tasks.length === 0) {
+                    tasksContainer.innerHTML = "<p>No tasks available</p>";
+                } else {
+                    data.tasks.forEach(task => {
+                        let taskDiv = document.createElement("div");
+                        taskDiv.classList.add("box_shadow", "text_light", "taskcard");
+                        taskDiv.innerHTML = `${task.task_name}`;
+                        tasksContainer.appendChild(taskDiv);
+                    });
+                }
+            })
+            .catch(err => console.error(err));
+
+        // Set the QR code image
+        eventDetails.querySelector("#qr_code").src = element.getAttribute("qr_code");
+
+        // Create the map
+        createMap(element.dataset.latitude, element.dataset.longitude);
+    }
+
+    // Closes the event details popup and removes the map
+    function closeEventDetails() {
+        document.getElementById("event_details").style.display = "none";
+        if (map) {
+            map.remove();
+            map = null;
+        }
+    }
+
+    // Fetch tasks for a given event
+    function getEventTask(eventId) {
+        return fetch(`/ecolution/events/gettasks/${eventId}/`)
+            .then(response => response.json());
+    }
+
+    // Show an error popup (optional)
+    function showErrorPopup(message) {
+        let popup = document.createElement("div");
+        popup.className = "error-popup";
+        popup.innerText = message;
+        popup.style.position = "fixed";
+        popup.style.top = "20px";
+        popup.style.right = "20px";
+        popup.style.padding = "10px 20px";
+        popup.style.backgroundColor = "#ff4d4d";
+        popup.style.color = "#fff";
+        popup.style.borderRadius = "5px";
+        popup.style.boxShadow = "0px 2px 5px rgba(0, 0, 0, 0.3)";
+        popup.style.zIndex = "1000";
+        document.body.appendChild(popup);
+        setTimeout(() => {
+            popup.remove();
+        }, 3000);
+    }
+
+    // Extract CSRF token from cookies
+    function getCSRFToken() {
+        return document.cookie.match(/csrftoken=([^;]+)/)[1];
+    }
+
+    // AJAX form submission: gather fields, POST to create_event, handle JSON response
+    function submitEventForm() {
+        const form = document.getElementById("event-form");
+        const formData = new FormData(form);
+
+        fetch("/ecolution/events/create/", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCSRFToken()
+            },
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw err; });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === "success") {
+                // On success, reload the page to see the new event
+                location.reload();
+            } else {
+                // Show error from the server
+                alert(data.message || "Could not create event.");
+            }
+        })
+        .catch(err => {
+            // If there's an error object with a message property, show it
+            alert(err.message || "An error occurred.");
+        });
+    }
+
+    // Geocode address on blur
+    document.getElementById("event-address").addEventListener("blur", function(){
+        const address = this.value;
+        if (address) {
+            geocodeAddress(address)
+                .then(coords => {
+                    document.getElementById("latitude").value = coords.latitude;
+                    document.getElementById("longitude").value = coords.longitude;
+                })
+                .catch(error => {
+                    console.error("Geocoding error:", error);
+                    alert("Could not find the address. Please check your input.");
+                });
+        }
+    });
+
+    // Geocode using Nominatim
+    function geocodeAddress(address) {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+        return fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                    return {
+                        latitude: data[0].lat,
+                        longitude: data[0].lon
+                    };
+                } else {
+                    throw new Error("Address not found.");
+                }
+            });
+    }
+</script>
 {% endblock %}
