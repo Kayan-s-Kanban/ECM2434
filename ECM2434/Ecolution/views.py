@@ -675,7 +675,7 @@ def leaderboard_view(request):
     top_users = list(
         CustomUser.objects.annotate(highest_pet_level_db=Max('pet__pet_level'))
         .filter(highest_pet_level_db__isnull=False)
-        .order_by('-highest_pet_level_db')[:5]
+        .order_by('-highest_pet_level_db')[:100]
     )
     
     # Replace each user's displayed_pet with their highest-level pet.
