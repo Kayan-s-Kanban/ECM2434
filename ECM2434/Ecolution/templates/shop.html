@@ -22,7 +22,7 @@
                 <li class="shop-item card margin_std">
                   {# Display the item image centered #}
                   <div style="text-align: center;">
-                    <img src="{% static item.image_path %}" alt="{{ item.name }}" class="shop-item-image" style="width: 100px; height: 100px;">
+                    <img src="{% static item.image_path|add:'.png' %}" alt="{{ item.name }}" class="shop-item-image" style="width: 100px; height: 100px;">
                   </div>
                   {# Display item details such as name and price #}
                   <div class="shop-item-content">
