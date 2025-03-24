@@ -319,7 +319,7 @@ def complete_event(request):
             event_xp = event.total_xp
             pet = request.user.displayed_pet
             if pet:
-                pet.pet_exp += task.xp_given  # Note: This should likely be event_xp, not task.xp_given.
+                pet.pet_exp += event_xp  # Note: This should likely be event_xp, not task.xp_given.
                 while pet.pet_exp >= 100:
                     pet.pet_level += 1
                     pet.pet_exp -= 100
