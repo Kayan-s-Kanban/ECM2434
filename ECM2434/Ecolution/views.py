@@ -32,6 +32,13 @@ def signup_view(request):
         pet_type = request.POST.get("pet_type", "mushroom")
         pet_name = request.POST.get("pet_name", "") if pet_type else None
 
+         # Validate the email against Django's validators
+        try:
+            validate_email(email)
+        except ValidationError:
+            messages.error(request, "Please enter a valid email address.")
+            return render(request, "signup.html")
+
         if User.objects.filter(username=username).exists():
             messages.error(request, "Username already taken.")
             return redirect('signup')
@@ -49,17 +56,6 @@ def signup_view(request):
                 messages.error(request, error)
             return render(request, "signup.html")
         
-         # Validate the email against Django's validators
-        try:
-            validate_email(email)
-        except ValidationError:
-            messages.error(request, "Please enter a valid email address.")
-            return render(request, "signup.html")
-
-        if User.objects.filter(username=username).exists():
-            messages.error(request, "Username already taken!")
-            return render(request, "signup.html")
-
         # Create the new user
         user = User.objects.create_user(username=username, email=email, password=password1)
         user.save()
