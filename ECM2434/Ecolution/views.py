@@ -193,7 +193,7 @@ def add_task(request):
             # IntegrityError occurs if the task already exists for the day.
             return JsonResponse({
                 "status": "error",
-                "message": "This task already exists!"
+                "message": "You have already completed this task today!"
             }, status=400)
 
         return JsonResponse({
