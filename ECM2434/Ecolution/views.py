@@ -1,21 +1,22 @@
 import json
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout, get_user_model, update_session_auth_hash
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Max
+from django.utils import timezone
 from django.contrib import messages
-from django.http import HttpResponse, JsonResponse, Http404
 from django.db import IntegrityError
+from django.shortcuts import redirect
 from django.contrib.auth import logout
-from django.contrib.auth.password_validation import validate_password
+from .decorators import gamekeeper_required
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
-from django.shortcuts import redirect
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import never_cache
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, JsonResponse, Http404
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.password_validation import validate_password
 from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent, ShopItem, UserItem
-from django.db.models import Max
-from .decorators import gamekeeper_required
-from django.utils import timezone
+from django.contrib.auth import authenticate, login, logout, get_user_model, update_session_auth_hash
+
 
 # Create your views here.
 def index(request):
