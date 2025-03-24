@@ -371,7 +371,7 @@ def create_event(request):
                     )
 
             # Return the same page or another page (e.g. a blank create-event form or the list of events)
-            return render(request, "create_event.html", {
+            return render(request, "gamekeeper_events.html", {
                 "points": request.user.points,
                 "message": "Event created successfully!",
             })
@@ -379,15 +379,16 @@ def create_event(request):
         except IntegrityError as e:
             # If something went wrong with the DB insertion
             messages.error(request, f"Database Error: {str(e)}")
-            return render(request, "create_event.html", {
+            return render(request, "gamekeeper_events.html", {
                 "points": request.user.points,
                 "message": f"Database Error: {str(e)}",
             })
 
     # If it's a GET request (or any non-POST), just render the form
-    return render(request, "create_event.html", {
+    return render(request, "gamekeeper_events.html", {
         "points": request.user.points,
     })
+
 # def create_event(request):
 #     # Allows gamekeepers to create new events along with associated tasks.
 #     if request.method == "POST":
