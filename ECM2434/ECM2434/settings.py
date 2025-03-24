@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+MEDIA_ROOT = '/data/media' 
 MEDIA_URL = '/media/'
 
 MIDDLEWARE = [
