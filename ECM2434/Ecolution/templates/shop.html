@@ -19,7 +19,7 @@
             <ul class="shop-list">
                 {# Loop through each shop item #}
                 {% for item in shop_items %}
-                <li class="shop-item card margin_std">
+                <li class="shop-item card box_shadow margin_std">
                   {# Display the item image centered #}
                   <div style="text-align: center;">
                     <img src="{% static item.image_path|add:'.png' %}" alt="{{ item.name }}" class="shop-item-image" style="width: 100px; height: 100px;">
