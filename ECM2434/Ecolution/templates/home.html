@@ -17,7 +17,7 @@
                     <img src="{{ pet.computed_image_url }}" alt="{{ pet.pet_type }} pet">
                     {# If the pet has a hat accessory, overlay it on the pet image #}
                     {% if hat %}
-                        <img src="{% static hat.image_path %}" class="hat {{ pet.pet_type }} {{ pet.size }}" alt="Hat">
+                        <img src="{% static hat.image_path|add:'.gif' %}" class="hat {{ pet.pet_type }} {{ pet.pet_size }}" alt="Hat">
                     {% endif %}
                 {# If no pet is provided, show a default pet image #}
                 {% else %}
