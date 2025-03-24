@@ -334,7 +334,6 @@ def complete_event(request):
 @gamekeeper_required
 @login_required
 def create_event(request):
-    # Allows gamekeepers to create new events along with associated tasks.
     if request.method == "POST":
         event_name = request.POST.get("event_name")
         description = request.POST.get("description")
@@ -360,7 +359,7 @@ def create_event(request):
                 creator=creator,
             )
 
-            # Create each task associated with the event.
+            # Create each associated task
             for name, points, xp in zip(task_names, task_points, task_xps):
                 if name.strip():
                     Task.objects.create(
@@ -371,12 +370,68 @@ def create_event(request):
                         creator=creator
                     )
 
+            # Return the same page or another page (e.g. a blank create-event form or the list of events)
+            return render(request, "create_event.html", {
+                "points": request.user.points,
+                "message": "Event created successfully!",
+            })
+        
         except IntegrityError as e:
-            return JsonResponse({"status": "error", "message": "Database Integrity Error: " + str(e)}, status=400)
-    
-        return redirect("gamekeeper_events") 
+            # If something went wrong with the DB insertion
+            messages.error(request, f"Database Error: {str(e)}")
+            return render(request, "create_event.html", {
+                "points": request.user.points,
+                "message": f"Database Error: {str(e)}",
+            })
 
-    return JsonResponse({"status": "error"}, status=400)
+    # If it's a GET request (or any non-POST), just render the form
+    return render(request, "create_event.html", {
+        "points": request.user.points,
+    })
+# def create_event(request):
+#     # Allows gamekeepers to create new events along with associated tasks.
+#     if request.method == "POST":
+#         event_name = request.POST.get("event_name")
+#         description = request.POST.get("description")
+#         location = request.POST.get("location")
+#         latitude = request.POST.get("latitude")
+#         longitude = request.POST.get("longitude")
+#         date = request.POST.get("date")
+#         time = request.POST.get("time")
+#         task_names = request.POST.getlist("task_name")
+#         task_points = request.POST.getlist("task_points")
+#         task_xps = request.POST.getlist("task_xp")
+#         creator = request.user
+
+#         try:
+#             event = Event.objects.create(
+#                 event_name=event_name,
+#                 description=description,
+#                 location=location,
+#                 latitude=latitude,
+#                 longitude=longitude,
+#                 date=date,
+#                 time=time,
+#                 creator=creator,
+#             )
+
+#             # Create each task associated with the event.
+#             for name, points, xp in zip(task_names, task_points, task_xps):
+#                 if name.strip():
+#                     Task.objects.create(
+#                         event=event,
+#                         task_name=name,
+#                         xp_given=int(xp),
+#                         points_given=int(points),
+#                         creator=creator
+#                     )
+
+#         except IntegrityError as e:
+#             return JsonResponse({"status": "error", "message": "Database Integrity Error: " + str(e)}, status=400)
+    
+#         return redirect("gamekeeper_events") 
+
+#     return JsonResponse({"status": "error"}, status=400)
     
 
 @login_required
