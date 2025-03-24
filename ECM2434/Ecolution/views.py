@@ -671,14 +671,14 @@ def validate_qr(request, token):
 
 @login_required
 def leaderboard_view(request):
-    # Generates a leaderboard based on users' highest pet level.
+    # Generate a leaderboard based on users' highest pet level, without slicing
     top_users = list(
         CustomUser.objects.annotate(highest_pet_level_db=Max('pet__pet_level'))
         .filter(highest_pet_level_db__isnull=False)
-        .order_by('-highest_pet_level_db')[:100]
+        .order_by('-highest_pet_level_db')
     )
     
-    # Replace each user's displayed_pet with their highest-level pet.
+    # Replace each user's displayed_pet with the pet that has the highest level.
     for user in top_users:
         highest_pet = user.pet_set.order_by('-pet_level').first()
         user.displayed_pet = highest_pet
@@ -693,6 +693,7 @@ def leaderboard_view(request):
     context['leaderboard_entries'] = top_users[3:] if len(top_users) > 3 else []
     context['points'] = request.user.points
     return render(request, "leaderboard.html", context)
+
 
 
 @login_required
