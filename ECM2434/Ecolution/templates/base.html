@@ -54,7 +54,7 @@
                             {% if user.is_gamekeeper %}
                                 <!-- Gamekeeper only menu item, allows gamekeepers to create predefined tasks for other users -->
                                 <a href="{% url 'gamekeeper_tasks' %}">Gamekeeper Tasks</a>
-                                <a href="{% url 'gamekeeper_events' %}">Gamekeeper Tasks</a>
+                                <a href="{% url 'gamekeeper_events' %}">Gamekeeper Events</a>
                             {% endif %}
                             <a href="{% url 'events' %}">Events</a>
                             <a href="{% url 'shop' %}">Shop</a>
