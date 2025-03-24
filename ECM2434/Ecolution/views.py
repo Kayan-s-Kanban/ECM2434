@@ -327,7 +327,6 @@ def complete_event(request):
 @gamekeeper_required
 @login_required
 def create_event(request):
-    # Allows gamekeepers to create new events along with associated tasks.
     if request.method == "POST":
         try:
             with transaction.atomic():
@@ -344,7 +343,6 @@ def create_event(request):
                 task_xps = request.POST.getlist("task_xp")
                 creator = request.user
 
-<<<<<<< HEAD
                 # Create the event
                 event = Event.objects.create(
                     event_name=event_name,
@@ -390,26 +388,6 @@ def create_event(request):
         "message": "Invalid request method."
     }, status=400)
 
-=======
-            # Create each task associated with the event.
-            for name, points, xp in zip(task_names, task_points, task_xps):
-                if name.strip():
-                    Task.objects.create(
-                        event=event,
-                        task_name=name,
-                        xp_given=int(xp),
-                        points_given=int(points),
-                        creator=creator
-                    )
-
-        except IntegrityError as e:
-            return JsonResponse({"status": "error", "message": "Database Integrity Error: " + str(e)}, status=400)
-    
-        return redirect("gamekeeper_events") 
-
-    return JsonResponse({"status": "error"}, status=400)
-    
->>>>>>> parent of 6cbc75d5 (Change to events)
 
 @login_required
 def get_event_tasks(request, event_id):
