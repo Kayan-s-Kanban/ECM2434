@@ -1,5 +1,4 @@
 import json
-import os
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -20,9 +19,6 @@ from .models import Task, UserTask, CustomUser, Pet, Event, UserEvent, ShopItem,
 from django.db.models import Max
 from .decorators import gamekeeper_required
 from django.utils import timezone
-import logging
-from django.db.models import Max
-logger = logging.getLogger(__name__)
 
 # Create your views here.
 
@@ -335,37 +331,6 @@ def complete_event(request):
             return JsonResponse({"success": False, "message": str(e)})
     return JsonResponse({"success": False, "message": "Invalid request"})
 
-# @gamekeeper_required
-# @login_required
-# def create_event(request):
-#     if request.method == "POST":
-#         event_name = request.POST.get("event_name")
-#         description = request.POST.get("description")
-#         location = request.POST.get("location")
-#         latitude = request.POST.get("latitude")
-#         longitude = request.POST.get("longitude")
-#         date = request.POST.get("date")
-#         time = request.POST.get("time")
-#         task_names = request.POST.getlist("task_name")
-#         task_points = request.POST.getlist("task_points")
-#         creator = request.user
-
-#         try:
-#             event = Event.objects.create(
-#                 event_name=event_name,
-#                 description=description,
-#                 location=location,
-#                 latitude=latitude,
-#                 longitude=longitude,
-#                 date=date,
-#                 time=time,
-#                 creator=creator,
-#             )
-
-#             for task_name, task_point in zip(task_names, task_points):
-#                 if task_name.strip(): 
-#                     Task.objects.create(event=event, task_name=task_name, points_given=int(task_point), xp_given=int(task_point))
-
 @gamekeeper_required
 @login_required
 def create_event(request):
@@ -675,14 +640,14 @@ def validate_qr(request, token):
 
 @login_required
 def leaderboard_view(request):
-    # Generates a leaderboard based on users' highest pet level.
+    # Generate a leaderboard based on users' highest pet level, without slicing
     top_users = list(
         CustomUser.objects.annotate(highest_pet_level_db=Max('pet__pet_level'))
         .filter(highest_pet_level_db__isnull=False)
-        .order_by('-highest_pet_level_db')[:5]
+        .order_by('-highest_pet_level_db')
     )
     
-    # Replace each user's displayed_pet with their highest-level pet.
+    # Replace each user's displayed_pet with the pet that has the highest level.
     for user in top_users:
         highest_pet = user.pet_set.order_by('-pet_level').first()
         user.displayed_pet = highest_pet
@@ -697,6 +662,7 @@ def leaderboard_view(request):
     context['leaderboard_entries'] = top_users[3:] if len(top_users) > 3 else []
     context['points'] = request.user.points
     return render(request, "leaderboard.html", context)
+
 
 
 @login_required
