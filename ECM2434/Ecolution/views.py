@@ -371,13 +371,13 @@ def create_event(request):
             )
 
             # For each task provided, create a task with xp_given set from task_xp.
-            for task_name, task_xp in zip(task_names, task_xps):
-                if task_name.strip():
+            for name, points, xp in zip(task_names, task_points, task_xps):
+                if name.strip():
                     Task.objects.create(
                         event=event,
-                        task_name=task_name,
-                        xp_given=int(task_xp),
-                        points_given=int(task_points),
+                        task_name=name,
+                        xp_given=int(xp),
+                        points_given=int(points),
                         creator=creator
                     )
 
