@@ -323,6 +323,7 @@ def create_event(request):
         time = request.POST.get("time")
         task_names = request.POST.getlist("task_name")
         task_points = request.POST.getlist("task_points")
+        creator = request.user
 
         try:
             event = Event.objects.create(
@@ -333,6 +334,7 @@ def create_event(request):
                 longitude=longitude,
                 date=date,
                 time=time,
+                creator=creator,
             )
 
             for task_name, task_point in zip(task_names, task_points):
