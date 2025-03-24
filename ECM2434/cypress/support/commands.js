@@ -90,8 +90,6 @@ Cypress.Commands.add('navigateToPage', (pageUrl) => {
     cy.url().should('include', pageUrl);
 });
 
-
-
 Cypress.Commands.add('deleteAccount', (username) => {
   cy.visit('/account/settings/delete_account');
 

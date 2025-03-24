@@ -2,8 +2,8 @@ const { defineConfig } = require("cypress");
 
 module.exports = defineConfig({
   e2e: {
-    supportFile: false, // If you don't need a support file, leave this as false.
-    specPattern: "cypress/e2e/**/*.js", // Corrected path for your spec files.
+    specPattern: "cypress/e2e/e2e/*.cy.js", // Corrected path for your spec files.
+    supportFile: 'cypress/support/e2e.js', // Ensure it's pointing to e2e.js
     env: {
       coverage: true,  // Enabling code coverage collection
     },
