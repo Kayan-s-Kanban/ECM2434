@@ -22,7 +22,7 @@
             <div class="hat_list flex_v flex_center">
                 {# Loop through each owned hat item #}
                 {% for user_item in hat_items %}
-                    <label class="card flex_v flex_center box_shadow margin_sml">
+                    <label class="card flex_v flex_center box_shadow margin_sml" style="width: 80%; padding: 0.5rem; font-size: 1rem; font-weight: 500;">
                         {# Display the accessory image using the static file path #}
                         <img src="{% static user_item.shopitem.image_path|add:'.png' %}" alt="hat" class="hat" style="width: 64px; height: 64px;">
                         <br>
