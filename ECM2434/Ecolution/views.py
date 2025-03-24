@@ -363,7 +363,7 @@ def create_event(request):
             # Create each task associated with this event
             for name, points, xp in zip(task_names, task_points, task_xps):
                 if name.strip():
-                     try:
+                    try:
                         Task.objects.create(
                             event=event,
                             task_name=name,
