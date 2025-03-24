@@ -57,10 +57,6 @@
                                 <a href="{% url 'gamekeeper_events' %}">Gamekeeper Events</a>
                             {% endif %}
                             <a href="{% url 'events' %}">Events</a>
-                            {% if user.is_gamekeeper %}
-                                <!-- Gamekeeper only menu item, allows gamekeepers to create predefined events for other users -->
-                                <a href="{% url 'gamekeeper_events' %}">Gamekeeper Events</a>
-                            {% endif %}
                             <a href="{% url 'shop' %}">Shop</a>
                             <a href="{% url 'leaderboard' %}">Leaderboard</a>
                             <a href="{% url 'qr_scanner' %}">QR Code Scanner</a>
