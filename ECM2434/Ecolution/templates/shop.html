@@ -23,7 +23,7 @@
                       <div class="sold-out-banner">Sold Out</div>
                       <button class="button margin_std" disabled>Sold Out</button>
                     {% elif item.price > user.points %}
-                      <div class="insufficient-banner">Not Enough Points</div>
+                      <div class="insufficient-banner">Not Enough Leaves</div>
                       <button class="button margin_std buy" disabled>Buy</button>
                     {% else %}
                       <button class="button margin_std buy" onclick="buyItem('{{ item.id }}')">Buy</button>

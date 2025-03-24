@@ -121,10 +121,6 @@
                     <form id="change-username-form" method="POST" action="{% url 'change_username' %}">
                         {% csrf_token %}
                         <div class="form-group-horizontal">
-                            <label for="current_username">Current username:</label>
-                            <input type="username" id="current_username" name="current_username" required>
-                        </div>
-                        <div class="form-group-horizontal">
                             <label for="new_username1">New username:</label>
                             <input type="username" id="new_username1" name="new_username1" required>
                         </div>

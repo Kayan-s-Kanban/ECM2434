@@ -32,6 +32,17 @@ def signup_view(request):
         pet_type = request.POST.get("pet_type", "mushroom")
         pet_name = request.POST.get("pet_name", "") if pet_type else None
 
+         # Validate the email against Django's validators
+        try:
+            validate_email(email)
+        except ValidationError:
+            messages.error(request, "Please enter a valid email address.")
+            return render(request, "signup.html")
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already taken.")
+            return redirect('signup')
+
         if password1 != password2:
             messages.error(request, "Passwords do not match!")
             return render(request, "signup.html")
@@ -45,17 +56,6 @@ def signup_view(request):
                 messages.error(request, error)
             return render(request, "signup.html")
         
-         # Validate the email against Django's validators
-        try:
-            validate_email(email)
-        except ValidationError:
-            messages.error(request, "Please enter a valid email address.")
-            return render(request, "signup.html")
-
-        if User.objects.filter(username=username).exists():
-            messages.error(request, "Username already taken!")
-            return render(request, "signup.html")
-
         # Create the new user
         user = User.objects.create_user(username=username, email=email, password=password1)
         user.save()
@@ -449,26 +449,30 @@ def change_password(request):
 @login_required
 def change_username(request):
     if request.method == "POST":
-        current_username = request.POST["current_username"]
         new_username1 = request.POST["new_username1"]
         new_username2 = request.POST["new_username2"]
         
         if new_username1 != new_username2:
-            messages.error(request, "New usernames do not match!")
+            messages.error(request, "New usernames do not match. Please choose another")
             return redirect("settings")
 
         user = request.user
-        if not user.check_username(current_username):
-            messages.error(request, "Current username is incorrect!")
+        
+        #check if the new username is taken
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        if User.objects.filter(username=new_username1).exists():
+            messages.error(request, "This username is already taken!")
             return redirect("settings")
 
-        user.set_username(new_username1)
+        #update the players username
+        user.username = new_username1
         user.save()
 
-        # Keep the user logged in after username change
+        #keep the user logge in
         update_session_auth_hash(request, user)
 
-        messages.success(request, "username updated successfully!")
+        messages.success(request, "Username updated successfully!")
         return redirect("settings")
 
     return redirect("settings")
