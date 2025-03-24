@@ -13,6 +13,7 @@
     <section class="spacer_big"></section>
     <section class="container flex_v flex_center box_shadow">
         <h2 class="text_dark margin_std_bot">Create an Account</h2>
+        <h3 class="text_dark margin_sml_bot align_self_start">Enter your details</h3>
         <form class="flex_v flex_v_fill" method="POST">
             {% csrf_token %}
             <input type="email" name="email" placeholder="Email" required> <!-- takes the email address check there is an @ sign -->
@@ -24,6 +25,7 @@
             <input type="password" name="password2" placeholder="Confirm Password" required>
 
             <!-- Pet Selection -->
+            <h3 class="text_dark margin_sml_top align_self_start">Choose your pet</h3>
             <section class="pet_selection flex_h flex_center">
                 <label class="pet_option">
                     <input type="radio" name="pet_type" value="mushroom" required>
@@ -48,7 +50,7 @@
             <!-- Pet Name Input (Hidden by Default) -->
             <input type="text" name="pet_name" id="pet_name_input" placeholder="Pet Name" style="display: none;">
             
-            <label class="terms_checkbox">
+            <label class="terms_checkbox font_small align_self_center margin_sml_top margin_sml_bot">
                 <input type="checkbox" name="agree_terms" required>
                 <span>I have read and agree to the <a href="{% url 'term_of_use' %}" target="_blank">Terms and Conditions</a></span> <!-- link to the terms and conditions page along with a necessary checkbox to agree to the T's and C's -->
             </label>            

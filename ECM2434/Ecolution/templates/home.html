@@ -64,7 +64,9 @@
         {% empty %}
         <section class="card box_shadow text_light">
             <div class="content flex_h flex_fill_h flex_center flex_gap_std margin_sml">
-                <p>All tasks completed!</p>
+                <p>You don't have any tasks, </p>
+                <a href="{% url 'tasks' %}">lets add one!</a>
+                <!-- <button class="button_alt text_light" type="button" onclick="window.location.href='{% url 'tasks' %}'">lets add one!</button> -->
             </div>
         </section>
         
