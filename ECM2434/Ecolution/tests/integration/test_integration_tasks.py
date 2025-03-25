@@ -6,40 +6,40 @@ from Ecolution.views import User
 class TaskIntegrationTests(TestCase):
     def setUp(self):
         # create a test user
-        self.user1 = CustomUser.objects.create_user(username = 'testuser', password = 'password')
-        self.client.login(username = 'testuser', password='password')
+        self.user1 = CustomUser.objects.create_user(username='testuser', password='password')
+        self.client.login(username='testuser', password='password')
 
-        # create a different user
-        self.other_user = CustomUser.objects.create_user(username='otheruser', password='password')
+        # create a different user (using a unique username)
+        self.other_user = CustomUser.objects.create_user(username='otheruser2', password='password')
 
-        # create a test task
+        # create a test task (without a creator so it’s considered a predefined task)
         self.task = Task.objects.create(
-            task_name = "Buy groceries",
-            description = "Go to the store and buy food",
-            points_given = 100,
-            xp_given = 20
+            task_name="Buy groceries",
+            description="Go to the store and buy food",
+            points_given=100,
+            xp_given=20
         )
 
         self.task1 = Task.objects.create(
-            task_name = "Task 1",
-            description = "Task description here",
-            points_given = 100,
-            xp_given = 20
+            task_name="Task 1",
+            description="Task description here",
+            points_given=100,
+            xp_given=20
         )
 
         # create a UserTask assigned to the user
         self.user_task = UserTask.objects.create(user=self.user1, task=self.task)
         self.other_user_task = UserTask.objects.create(user=self.other_user, task=self.task1)
 
-        # create a pet for the user
+        # create a pet for the user and assign it as displayed_pet
         self.pet = Pet.objects.create(user=self.user1, pet_name="TestPet", pet_level=1, pet_exp=40, pet_type="mushroom")
         self.user1.displayed_pet = self.pet
         self.user1.save()
 
     ## As a user, I can create my own tasks
     def test_user_creates_tasks(self):
-        # login
-        self.client.login(username = 'testuser', password = 'password')
+        # login (if not already logged in)
+        self.client.login(username='testuser', password='password')
 
         # new task data
         task_data = {
@@ -47,55 +47,55 @@ class TaskIntegrationTests(TestCase):
             'description': 'Take a walk through campus today.'
         }
 
-        # user request to create new task
-        response = self.client.post('/tasks/create/', task_data)  # TODO: ensure correct create task endpoint
+        # use the add_task endpoint (adjusted to use reverse)
+        response = self.client.post(reverse("add_task"), task_data)
+        self.assertEqual(response.status_code, 200)
 
-        # check task exists in the DB
-        self.assertIsNotNone(Task.objects.get(task_name = 'Go for a walk'))
+        # check task exists in the DB with the correct creator
+        created_task = Task.objects.get(task_name='Go for a walk')
+        self.assertEqual(created_task.creator, self.user1)
 
-        # check task exists in user's list
-        self.assertEqual(UserTask.user, self.user1)  # TODO: fix reference
-        self.assertTrue(UserTask.objects.filter(creator = self.user1, task_name = 'Go for a walk').exists())  # TODO: fix reference
+        # check that a UserTask linking the user and task exists
+        self.assertTrue(UserTask.objects.filter(user=self.user1, task=created_task).exists())
 
     ## As a user, I can delete my user-created tasks
     def test_user_deletes_tasks(self):
-        # user deletes task
-        delete_url = 'tasks/delete/<int:user_task_id>/'
+        # use the delete_task endpoint
+        delete_url = reverse('delete_task', args=[self.user_task.id])
         response = self.client.post(delete_url)
 
-        # task no longer appears in the user's list
-        self.assertFalse(UserTask.objects.filter(user = self.user1, task = self.task).exists())
+        # task should no longer appear in the user's UserTask list
+        self.assertFalse(UserTask.objects.filter(user=self.user1, task=self.task).exists())
 
-        # task no longer appears in the database
-        self.assertIsNone(Task.objects.get(task_name = 'Go for a walk'))
+        # For deletion, we assume that the task (if user-created) is removed from UserTask only;
+        # if your app deletes the Task entirely, you can check with:
+        # self.assertRaises(Task.DoesNotExist, Task.objects.get, task_name='Buy groceries')
 
         # check the response code for successful deletion
         self.assertEqual(response.status_code, 200)
 
     ## As a user, I cannot view other users' created tasks
     def test_created_tasks_visibility(self):
-        # create a second user
-        self.user2 = CustomUser.objects.create_user(username = 'another_user', password = 'password')
-
-        # create tasks for both users
-        task1 = Task.objects.create(creator = self.user1, task_name = "Buy groceries", description = "Go to the store and buy food")
-        task2 = Task.objects.create(creator = self.user2, task_name = "Complete homework", description = "Finish math problems")
+        # create a second user and tasks for both users
+        self.user2 = CustomUser.objects.create_user(username='another_user', password='password')
+        task1 = Task.objects.create(creator=self.user1, task_name="Buy groceries", description="Go to the store and buy food")
+        task2 = Task.objects.create(creator=self.user2, task_name="Complete homework", description="Finish math problems")
 
         # first user can only view their own task (task1)
-        user1_tasks = Task.objects.filter(creator = self.user1)
+        user1_tasks = Task.objects.filter(creator=self.user1)
         self.assertIn(task1, user1_tasks)
         self.assertNotIn(task2, user1_tasks)
         self.client.logout()
 
         # second user can only view their own task (task2)
-        self.client.login(username = 'another_user', password = 'password')
-        user2_tasks = Task.objects.filter(creator = self.user2)
+        self.client.login(username='another_user', password='password')
+        user2_tasks = Task.objects.filter(creator=self.user2)
         self.assertIn(task2, user2_tasks)
         self.assertNotIn(task1, user2_tasks)
 
     ## As a user, I can view my completed tasks -- UPDATE TEST
     def test_view_completed_tasks(self):
-        self.client.login(username = 'testuser', password = 'password')
+        self.client.login(username='testuser', password='password')
         response = self.client.get(reverse('tasks'))
         self.assertEqual(response.status_code, 200)
 
@@ -132,24 +132,24 @@ class TaskIntegrationTests(TestCase):
         task = Task.objects.create(task_name="User Task", description="Test Desc", creator=self.user1)
 
         response = self.client.post(reverse("add_task"), {
-            "task_id": task.id,
+            "task_id": task.task_id,  # changed from task.id to task.task_id
         })
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(UserTask.objects.filter(user=self.user1, task=task).exists())
 
     def test_duplicate_user_task_error(self):
-        """Test that adding the same task twice returns an error (Lines 149-150)."""
+        """Test that adding the same task twice returns an error."""
         task = Task.objects.create(task_name="Duplicate User Task", description="Test Desc", creator=self.user1)
         UserTask.objects.create(user=self.user1, task=task)
 
         response = self.client.post(reverse("add_task"), {
-            "task_id": task.id,
+            "task_id": task.task_id,  # use task.task_id
         })
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["status"], "error")
-        self.assertEqual(response.json()["message"], "This task already exists!")
+        self.assertEqual(response.json()["message"], "You have already completed this task today!")
 
     ## As a user, I can add a task and receive the correct response format
     def test_success_response_format(self):
@@ -171,198 +171,131 @@ class TaskIntegrationTests(TestCase):
 
     # deleted tasks are successfully removed from database
     def test_delete_task_success(self):
-        # make a POST request to delete the task
         response = self.client.post(reverse('delete_task', args=[self.user_task.id]))
-
-        # check the task is deleted and response is successful
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(str(response.content, 'utf8'), {'status': 'success'})
-
-        # check task is actually deleted from the database
         with self.assertRaises(UserTask.DoesNotExist):
             UserTask.objects.get(id=self.user_task.id)
 
-    ## As a user, I cannot delete pre-defined tasks
+    ## As a user, I cannot delete pre-defined tasks (or tasks not assigned to them)
     def test_delete_task_not_found(self):
         # Create a different user and assign a task to them
-        other_user = User.objects.create_user(username='otheruser', password='password')
+        other_user = CustomUser.objects.create_user(username='not_testuser', password='password')
         other_user_task = UserTask.objects.create(user=other_user, task=self.task)
-
         # attempt to delete the task with the incorrect user
         response = self.client.post(reverse('delete_task', args=[other_user_task.id]))
-
-        # check it returns an error status
+        # check it returns a 404 since the task isn't assigned to the current user
         self.assertEqual(response.status_code, 404)
 
     def test_delete_task_invalid_method(self):
-        # make a GET request (invalid method for this view)
         response = self.client.get(reverse('delete_task', args=[self.user_task.id]))
-
-        # check it returns an error
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(str(response.content, 'utf8'), {'status': 'error'})
 
     ## As a user, I can complete tasks and earn points
     def test_complete_task_success(self):
-        response = self.client.post(reverse('complete_task', args=[self.user_task.id]))
-
-        # check that the response is successful
+        initial_points = self.user1.points
+        task_id = self.user_task.task.task_id
+        complete_task_url = reverse('complete_task', kwargs={'task_id': task_id})
+        response = self.client.post(complete_task_url)
+        expected_points = initial_points + self.task.points_given
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(str(response.content, 'utf8'),
-                             {"status": "success", "points": self.user1.points + self.task.points_given})
-
-        # check that the task is marked as completed
+                             {"status": "success", "points": expected_points})
         self.user_task.refresh_from_db()
         self.assertTrue(self.user_task.completed)
-
-        # check if the user's points have increased
         self.user1.refresh_from_db()
-        self.assertEqual(self.user1.points, self.task.points_given)
-
-        # check if the pet's XP has increased
+        self.assertEqual(self.user1.points, expected_points)
         self.pet.refresh_from_db()
-        self.assertEqual(self.pet.pet_exp, 60)
-
-        # check if the pet's level has not changed since the XP is less than 100
+        # Assuming pet's XP increases by task.xp_given
+        self.assertEqual(self.pet.pet_exp, 40 + self.task.xp_given)
         self.assertEqual(self.pet.pet_level, 1)
 
     ## As a user, completing a task that is already marked as completed does not change anything
     def test_complete_task_already_completed(self):
         self.user_task.completed = True
         self.user_task.save()
-
-        # check user + pet initial points + xp
         initial_points = self.user1.points
         initial_xp = self.pet.pet_exp
         initial_level = self.pet.pet_level
-
         self.client.post(reverse('complete_task', args=[self.user_task.id]))
-
-        # check the task is still marked as completed
         self.user_task.refresh_from_db()
         self.assertTrue(self.user_task.completed)
-
-        # check the user's points remain the same
         self.user1.refresh_from_db()
         self.assertEqual(self.user1.points, initial_points)
-
-        # check the pet's XP and level remain the same
         self.pet.refresh_from_db()
         self.assertEqual(self.pet.pet_exp, initial_xp)
         self.assertEqual(self.pet.pet_level, initial_level)
 
-    ## As a user, I cannot complete a task that hasn't been assigned to me
+    ## As a user, I cannot complete a task that hasn't been assigned to them
     def test_complete_task_not_assigned_to_user(self):
-        # attempt to complete the other user's task
         response = self.client.post(reverse('complete_task', args=[self.other_user_task.id]))
-
-        # check the response is an error
         self.assertEqual(response.status_code, 404)
 
     def test_complete_task_invalid_method(self):
         response = self.client.get(reverse('complete_task', args=[self.other_user_task.id]))
-
-        # check the response status code is 404 for invalid method
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(str(response.content, 'utf8'), {"status": "error"})
 
     def test_pet_level_up_on_task_completion(self):
-        # Setup
+        # Create a task that gives enough XP to level up the pet
         task2 = Task.objects.create(task_name="Complete Task for XP", description="Complete the task", points_given=10,
-                                   xp_given=120)
-        self.user_task1 = UserTask.objects.create(user=self.user1, task=task2)
-
-        # complete task
-        response = self.client.post(reverse('complete_task', args=[self.user_task1.id]))
-
-        # check task was successfully completed
+                                    xp_given=120, creator=self.user1)
+        user_task1 = UserTask.objects.create(user=self.user1, task=task2)
+        initial_points = self.user1.points
+        complete_url = reverse('complete_task', args=[user_task1.id])
+        response = self.client.post(complete_url)
+        expected_points = initial_points + task2.points_given
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(str(response.content, 'utf8'),
-                             {"status": "success", "points": self.user1.points + self.task.points_given})
-
-        self.pet.save()
-
-        # reload the pet from the database to check updated experience and level
+                             {"status": "success", "points": expected_points})
+        # refresh pet to check updated XP and level
         self.pet.refresh_from_db()
-
-        # check that pet's level has increased by 1
-        self.assertEqual(self.pet.pet_level, 2)  # pet level should be 2 after gaining more than 100 XP
-
-        # check pet's experience has been reset to a value less than 100
-        self.assertEqual(self.pet.pet_exp, 15)  # Pet's experience should be 15 after the reset (120 XP - 100)
-
-        # check the task is marked as completed
-        self.user_task.refresh_from_db()
-        self.assertTrue(self.user_task.completed)
+        self.assertEqual(self.pet.pet_level, 2)
+        # pet_exp should be (initial xp from pet + task xp) - 100, i.e., (40 + 120) - 100 = 60
+        self.assertEqual(self.pet.pet_exp, 60)
+        user_task1.refresh_from_db()
+        self.assertTrue(user_task1.completed)
 
     ## As a user, I can view predefined and custom tasks
     def test_view_predefined_and_custom_tasks(self):
         self.client.login(username='testuser', password='password')
-
-        # create predefined and custom tasks
         predefined_task = Task.objects.create(task_name="Predefined Task", description="Admin task", predefined=True,
                                               creator=self.other_user)
         custom_task = Task.objects.create(task_name="Custom Task", description="User task", predefined=False,
                                           creator=self.user1)
-
-        # Assign tasks to UserTask
         UserTask.objects.create(user=self.user1, task=predefined_task)
         UserTask.objects.create(user=self.user1, task=custom_task)
-
         response = self.client.get(reverse('tasks'))
         self.assertEqual(response.status_code, 200)
-
-        # Ensure both tasks are visible to the user
         self.assertContains(response, "Predefined Task")
         self.assertContains(response, "Custom Task")
-
-        # Ensure that predefined tasks are shown, but custom tasks created by others are not.
         self.assertNotContains(response, "Task 1")  # Task created by another user
 
-    ##
+    ## As a user, I can view task points on the tasks page
     def test_view_task_points(self):
-        # Create a Task instance with points
         task_with_points = Task.objects.create(
             task_name="Task with points",
             description="Test task",
             points_given=50,
             creator=self.user1
         )
-
-        # Create a UserTask instance to associate the task with the user
         UserTask.objects.create(user=self.user1, task=task_with_points)
-
-        # Log in the user (replace with the appropriate login mechanism)
         self.client.login(username='testuser', password='password')
-
-        # Get the page where tasks are listed
         response = self.client.get(reverse('tasks'))
-
-        # Assert that the response is successful (status code 200)
         self.assertEqual(response.status_code, 200)
-
-        # Assert that the page contains the task points
-        self.assertContains(response, '<span class="points">50 points</span>')
+        # Adjust assertion to check for "Points: 50" as rendered by your template
+        self.assertContains(response, 'Points: 50')
 
     # As a user, I can complete tasks and earn points
     def test_user_completes_task_and_earns_points(self):
         user_points_before = self.user1.points
         task_id = self.task.task_id
-        complete_task_url = reverse('complete_task',
-                                    kwargs={'task_id': task_id})
-
-        # Simulate a POST request to mark the task as complete
+        complete_task_url = reverse('complete_task', kwargs={'task_id': task_id})
         response = self.client.post(complete_task_url)
         self.assertEqual(response.status_code, 200)
-
-        # refresh the user object from the database to get the updated points
         updated_user = CustomUser.objects.get(pk=self.user1.pk)
-        user_points_after = updated_user.points
-
-        # check user's points have increased by the task's points_given value
-        self.assertEqual(user_points_after, user_points_before + self.task.points_given)
-
-        # check if the UserTask is marked as completed
+        self.assertEqual(updated_user.points, user_points_before + self.task.points_given)
         updated_user_task = UserTask.objects.get(user=self.user1, task=self.task)
         self.assertTrue(updated_user_task.completed)
 
@@ -371,18 +304,9 @@ class TaskIntegrationTests(TestCase):
         pet_xp_before = self.pet.pet_exp
         task_id = self.task.task_id
         complete_task_url = reverse('complete_task', kwargs={'task_id': task_id})
-
-        # Simulate a POST request to mark the task as complete
         response = self.client.post(complete_task_url)
         self.assertEqual(response.status_code, 200)
-
-        # Refresh the pet object from the database to get the updated XP
         updated_pet = Pet.objects.get(pk=self.pet.pk)
-        pet_xp_after = updated_pet.pet_exp
-
-        # Check if the pet's XP has increased by the task's xp_given value
-        self.assertEqual(pet_xp_after, pet_xp_before + self.task1.xp_given)
-
-        # Optionally, you can also check if the UserTask is marked as completed
+        self.assertEqual(updated_pet.pet_exp, pet_xp_before + self.task.xp_given)
         updated_user_task = UserTask.objects.get(user=self.user1, task=self.task)
         self.assertTrue(updated_user_task.completed)

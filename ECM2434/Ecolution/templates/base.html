@@ -73,12 +73,12 @@
                         <section class="main_menu" id="mainMenu">
                             <a href="{% url 'home' %}">Home</a>
                             <a href="{% url 'tasks' %}">Tasks</a>
+                            <a href="{% url 'events' %}">Events</a>
                             {% if user.is_gamekeeper %}
                                 <!-- Menu items visible only to gamekeepers -->
                                 <a href="{% url 'gamekeeper_tasks' %}">Gamekeeper Tasks</a>
                                 <a href="{% url 'gamekeeper_events' %}">Gamekeeper Events</a>
                             {% endif %}
-                            <a href="{% url 'events' %}">Events</a>
                             <a href="{% url 'shop' %}">Shop</a>
                             <a href="{% url 'leaderboard' %}">Leaderboard</a>
                             <a href="{% url 'qr_scanner' %}">QR Code Scanner</a>

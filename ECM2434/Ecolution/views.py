@@ -46,7 +46,7 @@ def signup_view(request):
         # Ensure the username is unique.
         if User.objects.filter(username=username).exists():
             messages.error(request, "Username already taken.")
-            return redirect('signup')
+            return render(request, "signup.html")
 
         # Ensure the passwords match.
         if password1 != password2:
@@ -73,7 +73,7 @@ def signup_view(request):
         user.displayed_pet = pet
         user.save()
 
-        # Try to assign a shop item (hat) matching the pet type to the user.
+        # Try to assign a shop item matching the pet type to the user, so that the user can't buy the pet twice.
         try:
             shop_item = ShopItem.objects.get(name__iexact=pet_type)
             UserItem.objects.create(user=user, shopitem=shop_item)

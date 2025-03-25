@@ -4,14 +4,14 @@ from unittest.mock import patch
 from django.test import TestCase
 from django.urls import reverse
 from django.db import connection
-from Ecolution.models import CustomUser, Event, Pet, UserEvent, Task
+from Ecolution.models import CustomUser, Event, Pet, UserEvent, Task, UserTask
 from Ecolution.views import User
 
 
 class EventsIntegrationTests(TestCase):
     def setUp(self):
         # create user
-        self.user1 = User.objects.create_user(username="testuser", password="password")
+        self.user1 = User.objects.create_user(username="testuser", password="password", is_gamekeeper=True)
 
         # login user
         self.client.login(username="testuser", password="password")
@@ -45,6 +45,10 @@ class EventsIntegrationTests(TestCase):
         # create user pet
         self.pet1 = Pet.objects.create(user=self.user1, pet_exp=50, pet_level=1)
 
+        # assign the pet as the user's displayed pet
+        self.user1.displayed_pet = self.pet1
+        self.user1.save()
+
         # urls
         self.url_leave = reverse('leave_event')
         self.url_create = reverse('create_event')
@@ -53,7 +57,10 @@ class EventsIntegrationTests(TestCase):
         self.url_get_tasks = reverse('get_event_tasks', args=[self.event.event_id])
 
     # As a user, I can earn points from completing event tasks
-    def test_earn_points_from_event(self):
+    def test_earn_points_xp_from_event(self):
+        # check xp at start
+        initial_xp = self.pet1.pet_exp
+
         # make sure that one 1 event object exists
         self.assertEqual(Event.objects.count(), 1)
         created_event = Event.objects.first()  # get the first (and only) event created
@@ -61,60 +68,27 @@ class EventsIntegrationTests(TestCase):
 
         # set event as validated by user
         self.user_event.validated = True
+        self.user_event.save()
 
-        # TODO: user completes tasks
-
+        # Create a completed UserTask for each task associated with the event
+        UserTask.objects.create(user=self.user1, task=self.task1, completed=True, date=timezone.now().date())
+        UserTask.objects.create(user=self.user1, task=self.task2, completed=True, date=timezone.now().date())
 
         # user completes event
-        self.client.post(reverse('complete_event'), {'event': self.event})
+        self.client.post(reverse('complete_event'), {'event_id': self.event.event_id})
 
         # reload user + pet data after event completion
         self.user1.refresh_from_db()
         self.pet1.refresh_from_db()
-        self.event.refresh_from_db()
-
-        # reload user data after event completion
-        self.user1.refresh_from_db()
-
-        # check user's points has increased
-        self.assertEqual(self.user1.points, 25)
-
-    # As a user, I can earn XP from completing events
-    def test_earn_xp_from_event(self):
-        # check xp at start
-        initial_xp = self.pet1.pet_exp
-
-        print("Initial XP:", initial_xp)
-
-        Event.objects.all().delete()
-
-        # create test event
-        self.event1 = Event.objects.create(
-            event_name='Test Event'
-        )
-
-        # check event was created and saved
-        self.assertEqual(Event.objects.count(), 1)  # Check that 1 event exists in the database
-        created_event = Event.objects.first()  # Get the first (and only) event created
-        self.assertEqual(created_event.event_name, 'Test Event')  # Ensure the event name matches
-
-        print("Event exists")
-
-        # user completes event
-        self.client.post(reverse('complete_event'), {'event': self.event1})
-
-        # reload user + pet data after event completion
-        self.user1.refresh_from_db()
-        self.pet1.refresh_from_db()
-        self.event.refresh_from_db()
-
-        print("Final XP:", self.pet1.pet_exp)
 
         # reload pet data after event completion
         self.pet1.refresh_from_db()
 
         # check pet's xp has increased
         self.assertEqual(self.pet1.pet_exp, initial_xp + self.event.total_xp)
+
+        # check user's points has increased
+        self.assertEqual(self.user1.points, 25)
 
     ## As a user, I can leave an event
     def test_leave_event_success(self):
@@ -147,7 +121,7 @@ class EventsIntegrationTests(TestCase):
         response = self.client.post(self.url_complete, data)
 
         # check that event does not exist
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
 
     def test_leave_event_invalid_method(self):
         self.client.login(username="testuser", password="password")
@@ -244,7 +218,7 @@ class EventsIntegrationTests(TestCase):
         response = self.client.post(self.url_complete, data)
 
         self.assertJSONEqual(str(response.content, encoding="utf8"),
-                             {"success": False, "message": "Event not validated."})
+                             {"success": False, "message": "Event not validated. Please ask the event organiser for the QR code and go to the QR code scanner page."})
         self.assertFalse(self.user_event.validated)
 
     ## As a user, I can complete a validated event

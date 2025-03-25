@@ -88,6 +88,10 @@ class SignupIntegrationTests(TestCase):
 
     ## As a user, I cannot sign up for an account with a username that already exists
     def test_signup_existing_username(self):
+        # Ensure the client is logged out.
+        self.client.logout()
+        # Explicitly create a user with the username 'testuser'
+        CustomUser.objects.create_user(username="testuser", email="testuser@example.com", password="Password123")
         response = self.client.post(self.url_signup, {
             "email": "newemail@example.com",
             "username": "testuser",
@@ -95,10 +99,10 @@ class SignupIntegrationTests(TestCase):
             "password2": "newpassword123",
             "pet_type": "dog",
             "pet_name": "Buddy"
-        })
+        }, follow=True)
+        # Now the response should include the error message.
+        self.assertContains(response, "Username already taken.")
 
-        # check the error message is in the response
-        self.assertContains(response, "Username already taken!")
 
     def test_user_item_created_on_signup(self):
         # Ensure a ShopItem with 'dog' exists

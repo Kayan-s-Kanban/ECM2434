@@ -62,7 +62,7 @@ class SignupUnitTests(TestCase):
         self.assertEqual(CustomUser.objects.filter(username="testuser").count(), 1)
 
         messages = list(get_messages(response.wsgi_request))
-        self.assertIn("Username already taken!", [msg.message for msg in messages])
+        self.assertIn("Username already taken.", [msg.message for msg in messages])
 
     ## As a user, I cannot signup for an account with two different passwords
     def test_signup_password_mismatch(self):
