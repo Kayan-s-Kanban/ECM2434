@@ -1,8 +1,8 @@
-from django.test import TestCase
 from django.urls import reverse
 from Ecolution.models import CustomUser, Event, Pet
+from Ecolution.tests.base_test import BaseTestCase
 
-class GDPRPPUnitTests(TestCase):
+class GDPRPPUnitTests(BaseTestCase):
     def setUp(self):
         # create a user
         self.user1 = CustomUser.objects.create_user(username = 'testuser', password = 'password')

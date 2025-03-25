@@ -1,10 +1,8 @@
-from django.test import TestCase
 from django.urls import reverse
-from django.db import connection
-from Ecolution.models import CustomUser, Event, Pet, ShopItem, UserItem
-from Ecolution.views import User
+from Ecolution.models import CustomUser, ShopItem
+from Ecolution.tests.base_test import BaseTestCase
 
-class ShopUnitTests(TestCase):
+class ShopUnitTests(BaseTestCase):
 
     def setUp(self):
         # create and login new user

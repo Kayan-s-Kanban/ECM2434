@@ -1,9 +1,9 @@
-from django.test import TestCase
 from django.urls import reverse
 from Ecolution.models import CustomUser, Pet
+from Ecolution.tests.base_test import BaseTestCase
 
 
-class LeaderboardUnitTests(TestCase):
+class LeaderboardUnitTests(BaseTestCase):
     def setUp(self):
         # create users and login first user
         self.user1 = CustomUser.objects.create_user(username='user1', password='password')

@@ -1,10 +1,10 @@
 from django.contrib.messages import get_messages
-from django.test import TestCase
 from django.urls import reverse
 from Ecolution.models import Pet, CustomUser
+from Ecolution.tests.base_test import BaseTestCase
 
 
-class SignupUnitTests(TestCase):
+class SignupUnitTests(BaseTestCase):
     def setUp(self):
         # valid user data for form entry
         self.valid_user_data = {

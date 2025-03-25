@@ -1,14 +1,13 @@
 from datetime import timedelta
 from django.utils import timezone
 from unittest.mock import patch
-from django.test import TestCase
 from django.urls import reverse
-from django.db import connection
-from Ecolution.models import CustomUser, Event, Pet, UserEvent, Task, UserTask
+from Ecolution.models import Event, Pet, UserEvent, Task, UserTask
 from Ecolution.views import User
+from Ecolution.tests.base_test import BaseTestCase
 
 
-class EventsIntegrationTests(TestCase):
+class EventsIntegrationTests(BaseTestCase):
     def setUp(self):
         # create user
         self.user1 = User.objects.create_user(username="testuser", password="password", is_gamekeeper=True)

@@ -1,8 +1,7 @@
-from django.test import TestCase
-from django.urls import reverse
 from Ecolution.models import CustomUser
+from Ecolution.tests.base_test import BaseTestCase
 
-class AdminIntegrationTests(TestCase):
+class AdminIntegrationTests(BaseTestCase):
     def setUp(self):
         # create admin user
         self.user = CustomUser.objects.create_user(

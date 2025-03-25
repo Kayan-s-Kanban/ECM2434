@@ -1,10 +1,10 @@
-from datetime import datetime, time
-from django.test import TestCase
+from datetime import time
 from django.urls import reverse
 from Ecolution.models import CustomUser, Event, UserEvent
+from Ecolution.tests.base_test import BaseTestCase
 
 
-class EventsUnitTests(TestCase):
+class EventsUnitTests(BaseTestCase):
     def setUp(self):
         self.user1 = CustomUser.objects.create_user(username='testuser', password='password')
         self.client.login(username='testuser', password='password')

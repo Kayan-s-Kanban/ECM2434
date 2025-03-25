@@ -1,10 +1,10 @@
-from django.test import TestCase
 from django.urls import reverse
 from Ecolution.models import CustomUser, UserItem, ShopItem
 from Ecolution.views import User
+from Ecolution.tests.base_test import BaseTestCase
 
 
-class SignupIntegrationTests(TestCase):
+class SignupIntegrationTests(BaseTestCase):
     def setUp(self):
         # set up user data
         self.user_data = {

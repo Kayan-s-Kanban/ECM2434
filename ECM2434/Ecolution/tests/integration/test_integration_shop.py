@@ -1,11 +1,10 @@
-from django.test import TestCase
 from django.urls import reverse
-
 from Ecolution.models import CustomUser, Event, Pet, ShopItem, UserItem
 from Ecolution.views import User
+from Ecolution.tests.base_test import BaseTestCase
 
 
-class ShopIntegrationTest(TestCase):
+class ShopIntegrationTest(BaseTestCase):
     def setUp(self):
         # create and login user
         self.user1 = CustomUser.objects.create_user(username='testuser', password='password')

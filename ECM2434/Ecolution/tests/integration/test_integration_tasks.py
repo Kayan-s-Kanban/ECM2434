@@ -1,9 +1,8 @@
-from django.test import TestCase
 from django.urls import reverse
 from Ecolution.models import CustomUser, UserTask, Task, Pet
-from Ecolution.views import User
+from Ecolution.tests.base_test import BaseTestCase
 
-class TaskIntegrationTests(TestCase):
+class TaskIntegrationTests(BaseTestCase):
     def setUp(self):
         # create a test user
         self.user1 = CustomUser.objects.create_user(username='testuser', password='password')

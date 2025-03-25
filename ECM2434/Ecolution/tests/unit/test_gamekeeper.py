@@ -1,10 +1,9 @@
 import json
-
-from django.test import TestCase
 from django.urls import reverse
 from Ecolution.models import CustomUser, Task
+from Ecolution.tests.base_test import BaseTestCase
 
-class GameKeeperUnitTests(TestCase):
+class GameKeeperUnitTests(BaseTestCase):
     def setUp(self):
         # create a gamekeeper user
         self.gamekeeper = CustomUser.objects.create_user(username="gamekeeper", password="password123", is_gamekeeper=True)

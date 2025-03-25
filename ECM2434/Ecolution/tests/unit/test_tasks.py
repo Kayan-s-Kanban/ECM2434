@@ -1,12 +1,9 @@
-from django.test import TestCase
-
 from Ecolution.models import CustomUser, Pet
-
 from Ecolution.models import UserTask
-
 from Ecolution.models import Task
+from Ecolution.tests.base_test import BaseTestCase
 
-class TasksUnitTests(TestCase):
+class TasksUnitTests(BaseTestCase):
 
     def setUp(self):
         # create a test user

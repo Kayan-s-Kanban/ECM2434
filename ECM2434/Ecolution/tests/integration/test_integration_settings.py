@@ -1,11 +1,10 @@
 from unittest.mock import patch
-
 from django.contrib.messages import get_messages
-from django.test import TestCase
 from django.urls import reverse
 from Ecolution.models import CustomUser
+from Ecolution.tests.base_test import BaseTestCase
 
-class SettingsIntegrationTests(TestCase):
+class SettingsIntegrationTests(BaseTestCase):
     def setUp(self):
         # create user
         self.user = CustomUser.objects.create_user(username = 'testuser', password = 'password')

@@ -1,8 +1,8 @@
-from django.test import TestCase
 from django.urls import reverse
 from Ecolution.models import CustomUser
+from Ecolution.tests.base_test import BaseTestCase
 
-class LoginIntegrationTests(TestCase):
+class LoginIntegrationTests(BaseTestCase):
     def setUp(self):
         # create a test user
         self.user = CustomUser.objects.create_user(

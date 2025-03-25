@@ -1,12 +1,11 @@
 import json
-
-from django.test import TestCase
 from django.urls import reverse
 from Ecolution.models import CustomUser
 from Ecolution.models import UserTask
 from Ecolution.models import Task
+from Ecolution.tests.base_test import BaseTestCase
 
-class SettingsUnitTests(TestCase):
+class SettingsUnitTests(BaseTestCase):
     def setUp(self):
         # create user
         self.user = CustomUser.objects.create_user(username = 'testuser', password = 'password')

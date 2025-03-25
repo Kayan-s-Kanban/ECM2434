@@ -1,11 +1,11 @@
-from django.test import TestCase
-from django.urls import reverse
-from Ecolution.models import CustomUser, Event, UserEvent, Pet
-from django.utils import timezone
 from uuid import uuid4
+from Ecolution.models import CustomUser, Event, UserEvent, Pet
+from Ecolution.tests.base_test import BaseTestCase
+from django.utils import timezone
+from django.urls import reverse
 
 
-class QRUnitTests(TestCase):
+class QRUnitTests(BaseTestCase):
     def setUp(self):
         # create a user
         self.user = CustomUser.objects.create_user(username="testuser", password="password")
