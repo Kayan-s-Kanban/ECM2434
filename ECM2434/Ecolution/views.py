@@ -148,7 +148,7 @@ def tasks_view(request):
         "user_tasks": user_tasks,
         "predefined_tasks": predefined_tasks,
         "custom_tasks": custom_tasks,
-        "points": request.user.points
+        "leaves": request.user.points
     })
 
 
