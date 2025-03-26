@@ -416,7 +416,7 @@ def get_event_tasks(request, event_id):
 @login_required
 def gamekeeper_events(request):
     gamekeeper_events = Event.objects.filter(creator=request.user)
-    context = {"gamekeeper_events": gamekeeper_events}
+    context = {"gamekeeper_events": gamekeeper_events, "points": request.user.points}
     return render(request, "gamekeeper_events.html", context)
 
 
@@ -678,7 +678,7 @@ def leaderboard_view(request):
 @login_required
 def qr_scanner_view(request):
     # Renders the QR scanner page.
-    return render(request, "qr_scanner.html")
+    return render(request, "qr_scanner.html", {"points": request.user.points})
 
 
 @gamekeeper_required
