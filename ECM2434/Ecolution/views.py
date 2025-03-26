@@ -143,7 +143,7 @@ def tasks_view(request):
     """
     user_tasks = UserTask.objects.filter(user=request.user)
     predefined_tasks = Task.objects.filter(predefined=True)
-    custom_tasks = Task.objects.filter(creator=request.user)
+    custom_tasks = Task.objects.filter(creator=request.user, predefined=False)
     return render(request, "tasks.html", {
         "user_tasks": user_tasks,
         "predefined_tasks": predefined_tasks,
