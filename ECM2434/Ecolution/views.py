@@ -262,6 +262,13 @@ def events_view(request):
     context = {"user_events": user_events, "events": all_events, "points": request.user.points}
     return render(request, "events.html", context)
 
+@login_required
+def delete_user_event(request, user_event_id):
+    if request.method == "POST":
+        user_event = get_object_or_404(UserEvent, pk=user_event_id, user=request.user)
+        user_event.delete()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({"status": "error"}, status=400)
 
 @login_required
 def join_event(request):

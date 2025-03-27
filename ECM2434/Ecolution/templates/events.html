@@ -172,6 +172,9 @@
                                 <p>{{ user_event.date }}</p>
                                 <h3>{{ user_event.event_name }}</h3>
                                 <p>📍{{ user_event.location }}</p>
+                                <div class="event-actions">
+                                    <span class="delete-icon" onclick="deleteEvent(event, this, {{ user_event.id }})">🗑️</span>
+                                </div>
                             </div>
                         {% endfor %}
                     {% else %}
@@ -437,5 +440,31 @@
         function getCSRFToken() {
             return document.cookie.match(/csrftoken=([^;]+)/)[1];
         }
+
+        function deleteEvent(e, elem, userEventId) {
+            // Prevent the click from bubbling up and triggering the parent event handler.
+            e.stopPropagation();
+            
+            fetch("{% url 'delete_user_event' 0 %}".replace('0', userEventId), {
+                method: "POST",
+                headers: { "X-CSRFToken": getCSRFToken() },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    // Remove the event card from the DOM.
+                    elem.closest('.event').remove();
+                } else {
+                    alert("Error deleting event: " + data.message);
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function getCSRFToken() {
+            return document.cookie.match(/csrftoken=([^;]+)/)[1];
+        }
+
     </script>
+        
 {% endblock %}

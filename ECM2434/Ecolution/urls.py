@@ -20,6 +20,7 @@ urlpatterns = [
     path("events/joinevent/", views.join_event, name="join_event"),
     path("events/leaveevent/", views.leave_event, name="leave_event"),
     path("events/completeevent/", views.complete_event, name="complete_event"),
+    path('events/delete/<int:user_event_id>/', views.delete_user_event, name='delete_user_event'),
     path("events/gettasks/<int:event_id>/", views.get_event_tasks, name="get_event_tasks"),
     path('delete-account/', delete_account, name='delete_account'),
     path("change_password/", change_password, name="change_password"),
