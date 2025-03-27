@@ -452,8 +452,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === "success") {
-                    // Remove the event card from the DOM.
-                    elem.closest('.event').remove();
+                    location.reload(); // Refreshes the page to update the events list.
                 } else {
                     alert("Error deleting event: " + data.message);
                 }

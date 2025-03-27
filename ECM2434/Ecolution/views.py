@@ -267,7 +267,7 @@ def delete_user_event(request, user_event_id):
     if request.method == "POST":
         user_event = get_object_or_404(UserEvent, pk=user_event_id, user=request.user)
         user_event.delete()
-        return redirect("events")
+        return JsonResponse({'status': 'success'})
     return JsonResponse({"status": "error"}, status=400)
 
 @login_required
