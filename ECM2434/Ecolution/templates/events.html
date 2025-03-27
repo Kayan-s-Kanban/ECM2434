@@ -157,25 +157,25 @@
                 <div>
                     {% if user_events %}
                         {# Loop through each event created by the user and render an event card #}
-                        {% for user_event in user_events %}
-                            <div class="card box_shadow text_light event button" 
-                                data-id="{{ user_event.event_id }}"
-                                data-name="{{ user_event.event_name }}"
-                                data-description="{{ user_event.description }}"
-                                data-location="{{ user_event.location }}"
-                                data-longitude="{{ user_event.longitude }}"
-                                data-latitude="{{ user_event.latitude }}"
-                                data-date="{{ user_event.date }}"
-                                data-time="{{ user_event.time }}"
-                                data-points="{{ user_event.total_points}}"
-                                onclick="openEventDetails(this, 'user')">
-                                <p>{{ user_event.date }}</p>
-                                <h3>{{ user_event.event_name }}</h3>
-                                <p>📍{{ user_event.location }}</p>
-                                <div class="event-actions">
-                                    <span class="delete-icon" onclick="deleteEvent(event, this, {{ user_event.id }})">🗑️</span>
-                                </div>
+                        {% for user_event in incomplete_user_events %}
+                        <div class="card box_shadow text_light event button" 
+                            data-id="{{ user_event.event.event_id }}"
+                            data-name="{{ user_event.event.event_name }}"
+                            data-description="{{ user_event.event.description }}"
+                            data-location="{{ user_event.event.location }}"
+                            data-longitude="{{ user_event.event.longitude }}"
+                            data-latitude="{{ user_event.event.latitude }}"
+                            data-date="{{ user_event.event.date }}"
+                            data-time="{{ user_event.event.time }}"
+                            data-points="{{ user_event.event.total_points}}"
+                            onclick="openEventDetails(this, 'user')">
+                            <p>{{ user_event.event.date }}</p>
+                            <h3>{{ user_event.event.event_name }}</h3>
+                            <p>📍{{ user_event.event.location }}</p>
+                            <div class="event-actions">
+                                <span class="delete-icon" onclick="deleteEvent(event, this, {{ user_event.id }})">🗑️</span>
                             </div>
+                        </div>
                         {% endfor %}
                     {% else %}
                         <p class="text_dark">There are no current events ongoing</p>
@@ -466,5 +466,5 @@
         }
 
     </script>
-        
+
 {% endblock %}
