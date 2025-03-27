@@ -6,7 +6,7 @@
         <div class="flex_v flex_v_fill">
             <h3>{{ task.task_name }}</h3>
             <p>{{ task.description }}</p>
-            <span class="task-points-small">Points: {{ task.points_given }}</span>
+            <span class="task-points-small">Leaves: {{ task.points_given }}</span>
             <span class="task-points-small">XP: {{ task.xp_given }}</span>
             {% if task.event %}
                 <span class="task-event">Event: {{ task.event.event_name }}</span>

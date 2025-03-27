@@ -6,9 +6,9 @@
         <div class="flex_v flex_v_fill">
             <h3>{{ user_task.task.task_name }}</h3>
             {% if user_task.completed %}
-                <span class="task-points-small">Points: {{ user_task.task.points_given }} 🟢</span>
+                <span class="task-points-small">Leaves: {{ user_task.task.points_given }} 🟢</span>
             {% else %}
-                <span class="task-points-small">Points: {{ user_task.task.points_given }} ⚪</span>
+                <span class="task-points-small">Leaves: {{ user_task.task.points_given }} ⚪</span>
             {% endif %}
         </div>
         <div class="task-actions">
