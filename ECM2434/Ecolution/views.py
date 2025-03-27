@@ -148,7 +148,7 @@ def tasks_view(request):
         "user_tasks": user_tasks,
         "predefined_tasks": predefined_tasks,
         "custom_tasks": custom_tasks,
-        "leaves": request.user.points
+        "points": request.user.points
     })
 
 
@@ -267,7 +267,7 @@ def delete_user_event(request, user_event_id):
     if request.method == "POST":
         user_event = get_object_or_404(UserEvent, pk=user_event_id, user=request.user)
         user_event.delete()
-        return JsonResponse({'status': 'success'})
+        return redirect("events")
     return JsonResponse({"status": "error"}, status=400)
 
 @login_required
